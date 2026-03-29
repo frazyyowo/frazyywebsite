@@ -169,68 +169,75 @@
     #mobile-root { display: none; }
 
     /* ============================================================
-       MOBILE  (≤ 768px)
-    ============================================================ */
-    @media (max-width: 768px) {
-      html, body { overflow: hidden; }
+   MOBILE FIX OVERRIDES (paste at END of <style>)
+   - fixes scroll lock
+   - stops FX layers from stealing touches
+   - adds safe bottom padding for the fixed player
+   - improves spacing + grids on small screens
+============================================================ */
 
-      /* hide desktop */
-      #desk { display: none !important; }
+/* Background/fx layers should never block scrolling/taps */
+#bg, #tint, #fx, #vhs { pointer-events: none; }
 
-      /* mobile scroll container */
-      #mobile-root {
-        display: flex !important;
-        flex-direction: column;
-        position: absolute;
-        inset: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-        padding: 16px 14px 150px;
-        gap: 14px;
-        scrollbar-width: none;
-        z-index: 10;
-      }
-      #mobile-root::-webkit-scrollbar { display: none; }
+/* Make sure your real UI sits above the FX */
+#desk, #mobile-root { position: relative; z-index: 10; }
+#faPlayer { z-index: 60; }
 
-      /* title */
-      .m-title {
-        text-align: center;
-        font-size: clamp(30px, 9vw, 52px);
-        font-weight: 700;
-        letter-spacing: 3px;
-        color: #141414;
-        text-shadow: 2px 2px 0 rgba(255,255,255,0.45);
-        user-select: none;
-        padding: 6px 0 2px;
-      }
+/* When intro is hidden, it must not block interaction */
+#intro[aria-hidden="true"] { pointer-events: none; visibility: hidden; }
 
-      /* glass card */
-      .m-card {
-        border-radius: 18px;
-        border: 1px solid rgba(255,255,255,0.50);
-        background:
-          radial-gradient(130% 80% at 18% 8%, rgba(255,255,255,0.60), transparent 55%),
-          linear-gradient(175deg, rgba(255,255,255,0.54), rgba(255,255,255,0.20));
-        backdrop-filter: blur(16px) saturate(1.12);
-        -webkit-backdrop-filter: blur(16px) saturate(1.12);
-        box-shadow: 0 10px 22px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.60);
-        padding: 16px 15px;
-        color: #111;
-        position: relative;
-        overflow: hidden;
-      }
-      .m-card::before {
-        content:""; position:absolute; inset:1px; border-radius:17px;
-        background: linear-gradient(180deg,rgba(255,255,255,0.20),rgba(255,255,255,0.05) 45%,transparent);
-        pointer-events:none;
-      }
+/* ---- Mobile: use BODY scrolling (more reliable than an absolute scroll container) ---- */
+@media (max-width: 768px) {
+  /* Override the scroll lock */
+  html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
-      .m-card-label {
-        font-size: 12px; font-weight: 800; letter-spacing: 0.4px;
-        color: rgba(20,20,20,0.75); text-shadow: 1px 1px 0 rgba(255,255,255,0.65);
-        margin-bottom: 11px; text-transform: lowercase;
-      }
+  body {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior-y: none;
+  }
+
+  /* Convert mobile root from absolute scroll box -> normal flow */
+  #mobile-root {
+    position: relative !important;
+    inset: auto !important;
+    overflow: visible !important;
+
+    /* fixed player space + iPhone safe area */
+    padding: 16px 14px calc(140px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Make cards breathe a bit more */
+  .m-card { padding: 18px 16px; }
+  .m-badges-row { gap: 10px; }
+}
+
+/* Smaller phones: reduce columns so nothing smashes together */
+@media (max-width: 420px) {
+  .m-links-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px 8px;
+  }
+
+  .m-music-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .m-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Optional: calmer for people who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .m-gallery-btn,
+  .about-morepics-btn { animation: none !important; }
+}
 
       /* --- WELCOME --- */
       .m-welcome-title { font-size: 16px; font-weight: 700; color:#111; margin-bottom:10px; line-height:1.25; }
@@ -644,8 +651,29 @@
 
     /* IMAGE MODAL */
     const imgModal=document.getElementById('imgModal'),imgModalImg=document.getElementById('imgModalImg'),imgModalClose=document.getElementById('imgModalClose'),modalBackdrop=document.getElementById('modalBackdrop');
-    function openImgModal(src,alt){imgModalImg.src=src;imgModalImg.alt=alt||'image';imgModal.classList.add('open');imgModal.setAttribute('aria-hidden','false');imgModalClose.focus();}
-    function closeImgModal(){imgModal.classList.remove('open');imgModal.setAttribute('aria-hidden','true');imgModalImg.src='';imgModalImg.alt='';}
+    function openImgModal(src, alt) {
+  imgModalImg.src = src;
+  imgModalImg.alt = alt || 'image';
+  imgModal.classList.add('open');
+  imgModal.setAttribute('aria-hidden', 'false');
+
+  // lock page scroll while modal is open
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+
+  imgModalClose.focus();
+}
+
+function closeImgModal() {
+  imgModal.classList.remove('open');
+  imgModal.setAttribute('aria-hidden', 'true');
+  imgModalImg.src = '';
+  imgModalImg.alt = '';
+
+  // restore scroll
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
+}
     imgModalClose.addEventListener('click',closeImgModal);
     modalBackdrop.addEventListener('click',closeImgModal);
     window.addEventListener('keydown',e=>{if(e.key==='Escape'&&imgModal.classList.contains('open'))closeImgModal();});
