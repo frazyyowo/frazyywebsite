@@ -276,7 +276,11 @@
   border-radius: var(--fa-radius);
   border: 1px solid var(--fa-border);
 
-  background: linear-gradient(180deg, var(--fa-glass-top), var(--fa-glass-bot));
+  background: linear-gradient(
+  180deg,
+  rgba(72, 89, 103, 0.32),
+  rgba(72, 89, 103, 0.32)
+);
   box-shadow: var(--fa-shadow);
 
   -webkit-backdrop-filter: blur(14px) saturate(1.15);
@@ -291,7 +295,6 @@
   appearance: none;
   -webkit-appearance: none;
   isolation: isolate;
-
   transition: transform 120ms ease, filter 120ms ease;
 }
 
@@ -702,17 +705,45 @@
     .g-card:focus-visible   { outline: 2px solid rgba(0,0,0,0.55); outline-offset: 3px; border-radius: 6px; }
 
     /* close button hitbox for gallery (positioned over png X) */
-    .close-hit {
-      position: absolute;
-      top:   calc(4px  * var(--s));
-      right: calc(4px  * var(--s));
-      width: calc(28px * var(--s));
-      height: calc(28px * var(--s));
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      z-index: 10;
-    }
+    /* ============================================================
+   GALLERY CLOSE HITBOX (invisible + adjustable)
+============================================================ */
+
+/* tweak these numbers until it lines up perfectly */
+#win-gallery{
+  --close-x: 30;    /* distance from RIGHT edge (px) */
+  --close-y: 15;    /* distance from TOP edge (px) */
+  --close-w: 40;   /* hitbox width (px) */
+  --close-h: 20;   /* hitbox height (px) */
+}
+
+#win-gallery .close-hit{
+  position: absolute;
+  top:   calc(var(--close-y) * 1px * var(--s));
+  right: calc(var(--close-x) * 1px * var(--s));
+  width:  calc(var(--close-w) * 1px * var(--s));
+  height: calc(var(--close-h) * 1px * var(--s));
+
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+
+  opacity: 0;          /* fully invisible */
+  cursor: pointer;
+  z-index: 10;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* optional: only shows when tabbing (nice for accessibility) */
+#win-gallery .close-hit:focus-visible{
+  opacity: 1;
+  outline: 2px solid rgba(180,230,255,0.75);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
 
     /* ============================================================
        FULLSCREEN IMAGE MODAL
@@ -924,7 +955,7 @@
       <!-- ==================== MUSIC ==================== -->
       <div class="window win1" id="win-music"
            data-label="music i like.exe"
-           data-x="470" data-y="300"
+           data-x="300" data-y="500"
            data-skin="0.90" data-font="1.00">
         <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
@@ -995,7 +1026,7 @@
       <!-- ==================== THINGS ==================== -->
       <div class="window std" id="win-things"
            data-label="things i like.exe"
-           data-x="920" data-y="120"
+           data-x="965" data-y="120"
            data-skin="0.90" data-font="1.18">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
@@ -1089,7 +1120,7 @@
         <img class="skin" src="img/window5.png" alt="">
         <div class="handle"></div>
         <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close gallery"></button>
-
+       
         <div class="content">
           <div class="gallery-wrap">
             <div class="gallery-hint">click a picture to view it fullscreen ♡</div>
