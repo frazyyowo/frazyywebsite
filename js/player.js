@@ -58,10 +58,15 @@
   }
 
   // --- volume init (SAFE default) ---
-  let savedVol = Number(localStorage.getItem(VOL_KEY));
-  if (!Number.isFinite(savedVol)) savedVol = 0.20; // ✅ default 20%
-  audio.volume = clamp(savedVol, 0, 1);
-  vol.value = String(Math.round(audio.volume * 100));
+const rawVol = localStorage.getItem(VOL_KEY);
+
+// pick your default here (18% matches your HTML)
+let savedVol = rawVol === null ? 0.18 : parseFloat(rawVol);
+
+if (!Number.isFinite(savedVol)) savedVol = 0.18;
+
+audio.volume = clamp(savedVol, 0, 1);
+vol.value = String(Math.round(audio.volume * 100));
 
   // volume events
   vol.addEventListener("input", () => {
