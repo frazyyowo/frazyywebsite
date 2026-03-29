@@ -1,0 +1,267 @@
+/* =========================================
+   BACKGROUND: blurred GIF (only background)
+   ========================================= */
+#bg{
+  position: fixed;
+  inset: -36px;
+  z-index: -3;
+  background:
+    url("../img/backround.gif") center / cover no-repeat fixed,
+    url("../img/background.gif") center / cover no-repeat fixed;
+  filter: blur(14px) saturate(1.08) contrast(1.02);
+  transform: scale(1.08);
+}
+
+#tint{
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 20%,
+      rgba(255,255,255,0.22) 0%,
+      rgba(255,255,255,0.08) 45%,
+      rgba(0,0,0,0.07) 100%);
+}
+
+/* particles canvas (between bg and UI) */
+#fx{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* =========================================
+   VHS + PAPER TEXTURE (MORE APPARENT)
+   ========================================= */
+:root{
+  --vhsOpacity: 0.62;        /* overall strength */
+  --siteBlur: 1.15px;        /* tiny blur over everything */
+  --dotOpacity: 0.28;        /* paper dots */
+  --grainOpacity: 0.55;      /* grain/noise */
+  --scanOpacity: 0.50;       /* scanlines */
+  --vignetteOpacity: 0.28;   /* edges */
+  --pixelSize: 6px;      /* smaller = more pixel-y */
+  --pixelOpacity: 0.06;  /* lower = more subtle */
+}
+
+#vhs{
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+
+  opacity: var(--vhsOpacity);
+  mix-blend-mode: overlay;
+
+  /* ✅ tiny blur of the actual page */
+  -webkit-backdrop-filter: blur(var(--siteBlur)) saturate(1.05) contrast(1.02);
+  backdrop-filter: blur(var(--siteBlur)) saturate(1.05) contrast(1.02);
+
+  /* tiny “lens softness” */
+  filter: contrast(1.03) saturate(1.03);
+}
+
+/* PAPER DOTS + SCANLINES + VIGNETTE (layer stack) */
+#vhs::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    /* ✅ paper dots (tiny halftone) */
+    repeating-linear-gradient(90deg, rgba(0,0,0,var(--pixelOpacity)) 0 1px, transparent 1px var(--pixelSize)),
+    repeating-linear-gradient(0deg,  rgba(0,0,0,var(--pixelOpacity)) 0 1px, transparent 1px var(--pixelSize)),
+    radial-gradient(rgba(0,0,0,var(--dotOpacity)) 0.7px, transparent 0.85px) 0 0 / 7px 7px,
+    radial-gradient(rgba(255,255,255,0.10) 0.6px, transparent 0.85px) 3px 2px / 9px 9px,
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,var(--scanOpacity)) 0px,
+      rgba(0,0,0,var(--scanOpacity)) 1px,
+      rgba(255,255,255,0.05) 2px,
+      rgba(0,0,0,0.00) 4px
+    ),
+    radial-gradient(circle at 50% 50%,
+      rgba(255,255,255,0.00) 0%,
+      rgba(0,0,0,var(--vignetteOpacity)) 100%);
+
+  opacity: 1;
+  animation: vhs-scan 5.2s linear infinite;
+}
+
+/* GRAIN + CHROMA + FLICKER + MICRO JITTER */
+#vhs::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    /* grain (dense) */
+    repeating-radial-gradient(circle at 10% 20%,
+      rgba(0,0,0,var(--grainOpacity)) 0 0.6px,
+      transparent 0.8px 1.6px
+    ) 0 0 / 120px 120px,
+
+    repeating-radial-gradient(circle at 75% 60%,
+      rgba(255,255,255,0.22) 0 0.6px,
+      transparent 0.8px 1.7px
+    ) 0 0 / 160px 160px,
+
+    /* chroma wash (more visible) */
+    linear-gradient(90deg,
+      rgba(255,0,120,0.12),
+      rgba(0,200,255,0.12),
+      rgba(0,255,170,0.09)
+    );
+
+  opacity: 0.9;
+  animation: vhs-noise 0.16s steps(2) infinite, vhs-flicker 3.8s infinite, vhs-jitter 1.6s infinite;
+}
+
+/* animations */
+@keyframes vhs-scan{
+  0%   { transform: translateY(0px); }
+  100% { transform: translateY(12px); }
+}
+
+@keyframes vhs-noise{
+  0%   { transform: translate3d(0,0,0); }
+  25%  { transform: translate3d(1px,-1px,0); }
+  50%  { transform: translate3d(-1px,1px,0); }
+  75%  { transform: translate3d(1px,1px,0); }
+  100% { transform: translate3d(0,0,0); }
+}
+
+/* subtle horizontal “tape wobble” */
+@keyframes vhs-jitter{
+  0%,100% { background-position: 0 0, 0 0, 0 0; }
+  20% { background-position: 2px 0, -2px 1px, 0 0; }
+  40% { background-position: -3px 1px, 3px 0, 0 0; }
+  60% { background-position: 2px -1px, -2px 0, 0 0; }
+  80% { background-position: -1px 1px, 1px -1px, 0 0; }
+}
+
+@keyframes vhs-flicker{
+  0%, 100% { filter: brightness(1.00) contrast(1.02); opacity: 0.86; }
+  50%      { filter: brightness(1.08) contrast(1.08); opacity: 0.98; }
+}
+
+/* =========================================
+   MICRO-INTERACTIONS
+   ========================================= */
+.window{
+  opacity: 0;
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+.window.ready{ opacity: 1; }
+
+.window.is-front{
+  filter:
+    drop-shadow(0 16px 18px rgba(0,0,0,0.22))
+    drop-shadow(0 0 14px rgba(160,220,255,0.30));
+}
+
+.link-item{
+  transform: translateZ(0);
+  transition: transform 140ms ease, filter 140ms ease;
+}
+.link-item:hover{
+  transform: translateY(-1px);
+  filter: drop-shadow(0 6px 6px rgba(0,0,0,0.18));
+}
+.link-item:active{
+  transform: translateY(0px);
+  filter: drop-shadow(0 4px 5px rgba(0,0,0,0.16));
+}
+
+@media (prefers-reduced-motion: reduce){
+  #bg{ filter: blur(10px) saturate(1.02); }
+  #vhs::before, #vhs::after{ animation: none; }
+  #vhs{
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+/* =========================
+   GLOW THAT MATCHES TEXT COLOR (currentColor)
+   ========================= */
+
+/* Big glow for the big title */
+.site-title{
+  /* keep your crisp white offset shadow */
+  text-shadow: 2px 2px 0 rgba(255,255,255,0.45) !important;
+
+  /* glow follows the text color */
+  --glowA: currentColor;
+  --glowB: currentColor;
+
+  /* make glow actually visible but still “clean” */
+  filter:
+    drop-shadow(0 0 4px  var(--glowA))
+    drop-shadow(0 0 10px var(--glowA))
+    drop-shadow(0 0 20px var(--glowB));
+}
+
+/* Smaller glow for “headline-ish” text */
+.welcome-title,
+.sec-hdr,
+.music-title-row,
+.about-body strong,
+.fur-info strong{
+  display: inline-block; /* makes glow hug the letters tightly */
+  --glowA: currentColor;
+  filter:
+    drop-shadow(0 0 3px var(--glowA))
+    drop-shadow(0 0 8px var(--glowA));
+}
+
+/* Optional: keep normal paragraph text crisp (no glow) */
+.things-body,
+.about-body{
+  filter: none;
+  text-shadow: none;
+}
+
+/* Optional upgrade (if browser supports it):
+   tint the glow slightly toward white while still matching the hue */
+@supports (color: color-mix(in srgb, red 50%, white)) {
+  .site-title{
+    --glowA: color-mix(in srgb, currentColor 55%, white);
+    --glowB: color-mix(in srgb, currentColor 70%, white);
+  }
+  .welcome-title,
+  .sec-hdr,
+  .music-title-row,
+  .about-body strong,
+  .fur-info strong{
+    --glowA: color-mix(in srgb, currentColor 60%, white);
+  }
+}
+
+/* Typewriter title */
+.site-title{
+  /* keep your current positioning + size + font, etc. */
+  display: inline-flex;
+  align-items: baseline;
+}
+
+/* typed text */
+.site-title .tw-text{
+  white-space: nowrap;
+}
+
+/* blinking underscore cursor */
+.site-title .tw-cursor{
+  display: inline-block;
+  margin-left: 2px;
+  transform: translateY(2px); /* aligns underscore nicely */
+  animation: tw-blink 0.9s steps(1) infinite;
+  opacity: 1;
+}
+
+/* blink */
+@keyframes tw-blink{
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
