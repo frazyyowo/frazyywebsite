@@ -4,9 +4,10 @@
   "use strict";
 
   const PLAYLIST = [
+    { title: "medicine",     src: "music/medicine.mp3",     cover: "img/bunii.png"  },
     { title: "sos", src: "music/sos.mp3", cover: "img/che1.png" },
     { title: "serve da ba$$", src: "music/servedabass.mp3", cover: "img/che2.png" },
-    { title: "medicine",     src: "music/medicine.mp3",     cover: "img/bunii.png"  },
+   
     // add more:
     // { title:"song name", src:"music/file.mp3", cover:"covers/file.png" }
   ];
