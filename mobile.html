@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,20 +13,30 @@
     @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; }
-
+    html, body { width: 100%; height: 100%; }
     body {
       font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
                    Consolas, "Liberation Mono", "Courier New", monospace;
       background: #a8c8e8;
       position: relative;
       isolation: isolate;
+      overflow: hidden; /* desktop default */
     }
 
+    /* FX layers must never block taps/scroll */
+    #bg, #tint, #fx, #vhs, #introFx, .intro-vhs { pointer-events: none; }
+
+    /* Put real UI above FX */
+    #desk, #mobile-root { position: relative; z-index: 10; }
+    #faPlayer { z-index: 60; }
+
+    /* Intro failsafe (if intro.js doesn't hide it, you can still enter) */
+    #intro.is-hidden { display: none !important; }
+
     /* ============================================================
-       STAGE (desktop)
+       DESKTOP STAGE
     ============================================================ */
-    #desk  { position: absolute; inset: 0; overflow: hidden; z-index: 10; }
+    #desk  { position: fixed; inset: 0; overflow: hidden; z-index: 10; }
     #stage {
       position: absolute; left: 0; top: 0;
       width: 2048px; height: 799px;
@@ -45,25 +54,58 @@
       display: inline-flex; align-items: baseline;
     }
     .site-title .tw-text { white-space: nowrap; }
-    .site-title .tw-cursor { display: inline-block; margin-left: 2px; transform: translateY(2px); animation: tw-blink 0.9s steps(1) infinite; }
+    .site-title .tw-cursor {
+      display: inline-block; margin-left: 2px; transform: translateY(2px);
+      animation: tw-blink 0.9s steps(1) infinite;
+    }
     @keyframes tw-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
 
     /* ============================================================
-       WINDOW BASE
+       WINDOW BASE (desktop)
     ============================================================ */
-    .window { position: absolute; --s:1; --fs:1; transform: translate3d(0,0,0); will-change: transform; user-select: none; filter: drop-shadow(0 12px 16px rgba(0,0,0,0.20)); visibility: hidden; --label-x:18; --label-y:8; --label-fs:12; }
-    .window.ready  { visibility: visible; }
+    .window {
+      position: absolute;
+      --s:1; --fs:1;
+      transform: translate3d(0,0,0);
+      will-change: transform;
+      user-select: none;
+      filter: drop-shadow(0 12px 16px rgba(0,0,0,0.20));
+      --label-x:18; --label-y:8; --label-fs:12;
+
+      /* fallback so it's not “invisible” if an image fails */
+      width: 420px;
+      height: 280px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.20);
+      border: 1px solid rgba(0,0,0,0.18);
+      backdrop-filter: blur(12px) saturate(1.05);
+      -webkit-backdrop-filter: blur(12px) saturate(1.05);
+    }
+    .window.ready {
+      background: transparent;
+      border: 0;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transition: opacity 160ms ease;
+    }
     .window.closed { opacity: 0; pointer-events: none; }
     .window.open   { opacity: 1; pointer-events: auto; }
-    .window.ready  { transition: opacity 160ms ease; }
-    .skin { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; z-index: 0; }
+
+    .skin {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      display: block; pointer-events: none; z-index: 0;
+    }
     .handle { position: absolute; cursor: grab; touch-action: none; z-index: 3; }
     .handle:active { cursor: grabbing; }
-    .content { position: absolute; z-index: 2; overflow: hidden; min-width: 0; min-height: 0; clip-path: inset(0 round calc(2px * var(--s))); color: #222; }
+    .content {
+      position: absolute; z-index: 2; overflow: hidden;
+      min-width: 0; min-height: 0;
+      clip-path: inset(0 round calc(2px * var(--s)));
+      color: #222;
+    }
     .std .content, .win1 .content, .wide .content { padding: calc(3px * var(--s)); }
     .content :where(p,div,span,a,button) { max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
-    .scroll-soft { overflow: auto; scrollbar-width: none; }
-    .scroll-soft::-webkit-scrollbar { width: 0; height: 0; }
+
     .std .handle, .win1 .handle { top: calc(4px*var(--s)); left: calc(4px*var(--s)); right: calc(56px*var(--s)); height: calc(22px*var(--s)); }
     .std .content { top: calc(40px*var(--s)); left: calc(18px*var(--s)); right: calc(18px*var(--s)); bottom: calc(18px*var(--s)); }
     .win1 .content { top: calc(38px*var(--s)); left: calc(18px*var(--s)); right: calc(18px*var(--s)); bottom: calc(18px*var(--s)); }
@@ -71,7 +113,23 @@
     .wide .content { top: calc(30px*var(--s)); left: calc(36px*var(--s)); right: calc(36px*var(--s)); bottom: calc(24px*var(--s)); }
     .window.win1 { --label-x:30; --label-y:23; --label-fs:14; }
     .window.std  { --label-x:30; --label-y:23; --label-fs:14; }
-    .window::after { content: attr(data-label); position: absolute; top: calc(var(--label-y)*1px*var(--s)); left: calc(var(--label-x)*1px*var(--s)); font-size: calc(var(--label-fs)*1px*var(--s)); font-weight: 800; letter-spacing: 0.4px; text-transform: lowercase; color: rgba(20,20,20,0.90); text-shadow: 1px 1px 0 rgba(255,255,255,0.65), 0 0 8px rgba(255,255,255,0.20); pointer-events: none; user-select: none; white-space: nowrap; z-index: 4; }
+
+    .window::after {
+      content: attr(data-label);
+      position: absolute;
+      top: calc(var(--label-y)*1px*var(--s));
+      left: calc(var(--label-x)*1px*var(--s));
+      font-size: calc(var(--label-fs)*1px*var(--s));
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: lowercase;
+      color: rgba(20,20,20,0.90);
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.65), 0 0 8px rgba(255,255,255,0.20);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 4;
+    }
 
     /* WELCOME */
     .welcome-panel { height:100%; display:flex; flex-direction:column; gap:10px; padding:2px; min-width:0; }
@@ -137,10 +195,8 @@
     .about-fursona-badge .t2 { font-size:calc(15px*var(--fs)); line-height:1.05; margin-top:2px; color:#111; text-shadow:0 0 6px rgba(255,255,255,0.95),0 0 14px rgba(255,255,255,0.80),0 0 26px rgba(255,255,255,0.65); }
     .about-morepics-btn { position:absolute; left:14px; bottom:100px; z-index:5; border:0; background:transparent; padding:0; font-family:inherit; font-size:calc(14px*var(--fs)); font-weight:900; letter-spacing:0.4px; color:#111; cursor:pointer; text-align:left; white-space:normal; line-height:1.05; text-shadow:0 0 6px rgba(255,255,255,0.95),0 0 16px rgba(255,255,255,0.85),0 0 30px rgba(255,255,255,0.65); animation:glowPulse 1.2s ease-in-out infinite; transition:transform 120ms ease; }
     .about-morepics-btn span { font-weight:800; opacity:0.98; }
-    .about-morepics-btn::before { content:""; position:absolute; inset:-18px -22px; pointer-events:none; background: radial-gradient(circle,rgba(255,255,255,0.90) 0 1px,transparent 2px) 0 0/16px 16px, radial-gradient(circle,rgba(255,255,255,0.55) 0 1px,transparent 2px) 6px 8px/22px 22px, radial-gradient(circle,rgba(255,255,255,0.35) 0 1px,transparent 2px) 12px 2px/26px 26px; opacity:0.55; filter:blur(0.2px); animation:sparkleDrift 1.6s linear infinite; }
     .about-morepics-btn:hover { transform:translateY(-1px); }
     @keyframes glowPulse { 0%,100%{ text-shadow:0 0 6px rgba(255,255,255,0.90),0 0 16px rgba(255,255,255,0.75),0 0 28px rgba(255,255,255,0.55);opacity:0.95; } 50%{ text-shadow:0 0 10px rgba(255,255,255,0.98),0 0 24px rgba(255,255,255,0.90),0 0 42px rgba(255,255,255,0.75);opacity:1; } }
-    @keyframes sparkleDrift { 0%{background-position:0 0,6px 8px,12px 2px} 100%{background-position:18px 14px,22px 26px,30px 18px} }
 
     /* GALLERY */
     .gallery-wrap { height:100%; display:flex; flex-direction:column; gap:8px; min-height:0; }
@@ -165,97 +221,82 @@
     @keyframes modalFade { from{opacity:0} to{opacity:1} }
     @keyframes goofyPop { 0%{transform:scale(0.45) rotate(-6deg);opacity:0} 45%{transform:scale(1.22) rotate(3deg);opacity:1} 65%{transform:scale(0.92) rotate(-2deg)} 80%{transform:scale(1.06) rotate(1deg)} 92%{transform:scale(0.99) rotate(-0.4deg)} 100%{transform:scale(1.00) rotate(0deg)} }
 
-    /* hide mobile stuff on desktop */
+    /* ============================================================
+       MOBILE
+    ============================================================ */
     #mobile-root { display: none; }
 
-    /* ============================================================
-   MOBILE FIX OVERRIDES (paste at END of <style>)
-   - fixes scroll lock
-   - stops FX layers from stealing touches
-   - adds safe bottom padding for the fixed player
-   - improves spacing + grids on small screens
-============================================================ */
+    @media (max-width: 768px) {
+      body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+      }
 
-/* Background/fx layers should never block scrolling/taps */
-#bg, #tint, #fx, #vhs { pointer-events: none; }
+      /* hide desktop on mobile */
+      #desk { display: none !important; }
 
-/* Make sure your real UI sits above the FX */
-#desk, #mobile-root { position: relative; z-index: 10; }
-#faPlayer { z-index: 60; }
+      /* mobile layout */
+      #mobile-root {
+        display: flex !important;
+        flex-direction: column;
+        gap: 14px;
+        padding: 16px 14px calc(140px + env(safe-area-inset-bottom));
+        min-height: 100dvh;
+      }
 
-/* When intro is hidden, it must not block interaction */
-#intro[aria-hidden="true"] { pointer-events: none; visibility: hidden; }
+      .m-title {
+        text-align: center;
+        font-size: clamp(30px, 9vw, 52px);
+        font-weight: 700;
+        letter-spacing: 3px;
+        color: #141414;
+        text-shadow: 2px 2px 0 rgba(255,255,255,0.45);
+        user-select: none;
+        padding: 6px 0 2px;
+      }
 
-/* ---- Mobile: use BODY scrolling (more reliable than an absolute scroll container) ---- */
-@media (max-width: 768px) {
-  /* Override the scroll lock */
-  html, body {
-    height: auto;
-    min-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+      .m-card {
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.50);
+        background:
+          radial-gradient(130% 80% at 18% 8%, rgba(255,255,255,0.60), transparent 55%),
+          linear-gradient(175deg, rgba(255,255,255,0.54), rgba(255,255,255,0.20));
+        backdrop-filter: blur(16px) saturate(1.12);
+        -webkit-backdrop-filter: blur(16px) saturate(1.12);
+        box-shadow: 0 10px 22px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.60);
+        padding: 18px 16px;
+        color: #111;
+        position: relative;
+        overflow: hidden;
+      }
 
-  body {
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    overscroll-behavior-y: none;
-  }
+      .m-card-label {
+        font-size: 12px; font-weight: 800; letter-spacing: 0.4px;
+        color: rgba(20,20,20,0.75); text-shadow: 1px 1px 0 rgba(255,255,255,0.65);
+        margin-bottom: 11px; text-transform: lowercase;
+      }
 
-  /* Convert mobile root from absolute scroll box -> normal flow */
-  #mobile-root {
-    position: relative !important;
-    inset: auto !important;
-    overflow: visible !important;
-
-    /* fixed player space + iPhone safe area */
-    padding: 16px 14px calc(140px + env(safe-area-inset-bottom)) !important;
-  }
-
-  /* Make cards breathe a bit more */
-  .m-card { padding: 18px 16px; }
-  .m-badges-row { gap: 10px; }
-}
-
-/* Smaller phones: reduce columns so nothing smashes together */
-@media (max-width: 420px) {
-  .m-links-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 10px 8px;
-  }
-
-  .m-music-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  .m-gallery-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-/* Optional: calmer for people who prefer reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .m-gallery-btn,
-  .about-morepics-btn { animation: none !important; }
-}
-
-      /* --- WELCOME --- */
+      /* WELCOME */
       .m-welcome-title { font-size: 16px; font-weight: 700; color:#111; margin-bottom:10px; line-height:1.25; }
-      .m-badges-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+      .m-badges-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
       .m-flag { width:58px; height:36px; border:1px solid rgba(0,0,0,0.28); border-radius:3px; overflow:hidden; box-shadow:0 2px 4px rgba(0,0,0,0.12); flex-shrink:0; }
       .m-flag img { width:100%; height:100%; object-fit:cover; display:block; }
       .m-pronouns { font-size:13px; font-weight:700; color:#111; }
       .m-pronouns .they { color:#c43a3a; }
       .m-furry { font-size:13px; font-weight:700; color:#111; }
       .m-sep { width:100%; height:1px; background:rgba(0,0,0,0.35); margin:10px 0; }
+
+      /* links grid: auto-fit so it never smashes */
       .m-links-label { font-size:12px; opacity:0.82; margin-bottom:8px; }
-      .m-links-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+      .m-links-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(74px, 1fr)); gap:10px 8px; }
       .m-link-item { display:flex; flex-direction:column; align-items:center; gap:4px; text-decoration:none; color:inherit; }
       .m-link-icon { width:44px; height:44px; display:grid; place-items:center; }
       .m-link-icon img { width:44px; height:44px; object-fit:contain; display:block; }
-      .m-link-label { font-size:9px; opacity:0.88; white-space:nowrap; }
+      .m-link-label { font-size:10px; opacity:0.88; white-space:nowrap; }
 
-      /* discord in mobile */
+      /* discord mobile */
       .m-discord { display:flex; align-items:center; gap:10px; margin-top:12px; padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,0.14); background:rgba(255,255,255,0.28); cursor:pointer; position:relative; overflow:hidden; width:100%; text-align:left; font-family:inherit; }
       .m-discord-pfp-ring { width:40px; height:40px; border-radius:999px; padding:2px; flex:0 0 auto; background:conic-gradient(rgba(120,200,255,0.95),rgba(255,255,255,0.85),rgba(180,120,255,0.85),rgba(120,200,255,0.95)); }
       .m-discord-pfp { width:100%; height:100%; border-radius:999px; display:block; object-fit:cover; border:1px solid rgba(0,0,0,0.18); }
@@ -266,7 +307,7 @@
       .m-discord-copied { position:absolute; top:8px; right:10px; font-size:10px; font-weight:900; opacity:0; transition:opacity 160ms ease; }
       .m-discord.copied .m-discord-copied { opacity:1; }
 
-      /* --- THINGS --- */
+      /* things */
       .m-things-cols { display:flex; gap:12px; align-items:flex-start; }
       .m-things-list { flex:1 1 auto; min-width:0; font-size:13px; line-height:1.55; }
       .m-things-list .sec-hdr { font-weight:700; margin-top:9px; margin-bottom:1px; font-size:13px; }
@@ -276,7 +317,7 @@
       .m-things-bf img { width:100px; height:100px; object-fit:contain; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.14)); }
       .m-things-bf .t1 { font-size:10px; font-weight:800; text-align:center; color:#111; line-height:1.3; text-shadow:0 0 6px rgba(255,255,255,0.90),0 0 14px rgba(255,255,255,0.70); }
 
-      /* --- ABOUT --- */
+      /* about */
       .m-about-inner { display:flex; gap:12px; align-items:flex-start; }
       .m-about-text { flex:1 1 auto; min-width:0; font-size:13px; line-height:1.5; }
       .m-about-text p { margin-bottom:7px; }
@@ -287,32 +328,47 @@
       .m-fursona-col .t1 { font-size:10px; font-weight:800; text-align:center; color:#111; text-shadow:0 0 6px rgba(255,255,255,0.90); }
       .m-fursona-col .t2 { font-size:9px; text-align:center; color:#111; opacity:0.78; }
 
-      .m-gallery-btn { display:block; width:100%; margin-top:12px; padding:11px; border:1px solid rgba(0,0,0,0.14); border-radius:10px; background:rgba(255,255,255,0.30); font-family:inherit; font-size:13px; font-weight:900; color:#111; cursor:pointer; text-align:center; animation:glowPulse 1.4s ease-in-out infinite; transition:transform 120ms ease; }
+      .m-gallery-btn {
+        display:block; width:100%; margin-top:12px; padding:11px;
+        border:1px solid rgba(0,0,0,0.14); border-radius:10px;
+        background:rgba(255,255,255,0.30);
+        font-family:inherit; font-size:13px; font-weight:900; color:#111;
+        cursor:pointer; text-align:center;
+        animation:glowPulse 1.4s ease-in-out infinite;
+        transition:transform 120ms ease;
+      }
       .m-gallery-btn:active { transform:scale(0.98); }
 
-      /* --- MUSIC --- */
-      .m-music-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+      /* gallery */
+      #m-gallery-section { display:none; }
+      #m-gallery-section.open { display:block !important; }
+      .m-gallery-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:8px; }
+      .m-g-card { display:flex; flex-direction:column; gap:4px; text-decoration:none; color:inherit; cursor:pointer; }
+      .m-g-thumb { position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; border-radius:8px; border:1px solid rgba(0,0,0,0.22); background:rgba(255,255,255,0.40); }
+      .m-g-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+      .m-g-title { font-size:10px; text-align:center; opacity:0.82; }
+
+      /* music */
+      .m-music-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:8px; }
       .m-album { display:flex; flex-direction:column; align-items:center; gap:4px; text-decoration:none; color:inherit; min-width:0; }
       .m-album-cover { width:100%; aspect-ratio:1/1; border:1px solid rgba(0,0,0,0.28); overflow:hidden; border-radius:5px; background:#d0d0d0; transition:transform 120ms ease; }
       .m-album-cover img { width:100%; height:100%; object-fit:cover; display:block; }
       .m-album:active .m-album-cover { transform:scale(0.96); }
       .m-album-name { font-size:9px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; opacity:0.88; }
 
-      /* --- GALLERY --- */
-      #m-gallery-section { display:none; }
-      #m-gallery-section.open { display:block !important; }
-      .m-gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-      .m-g-card { display:flex; flex-direction:column; gap:4px; text-decoration:none; color:inherit; cursor:pointer; }
-      .m-g-thumb { position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; border-radius:8px; border:1px solid rgba(0,0,0,0.22); background:rgba(255,255,255,0.40); }
-      .m-g-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-      .m-g-title { font-size:10px; text-align:center; opacity:0.82; }
-      .m-g-card:active .m-g-thumb { opacity:0.80; }
+      /* small phones: fewer columns */
+      @media (max-width: 420px) {
+        .m-gallery-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+        .m-music-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      }
+    }
 
-      /* modal on mobile */
-      .img-modal.open { padding:12px; }
+    @media (prefers-reduced-motion: reduce) {
+      .m-gallery-btn, .about-morepics-btn { animation: none !important; }
     }
   </style>
 </head>
+
 <body>
 
   <!-- INTRO -->
@@ -348,143 +404,164 @@
   </div>
 
   <!-- ====================================================
-       DESKTOP STAGE
+       DESKTOP
   ==================================================== -->
   <div id="desk">
     <div id="stage">
       <h1 class="site-title" data-type="frazyy.com" aria-label="frazyy.com"></h1>
 
-      <div class="window wide" id="win-welcome" data-x="140" data-y="190" data-skin="0.90" data-font="1.00" data-stretch-x="1.10" data-stretch-y="1.00">
-        <img class="skin" src="img/window4.png" alt=""><div class="handle"></div>
-        <div class="content"><div class="welcome-panel">
-          <div class="welcome-title">welcome to my website!! \(>~<)/♡</div>
-          <div class="welcome-top">
-            <div class="flags-pair">
-              <div class="flag-img"><img src="img/mlm.png" alt="mlm flag"></div>
-              <div class="flag-img"><img src="img/Demiboyflag.webp" alt="demiboy flag"></div>
-            </div>
-            <div class="welcome-pronouns">he/him <span class="they">they/them</span></div>
-            <div class="welcome-furry">i'm a furry</div>
-          </div>
-          <div class="welcome-sep"></div>
-          <div class="welcome-bottom">
-            <div class="w-links">
-              <div class="w-links-label">my links:</div>
-              <div class="w-links-row">
-                <a class="link-item" href="https://www.tiktok.com/@frazthecutie" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/tiktok.gif" alt="tiktok"></div><div class="link-label">my tiktok</div></a>
-                <a class="link-item" href="https://steamcommunity.com/id/frazbear123" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/steam.gif" alt="steam"></div><div class="link-label">my steam</div></a>
-                <a class="link-item" href="https://open.spotify.com/user/317gozuu2rm2iysfwogiumsufzjm?si=bb93aa604a85461d" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/spotify.gif" alt="spotify"></div><div class="link-label">my spotify</div></a>
-                <a class="link-item" href="https://x.com/frazyyfur" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/twitter.gif" alt="twitter"></div><div class="link-label">my x/twitter</div></a>
-                <a class="link-item" href="https://www.roblox.com/users/475388036/profile" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/roblox.gif" alt="roblox"></div><div class="link-label">my roblox</div></a>
+      <div class="window wide" id="win-welcome" data-label="welcome.exe" data-x="140" data-y="190" data-skin="0.90" data-font="1.00" data-stretch-x="1.10" data-stretch-y="1.00">
+        <img class="skin" src="img/window4.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="welcome-panel">
+            <div class="welcome-title">welcome to my website!! \(>~<)/♡</div>
+            <div class="welcome-top">
+              <div class="flags-pair">
+                <div class="flag-img"><img src="img/mlm.png" alt="mlm flag"></div>
+                <div class="flag-img"><img src="img/Demiboyflag.webp" alt="demiboy flag"></div>
               </div>
+              <div class="welcome-pronouns">he/him <span class="they">they/them</span></div>
+              <div class="welcome-furry">i'm a furry</div>
             </div>
-            <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
-              <div class="discord-pfp-ring"><img class="discord-pfp" id="discordPfp" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt=""></div>
-              <div class="discord-meta"><div class="discord-name" id="discordName">loading…</div><div class="discord-user" id="discordUser">@frazyyfur</div><div class="discord-activity" id="discordActivity">loading activity…</div></div>
-              <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
-            </button>
+            <div class="welcome-sep"></div>
+            <div class="welcome-bottom">
+              <div class="w-links">
+                <div class="w-links-label">my links:</div>
+                <div class="w-links-row">
+                  <a class="link-item" href="https://www.tiktok.com/@frazthecutie" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/tiktok.gif" alt="tiktok"></div><div class="link-label">my tiktok</div></a>
+                  <a class="link-item" href="https://steamcommunity.com/id/frazbear123" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/steam.gif" alt="steam"></div><div class="link-label">my steam</div></a>
+                  <a class="link-item" href="https://open.spotify.com/user/317gozuu2rm2iysfwogiumsufzjm?si=bb93aa604a85461d" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/spotify.gif" alt="spotify"></div><div class="link-label">my spotify</div></a>
+                  <a class="link-item" href="https://x.com/frazyyfur" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/twitter.gif" alt="twitter"></div><div class="link-label">my x/twitter</div></a>
+                  <a class="link-item" href="https://www.roblox.com/users/475388036/profile" target="_blank" rel="noopener noreferrer"><div class="link-icon"><img src="img/roblox.gif" alt="roblox"></div><div class="link-label">my roblox</div></a>
+                </div>
+              </div>
+
+              <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
+                <div class="discord-pfp-ring"><img class="discord-pfp" id="discordPfp" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt=""></div>
+                <div class="discord-meta">
+                  <div class="discord-name" id="discordName">loading…</div>
+                  <div class="discord-user" id="discordUser">@frazyyfur</div>
+                  <div class="discord-activity" id="discordActivity">loading activity…</div>
+                </div>
+                <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
+              </button>
+            </div>
           </div>
-        </div></div>
+        </div>
       </div>
 
       <div class="window win1" id="win-music" data-label="music i like.exe" data-x="470" data-y="500" data-skin="0.90" data-font="1.00">
-        <img class="skin" src="img/window1.png" alt=""><div class="handle"></div>
-        <div class="content"><div class="music-title-row"></div><div class="music-grid">
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che2.png" alt="serve da ba$$"></div><div class="album-name">serve da ba$$</div></a></div>
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che3.png" alt="get n*ked"></div><div class="album-name">get n*ked</div></a></div>
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/slayr.png" alt="death by mp3"></div><div class="album-name">death by mp3</div></a></div>
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/jaydes.png" alt="tylenol"></div><div class="album-name">tylenol</div></a></div>
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/4pTeMPZunwlT9ZVaE9NvvO?si=1a3090b1d9fa4174" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/bladee.png" alt="king nothingg"></div><div class="album-name">king nothingg</div></a></div>
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/5abyhbZPOfEii6LTduwpx6?si=7dd6597e42d7485d" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/bunii.png" alt="medicine"></div><div class="album-name">medicine</div></a></div>
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/02ul0OpdRoGyBRxwzoxjp5?si=3f8e123c3a724d7c" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che1.png" alt="sos"></div><div class="album-name">sos</div></a></div>
-          <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/7bO7a1KrtmGNDIOy2u3siZ?si=cc1ada00b8434ec3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/carti.png" alt="fomdj"></div><div class="album-name">fomdj</div></a></div>
-        </div></div>
+        <img class="skin" src="img/window1.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="music-title-row"></div>
+          <div class="music-grid">
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che2.png" alt="serve da ba$$"></div><div class="album-name">serve da ba$$</div></a></div>
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che3.png" alt="get n*ked"></div><div class="album-name">get n*ked</div></a></div>
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/slayr.png" alt="death by mp3"></div><div class="album-name">death by mp3</div></a></div>
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/jaydes.png" alt="tylenol"></div><div class="album-name">tylenol</div></a></div>
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/4pTeMPZunwlT9ZVaE9NvvO?si=1a3090b1d9fa4174" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/bladee.png" alt="king nothingg"></div><div class="album-name">king nothingg</div></a></div>
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/5abyhbZPOfEii6LTduwpx6?si=7dd6597e42d7485d" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/bunii.png" alt="medicine"></div><div class="album-name">medicine</div></a></div>
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/02ul0OpdRoGyBRxwzoxjp5?si=3f8e123c3a724d7c" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che1.png" alt="sos"></div><div class="album-name">sos</div></a></div>
+            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/7bO7a1KrtmGNDIOy2u3siZ?si=cc1ada00b8434ec3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/carti.png" alt="fomdj"></div><div class="album-name">fomdj</div></a></div>
+          </div>
+        </div>
       </div>
 
       <div class="window std" id="win-things" data-label="things i like.exe" data-x="920" data-y="120" data-skin="0.90" data-font="1.18">
-        <img class="skin" src="img/window3.png" alt=""><div class="handle"></div>
-        <div class="content"><div class="things-body"><div class="things-scroll">
-          <div class="sec-hdr"><strong>♡ playing games!!</strong></div>
-          <div class="thing-item">&gt; counter strike 2</div><div class="thing-item">&gt; roblox</div><div class="thing-item">&gt; minecraft</div><div class="thing-item">&gt; terraria</div><div class="thing-item">&gt; vrchat</div><div class="thing-item">&gt; geometry dash</div><div class="thing-item">&gt; osu!</div><div class="thing-item">&gt; geoguessr</div>
-          <hr class="whr">
-          <div class="sec-hdr"><strong>♡ coding and game development</strong></div>
-          <div class="thing-item">&gt; roblox studio</div><div class="thing-item">&gt; unreal engine</div><div class="thing-item">&gt; unity</div><div class="thing-item">&gt; lua</div><div class="thing-item">&gt; c++</div><div class="thing-item">&gt; html</div><div class="thing-item">&gt; java</div>
-          <hr class="whr">
-          <div class="sec-hdr"><strong>♡ cats ^w^</strong></div>
-          <div class="sec-hdr"><strong>♡ listening to music</strong></div>
-          <hr class="whr">
-          <div class="sec-hdr"><strong>♡ MY BOYFRIENND &lt;333</strong></div>
+        <img class="skin" src="img/window3.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="things-body">
+            <div class="things-scroll">
+              <div class="sec-hdr"><strong>♡ playing games!!</strong></div>
+              <div class="thing-item">&gt; counter strike 2</div><div class="thing-item">&gt; roblox</div><div class="thing-item">&gt; minecraft</div><div class="thing-item">&gt; terraria</div><div class="thing-item">&gt; vrchat</div><div class="thing-item">&gt; geometry dash</div><div class="thing-item">&gt; osu!</div><div class="thing-item">&gt; geoguessr</div>
+              <hr class="whr">
+              <div class="sec-hdr"><strong>♡ coding and game development</strong></div>
+              <div class="thing-item">&gt; roblox studio</div><div class="thing-item">&gt; unreal engine</div><div class="thing-item">&gt; unity</div><div class="thing-item">&gt; lua</div><div class="thing-item">&gt; c++</div><div class="thing-item">&gt; html</div><div class="thing-item">&gt; java</div>
+              <hr class="whr">
+              <div class="sec-hdr"><strong>♡ cats ^w^</strong></div>
+              <div class="sec-hdr"><strong>♡ listening to music</strong></div>
+              <hr class="whr">
+              <div class="sec-hdr"><strong>♡ MY BOYFRIENND &lt;333</strong></div>
+            </div>
+            <img class="things-bf-big" src="img/bf1.png" alt="my boyfriend">
+            <div class="things-bf-badge"><div class="t1">my boyfriend btw &lt;3</div></div>
+          </div>
         </div>
-        <img class="things-bf-big" src="img/bf1.png" alt="my boyfriend">
-        <div class="things-bf-badge"><div class="t1">my boyfriend btw &lt;3</div></div>
-        </div></div>
       </div>
 
       <div class="window std" id="win-about" data-label="about me.exe" data-x="1500" data-y="120" data-skin="0.90" data-font="1.12">
-        <img class="skin" src="img/window3.png" alt=""><div class="handle"></div>
-        <div class="content"><div class="about-body">
-          <img class="about-fursona-big" src="img/frazyy.png" alt="my fursona lumi">
-          <div class="about-main">
-            <p>♡ hii im frazyy</p>
-            <p><strong>♡ im from estonia</strong><br><span class="lang-sm">i can speak 3 languages<br>(english, russian and estonian)</span></p>
-            <p><strong>♡ im a roblox game developer</strong></p>
-            <p><strong>♡ im a huge nerd i love coding and even school</strong></p>
-            <p><strong>♡ i have a fursuit</strong><br><span class="italic">check more pictures in<br>the frazy folder&lt;3</span></p>
-            <p><strong>♡ im into fashion!!!</strong><br><span class="italic">and im also a femboy probably</span></p>
+        <img class="skin" src="img/window3.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="about-body">
+            <img class="about-fursona-big" src="img/frazyy.png" alt="my fursona lumi">
+            <div class="about-main">
+              <p>♡ hii im frazyy</p>
+              <p><strong>♡ im from estonia</strong><br><span class="lang-sm">i can speak 3 languages<br>(english, russian and estonian)</span></p>
+              <p><strong>♡ im a roblox game developer</strong></p>
+              <p><strong>♡ im a huge nerd i love coding and even school</strong></p>
+              <p><strong>♡ i have a fursuit</strong><br><span class="italic">check more pictures in<br>the frazy folder&lt;3</span></p>
+              <p><strong>♡ im into fashion!!!</strong><br><span class="italic">and im also a femboy probably</span></p>
+            </div>
+            <button class="about-morepics-btn" id="openGalleryBtn" type="button">Click here<br><span>for more pictures :3</span></button>
+            <div class="about-fursona-badge"><div class="t1">my fursona btw &lt;3</div><div class="t2">his name is lumi</div></div>
           </div>
-          <button class="about-morepics-btn" id="openGalleryBtn" type="button">Click here<br><span>for more pictures :3</span></button>
-          <div class="about-fursona-badge"><div class="t1">my fursona btw &lt;3</div><div class="t2">his name is lumi</div></div>
-        </div></div>
+        </div>
       </div>
 
       <div class="window std closed" id="win-gallery" data-label="frazy folder.exe" data-x="1180" data-y="210" data-skin="0.90" data-font="1.00">
-        <img class="skin" src="img/window5.png" alt=""><div class="handle"></div>
+        <img class="skin" src="img/window5.png" alt="">
+        <div class="handle"></div>
         <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close gallery"></button>
-        <div class="content"><div class="gallery-wrap">
-          <div class="gallery-hint">click a picture to view it fullscreen ♡</div>
-          <div class="gallery-grid" id="galleryGrid">
-            <a class="g-card" href="img/frazyy.png"   data-title="pic 1"> <div class="g-thumb"><img src="img/frazyy.png"   alt="pic 1"  draggable="false"></div><div class="g-title">pic 1</div></a>
-            <a class="g-card" href="img/frazyy1.jpg"  data-title="pic 2"> <div class="g-thumb"><img src="img/frazyy1.jpg"  alt="pic 2"  draggable="false"></div><div class="g-title">pic 2</div></a>
-            <a class="g-card" href="img/frazyy2.png"  data-title="pic 3"> <div class="g-thumb"><img src="img/frazyy2.png"  alt="pic 3"  draggable="false"></div><div class="g-title">pic 3</div></a>
-            <a class="g-card" href="img/bf1.png"      data-title="pic 4"> <div class="g-thumb"><img src="img/bf1.png"      alt="pic 4"  draggable="false"></div><div class="g-title">pic 4</div></a>
-            <a class="g-card" href="img/frazyy3.jpg"  data-title="pic 5"> <div class="g-thumb"><img src="img/frazyy3.jpg"  alt="pic 5"  draggable="false"></div><div class="g-title">pic 5</div></a>
-            <a class="g-card" href="img/frazyy4.jpg"  data-title="pic 6"> <div class="g-thumb"><img src="img/frazyy4.jpg"  alt="pic 6"  draggable="false"></div><div class="g-title">pic 6</div></a>
-            <a class="g-card" href="img/frazyy5.png"  data-title="pic 7"> <div class="g-thumb"><img src="img/frazyy5.png"  alt="pic 7"  draggable="false"></div><div class="g-title">pic 7</div></a>
-            <a class="g-card" href="img/frazyy6.jpg"  data-title="pic 8"> <div class="g-thumb"><img src="img/frazyy6.jpg"  alt="pic 8"  draggable="false"></div><div class="g-title">pic 8</div></a>
-            <a class="g-card" href="img/frazyy7.png"  data-title="pic 9"> <div class="g-thumb"><img src="img/frazyy7.png"  alt="pic 9"  draggable="false"></div><div class="g-title">pic 9</div></a>
-            <a class="g-card" href="img/frazyy8.png"  data-title="pic 10"><div class="g-thumb"><img src="img/frazyy8.png"  alt="pic 10" draggable="false"></div><div class="g-title">pic 10</div></a>
-            <a class="g-card" href="img/frazyy9.png"  data-title="pic 11"><div class="g-thumb"><img src="img/frazyy9.png"  alt="pic 11" draggable="false"></div><div class="g-title">pic 11</div></a>
-            <a class="g-card" href="img/frazyy10.JPG" data-title="pic 12"><div class="g-thumb"><img src="img/frazyy10.JPG" alt="pic 12" draggable="false"></div><div class="g-title">pic 12</div></a>
-            <a class="g-card" href="img/frazyy11.jpg" data-title="pic 13"><div class="g-thumb"><img src="img/frazyy11.jpg" alt="pic 13" draggable="false"></div><div class="g-title">pic 13</div></a>
-            <a class="g-card" href="img/frazyy12.png" data-title="pic 14"><div class="g-thumb"><img src="img/frazyy12.png" alt="pic 14" draggable="false"></div><div class="g-title">pic 14</div></a>
-            <a class="g-card" href="img/frazyy13.JPG" data-title="pic 15"><div class="g-thumb"><img src="img/frazyy13.JPG" alt="pic 15" draggable="false"></div><div class="g-title">pic 15</div></a>
-            <a class="g-card" href="img/frazyy14.JPG" data-title="pic 16"><div class="g-thumb"><img src="img/frazyy14.JPG" alt="pic 16" draggable="false"></div><div class="g-title">pic 16</div></a>
-            <a class="g-card" href="img/frazyy15.jpg" data-title="pic 17"><div class="g-thumb"><img src="img/frazyy15.jpg" alt="pic 17" draggable="false"></div><div class="g-title">pic 17</div></a>
-            <a class="g-card" href="img/frazyy16.jpg" data-title="pic 18"><div class="g-thumb"><img src="img/frazyy16.jpg" alt="pic 18" draggable="false"></div><div class="g-title">pic 18</div></a>
-            <a class="g-card" href="img/frazyy17.jpg" data-title="pic 19"><div class="g-thumb"><img src="img/frazyy17.jpg" alt="pic 19" draggable="false"></div><div class="g-title">pic 19</div></a>
-            <a class="g-card" href="img/frazyy18.png" data-title="pic 20"><div class="g-thumb"><img src="img/frazyy18.png" alt="pic 20" draggable="false"></div><div class="g-title">pic 20</div></a>
-            <a class="g-card" href="img/frazyy19.png" data-title="pic 21"><div class="g-thumb"><img src="img/frazyy19.png" alt="pic 21" draggable="false"></div><div class="g-title">pic 21</div></a>
-            <a class="g-card" href="img/frazyy20.png" data-title="pic 22"><div class="g-thumb"><img src="img/frazyy20.png" alt="pic 22" draggable="false"></div><div class="g-title">pic 22</div></a>
-            <a class="g-card" href="img/frazyy21.png" data-title="pic 23"><div class="g-thumb"><img src="img/frazyy21.png" alt="pic 23" draggable="false"></div><div class="g-title">pic 23</div></a>
-            <a class="g-card" href="img/frazyy22.png" data-title="pic 24"><div class="g-thumb"><img src="img/frazyy22.png" alt="pic 24" draggable="false"></div><div class="g-title">pic 24</div></a>
-            <a class="g-card" href="img/frazyy23.jpg" data-title="pic 25"><div class="g-thumb"><img src="img/frazyy23.jpg" alt="pic 25" draggable="false"></div><div class="g-title">pic 25</div></a>
-            <a class="g-card" href="img/frazyy24.png" data-title="pic 26"><div class="g-thumb"><img src="img/frazyy24.png" alt="pic 26" draggable="false"></div><div class="g-title">pic 26</div></a>
-            <a class="g-card" href="img/frazyy25.jpg" data-title="pic 27"><div class="g-thumb"><img src="img/frazyy25.jpg" alt="pic 27" draggable="false"></div><div class="g-title">pic 27</div></a>
-            <a class="g-card" href="img/frazyy26.jpg" data-title="pic 28"><div class="g-thumb"><img src="img/frazyy26.jpg" alt="pic 28" draggable="false"></div><div class="g-title">pic 28</div></a>
+        <div class="content">
+          <div class="gallery-wrap">
+            <div class="gallery-hint">click a picture to view it fullscreen ♡</div>
+            <div class="gallery-grid" id="galleryGrid">
+              <a class="g-card" href="img/frazyy.png"   data-title="pic 1"><div class="g-thumb"><img src="img/frazyy.png" alt="pic 1" draggable="false"></div><div class="g-title">pic 1</div></a>
+              <a class="g-card" href="img/frazyy1.jpg"  data-title="pic 2"><div class="g-thumb"><img src="img/frazyy1.jpg" alt="pic 2" draggable="false"></div><div class="g-title">pic 2</div></a>
+              <a class="g-card" href="img/frazyy2.png"  data-title="pic 3"><div class="g-thumb"><img src="img/frazyy2.png" alt="pic 3" draggable="false"></div><div class="g-title">pic 3</div></a>
+              <a class="g-card" href="img/bf1.png"      data-title="pic 4"><div class="g-thumb"><img src="img/bf1.png" alt="pic 4" draggable="false"></div><div class="g-title">pic 4</div></a>
+              <a class="g-card" href="img/frazyy3.jpg"  data-title="pic 5"><div class="g-thumb"><img src="img/frazyy3.jpg" alt="pic 5" draggable="false"></div><div class="g-title">pic 5</div></a>
+              <a class="g-card" href="img/frazyy4.jpg"  data-title="pic 6"><div class="g-thumb"><img src="img/frazyy4.jpg" alt="pic 6" draggable="false"></div><div class="g-title">pic 6</div></a>
+              <a class="g-card" href="img/frazyy5.png"  data-title="pic 7"><div class="g-thumb"><img src="img/frazyy5.png" alt="pic 7" draggable="false"></div><div class="g-title">pic 7</div></a>
+              <a class="g-card" href="img/frazyy6.jpg"  data-title="pic 8"><div class="g-thumb"><img src="img/frazyy6.jpg" alt="pic 8" draggable="false"></div><div class="g-title">pic 8</div></a>
+              <a class="g-card" href="img/frazyy7.png"  data-title="pic 9"><div class="g-thumb"><img src="img/frazyy7.png" alt="pic 9" draggable="false"></div><div class="g-title">pic 9</div></a>
+              <a class="g-card" href="img/frazyy8.png"  data-title="pic 10"><div class="g-thumb"><img src="img/frazyy8.png" alt="pic 10" draggable="false"></div><div class="g-title">pic 10</div></a>
+              <a class="g-card" href="img/frazyy9.png"  data-title="pic 11"><div class="g-thumb"><img src="img/frazyy9.png" alt="pic 11" draggable="false"></div><div class="g-title">pic 11</div></a>
+              <a class="g-card" href="img/frazyy10.JPG" data-title="pic 12"><div class="g-thumb"><img src="img/frazyy10.JPG" alt="pic 12" draggable="false"></div><div class="g-title">pic 12</div></a>
+              <a class="g-card" href="img/frazyy11.jpg" data-title="pic 13"><div class="g-thumb"><img src="img/frazyy11.jpg" alt="pic 13" draggable="false"></div><div class="g-title">pic 13</div></a>
+              <a class="g-card" href="img/frazyy12.png" data-title="pic 14"><div class="g-thumb"><img src="img/frazyy12.png" alt="pic 14" draggable="false"></div><div class="g-title">pic 14</div></a>
+              <a class="g-card" href="img/frazyy13.JPG" data-title="pic 15"><div class="g-thumb"><img src="img/frazyy13.JPG" alt="pic 15" draggable="false"></div><div class="g-title">pic 15</div></a>
+              <a class="g-card" href="img/frazyy14.JPG" data-title="pic 16"><div class="g-thumb"><img src="img/frazyy14.JPG" alt="pic 16" draggable="false"></div><div class="g-title">pic 16</div></a>
+              <a class="g-card" href="img/frazyy15.jpg" data-title="pic 17"><div class="g-thumb"><img src="img/frazyy15.jpg" alt="pic 17" draggable="false"></div><div class="g-title">pic 17</div></a>
+              <a class="g-card" href="img/frazyy16.jpg" data-title="pic 18"><div class="g-thumb"><img src="img/frazyy16.jpg" alt="pic 18" draggable="false"></div><div class="g-title">pic 18</div></a>
+              <a class="g-card" href="img/frazyy17.jpg" data-title="pic 19"><div class="g-thumb"><img src="img/frazyy17.jpg" alt="pic 19" draggable="false"></div><div class="g-title">pic 19</div></a>
+              <a class="g-card" href="img/frazyy18.png" data-title="pic 20"><div class="g-thumb"><img src="img/frazyy18.png" alt="pic 20" draggable="false"></div><div class="g-title">pic 20</div></a>
+              <a class="g-card" href="img/frazyy19.png" data-title="pic 21"><div class="g-thumb"><img src="img/frazyy19.png" alt="pic 21" draggable="false"></div><div class="g-title">pic 21</div></a>
+              <a class="g-card" href="img/frazyy20.png" data-title="pic 22"><div class="g-thumb"><img src="img/frazyy20.png" alt="pic 22" draggable="false"></div><div class="g-title">pic 22</div></a>
+              <a class="g-card" href="img/frazyy21.png" data-title="pic 23"><div class="g-thumb"><img src="img/frazyy21.png" alt="pic 23" draggable="false"></div><div class="g-title">pic 23</div></a>
+              <a class="g-card" href="img/frazyy22.png" data-title="pic 24"><div class="g-thumb"><img src="img/frazyy22.png" alt="pic 24" draggable="false"></div><div class="g-title">pic 24</div></a>
+              <a class="g-card" href="img/frazyy23.jpg" data-title="pic 25"><div class="g-thumb"><img src="img/frazyy23.jpg" alt="pic 25" draggable="false"></div><div class="g-title">pic 25</div></a>
+              <a class="g-card" href="img/frazyy24.png" data-title="pic 26"><div class="g-thumb"><img src="img/frazyy24.png" alt="pic 26" draggable="false"></div><div class="g-title">pic 26</div></a>
+              <a class="g-card" href="img/frazyy25.jpg" data-title="pic 27"><div class="g-thumb"><img src="img/frazyy25.jpg" alt="pic 27" draggable="false"></div><div class="g-title">pic 27</div></a>
+              <a class="g-card" href="img/frazyy26.jpg" data-title="pic 28"><div class="g-thumb"><img src="img/frazyy26.jpg" alt="pic 28" draggable="false"></div><div class="g-title">pic 28</div></a>
+            </div>
           </div>
-        </div></div>
+        </div>
       </div>
+
     </div>
   </div>
 
   <!-- ====================================================
-       MOBILE ROOT
+       MOBILE
   ==================================================== -->
   <div id="mobile-root">
-
     <div class="m-title">frazyy.com_</div>
 
-    <!-- welcome -->
     <div class="m-card">
       <div class="m-card-label">welcome.exe</div>
       <div class="m-welcome-title">welcome to my website!! \(>~<)/♡</div>
@@ -503,6 +580,7 @@
         <a class="m-link-item" href="https://x.com/frazyyfur" target="_blank" rel="noopener noreferrer"><div class="m-link-icon"><img src="img/twitter.gif" alt="twitter"></div><div class="m-link-label">twitter</div></a>
         <a class="m-link-item" href="https://www.roblox.com/users/475388036/profile" target="_blank" rel="noopener noreferrer"><div class="m-link-icon"><img src="img/roblox.gif" alt="roblox"></div><div class="m-link-label">roblox</div></a>
       </div>
+
       <button class="m-discord" id="mDiscordCard" type="button" aria-label="Copy Discord username">
         <div class="m-discord-pfp-ring"><img class="m-discord-pfp" id="mDiscordPfp" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt=""></div>
         <div class="m-discord-meta">
@@ -514,7 +592,6 @@
       </button>
     </div>
 
-    <!-- things i like -->
     <div class="m-card">
       <div class="m-card-label">things i like.exe</div>
       <div class="m-things-cols">
@@ -528,10 +605,12 @@
           <div class="thing-item">&gt; geometry dash</div>
           <div class="thing-item">&gt; osu!</div>
           <div class="thing-item">&gt; geoguessr</div>
+
           <div class="sec-hdr" style="margin-top:8px"><strong>♡ coding</strong></div>
           <div class="thing-item">&gt; roblox studio</div>
           <div class="thing-item">&gt; unreal / unity</div>
           <div class="thing-item">&gt; lua, c++, html, java</div>
+
           <div class="sec-hdr" style="margin-top:8px"><strong>♡ cats ^w^</strong></div>
           <div class="sec-hdr"><strong>♡ listening to music</strong></div>
           <div class="sec-hdr"><strong>♡ MY BOYFRIENND &lt;333</strong></div>
@@ -543,7 +622,6 @@
       </div>
     </div>
 
-    <!-- about me -->
     <div class="m-card">
       <div class="m-card-label">about me.exe</div>
       <div class="m-about-inner">
@@ -564,22 +642,21 @@
       <button class="m-gallery-btn" id="mOpenGalleryBtn" type="button">♡ click for more pictures :3</button>
     </div>
 
-    <!-- gallery (toggled) -->
     <div class="m-card" id="m-gallery-section">
       <div class="m-card-label">frazy folder.exe</div>
       <div class="gallery-hint" style="margin-bottom:10px">tap a picture to view it fullscreen ♡</div>
       <div class="m-gallery-grid" id="mGalleryGrid">
-        <a class="m-g-card" href="img/frazyy.png"   data-title="pic 1"> <div class="m-g-thumb"><img src="img/frazyy.png"   alt="pic 1"  loading="lazy"></div><div class="m-g-title">pic 1</div></a>
-        <a class="m-g-card" href="img/frazyy1.jpg"  data-title="pic 2"> <div class="m-g-thumb"><img src="img/frazyy1.jpg"  alt="pic 2"  loading="lazy"></div><div class="m-g-title">pic 2</div></a>
-        <a class="m-g-card" href="img/frazyy2.png"  data-title="pic 3"> <div class="m-g-thumb"><img src="img/frazyy2.png"  alt="pic 3"  loading="lazy"></div><div class="m-g-title">pic 3</div></a>
-        <a class="m-g-card" href="img/bf1.png"      data-title="pic 4"> <div class="m-g-thumb"><img src="img/bf1.png"      alt="pic 4"  loading="lazy"></div><div class="m-g-title">pic 4</div></a>
-        <a class="m-g-card" href="img/frazyy3.jpg"  data-title="pic 5"> <div class="m-g-thumb"><img src="img/frazyy3.jpg"  alt="pic 5"  loading="lazy"></div><div class="m-g-title">pic 5</div></a>
-        <a class="m-g-card" href="img/frazyy4.jpg"  data-title="pic 6"> <div class="m-g-thumb"><img src="img/frazyy4.jpg"  alt="pic 6"  loading="lazy"></div><div class="m-g-title">pic 6</div></a>
-        <a class="m-g-card" href="img/frazyy5.png"  data-title="pic 7"> <div class="m-g-thumb"><img src="img/frazyy5.png"  alt="pic 7"  loading="lazy"></div><div class="m-g-title">pic 7</div></a>
-        <a class="m-g-card" href="img/frazyy6.jpg"  data-title="pic 8"> <div class="m-g-thumb"><img src="img/frazyy6.jpg"  alt="pic 8"  loading="lazy"></div><div class="m-g-title">pic 8</div></a>
-        <a class="m-g-card" href="img/frazyy7.png"  data-title="pic 9"> <div class="m-g-thumb"><img src="img/frazyy7.png"  alt="pic 9"  loading="lazy"></div><div class="m-g-title">pic 9</div></a>
-        <a class="m-g-card" href="img/frazyy8.png"  data-title="pic 10"><div class="m-g-thumb"><img src="img/frazyy8.png"  alt="pic 10" loading="lazy"></div><div class="m-g-title">pic 10</div></a>
-        <a class="m-g-card" href="img/frazyy9.png"  data-title="pic 11"><div class="m-g-thumb"><img src="img/frazyy9.png"  alt="pic 11" loading="lazy"></div><div class="m-g-title">pic 11</div></a>
+        <a class="m-g-card" href="img/frazyy.png" data-title="pic 1"><div class="m-g-thumb"><img src="img/frazyy.png" alt="pic 1" loading="lazy"></div><div class="m-g-title">pic 1</div></a>
+        <a class="m-g-card" href="img/frazyy1.jpg" data-title="pic 2"><div class="m-g-thumb"><img src="img/frazyy1.jpg" alt="pic 2" loading="lazy"></div><div class="m-g-title">pic 2</div></a>
+        <a class="m-g-card" href="img/frazyy2.png" data-title="pic 3"><div class="m-g-thumb"><img src="img/frazyy2.png" alt="pic 3" loading="lazy"></div><div class="m-g-title">pic 3</div></a>
+        <a class="m-g-card" href="img/bf1.png" data-title="pic 4"><div class="m-g-thumb"><img src="img/bf1.png" alt="pic 4" loading="lazy"></div><div class="m-g-title">pic 4</div></a>
+        <a class="m-g-card" href="img/frazyy3.jpg" data-title="pic 5"><div class="m-g-thumb"><img src="img/frazyy3.jpg" alt="pic 5" loading="lazy"></div><div class="m-g-title">pic 5</div></a>
+        <a class="m-g-card" href="img/frazyy4.jpg" data-title="pic 6"><div class="m-g-thumb"><img src="img/frazyy4.jpg" alt="pic 6" loading="lazy"></div><div class="m-g-title">pic 6</div></a>
+        <a class="m-g-card" href="img/frazyy5.png" data-title="pic 7"><div class="m-g-thumb"><img src="img/frazyy5.png" alt="pic 7" loading="lazy"></div><div class="m-g-title">pic 7</div></a>
+        <a class="m-g-card" href="img/frazyy6.jpg" data-title="pic 8"><div class="m-g-thumb"><img src="img/frazyy6.jpg" alt="pic 8" loading="lazy"></div><div class="m-g-title">pic 8</div></a>
+        <a class="m-g-card" href="img/frazyy7.png" data-title="pic 9"><div class="m-g-thumb"><img src="img/frazyy7.png" alt="pic 9" loading="lazy"></div><div class="m-g-title">pic 9</div></a>
+        <a class="m-g-card" href="img/frazyy8.png" data-title="pic 10"><div class="m-g-thumb"><img src="img/frazyy8.png" alt="pic 10" loading="lazy"></div><div class="m-g-title">pic 10</div></a>
+        <a class="m-g-card" href="img/frazyy9.png" data-title="pic 11"><div class="m-g-thumb"><img src="img/frazyy9.png" alt="pic 11" loading="lazy"></div><div class="m-g-title">pic 11</div></a>
         <a class="m-g-card" href="img/frazyy10.JPG" data-title="pic 12"><div class="m-g-thumb"><img src="img/frazyy10.JPG" alt="pic 12" loading="lazy"></div><div class="m-g-title">pic 12</div></a>
         <a class="m-g-card" href="img/frazyy11.jpg" data-title="pic 13"><div class="m-g-thumb"><img src="img/frazyy11.jpg" alt="pic 13" loading="lazy"></div><div class="m-g-title">pic 13</div></a>
         <a class="m-g-card" href="img/frazyy12.png" data-title="pic 14"><div class="m-g-thumb"><img src="img/frazyy12.png" alt="pic 14" loading="lazy"></div><div class="m-g-title">pic 14</div></a>
@@ -600,7 +677,6 @@
       </div>
     </div>
 
-    <!-- music -->
     <div class="m-card">
       <div class="m-card-label">music i like.exe</div>
       <div class="m-music-grid">
@@ -614,8 +690,7 @@
         <a class="m-album" href="https://open.spotify.com/track/7bO7a1KrtmGNDIOy2u3siZ?si=cc1ada00b8434ec3" target="_blank" rel="noopener noreferrer"><div class="m-album-cover"><img src="img/carti.png" alt="fomdj" loading="lazy"></div><div class="m-album-name">fomdj</div></a>
       </div>
     </div>
-
-  </div><!-- /mobile-root -->
+  </div>
 
   <!-- SHARED IMAGE MODAL -->
   <div id="imgModal" class="img-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="image preview">
@@ -627,68 +702,264 @@
   </div>
 
   <script>
-    /* STAGE SCALING */
-    const DESIGN_W=2048,DESIGN_H=799,MARGIN_X=110,MARGIN_Y=70,MAX_UPSCALE=1.28;
-    const stage=document.getElementById('stage');
-    function layoutStage(){const vw=window.innerWidth,vh=window.innerHeight;let s=Math.min(vw/DESIGN_W,vh/DESIGN_H);if(s>1){const f=Math.min((vw-MARGIN_X*2)/DESIGN_W,(vh-MARGIN_Y*2)/DESIGN_H);s=Math.min(MAX_UPSCALE,f);}else s=Math.min(1,s);s=Math.max(0.55,s);const sw=DESIGN_W*s,sh=DESIGN_H*s;const x=(vw>=sw+MARGIN_X*2)?MARGIN_X:Math.floor((vw-sw)/2);const y=(vh>=sh+MARGIN_Y*2)?MARGIN_Y:Math.floor((vh-sh)/2);stage.style.transform=`translate3d(${Math.round(x)}px,${Math.round(y)}px,0) scale(${s})`;}
-    window.addEventListener('resize',layoutStage);layoutStage();
+    // Detect mobile once (desktop stuff won't run on mobile)
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
-    /* AUTO-SIZE WINDOWS */
-    document.querySelectorAll('.window').forEach(win=>{const img=win.querySelector('img.skin');const ss=parseFloat(win.dataset.skin||'0.90'),fs=parseFloat(win.dataset.font||'1'),sx=parseFloat(win.dataset.stretchX||'1'),sy=parseFloat(win.dataset.stretchY||'1');win.style.setProperty('--s',ss);win.style.setProperty('--fs',fs);const apply=()=>{win.style.width=(img.naturalWidth*ss*sx)+'px';win.style.height=(img.naturalHeight*ss*sy)+'px';win.classList.add('ready');};if(img.complete&&img.naturalWidth)apply();else img.addEventListener('load',apply,{once:true});});
+    // Intro failsafe: if intro never hides, tap/Enter will always hide it
+    (function introFailsafe(){
+      const intro = document.getElementById('intro');
+      const center = document.getElementById('introCenter');
+      if (!intro) return;
 
-    /* DRAGGING */
-    let topZ=10,rafActive=false;const states=new Map();
-    function ensureState(el){if(!states.has(el)){const x=parseFloat(el.dataset.x||0),y=parseFloat(el.dataset.y||0);states.set(el,{x,y,tx:x,ty:y,dragging:false});el.style.transform=`translate3d(${x}px,${y}px,0)`;}return states.get(el);}
-    function startRAF(){if(rafActive)return;rafActive=true;const tick=()=>{let any=false;states.forEach((s,el)=>{const k=s.dragging?.62:.24;s.x+=(s.tx-s.x)*k;s.y+=(s.ty-s.y)*k;if(Math.abs(s.tx-s.x)<.05)s.x=s.tx;if(Math.abs(s.ty-s.y)<.05)s.y=s.ty;el.style.transform=`translate3d(${s.x}px,${s.y}px,0)`;if(s.dragging||s.x!==s.tx||s.y!==s.ty)any=true;});if(any)requestAnimationFrame(tick);else rafActive=false;};requestAnimationFrame(tick);}
-    function bringToFront(w){document.querySelectorAll('.window.is-front').forEach(x=>x.classList.remove('is-front'));w.classList.add('is-front');w.style.zIndex=(++topZ).toString();}
-    function vClamp(nx,ny,win,sr,ss){const w=win.offsetWidth||0,h=win.offsetHeight||0,P=40;return{x:Math.max((0-sr.left)/ss-P,Math.min((window.innerWidth-sr.left)/ss-w+P,nx)),y:Math.max((0-sr.top)/ss-P,Math.min((window.innerHeight-sr.top)/ss-h+P,ny))};}
-    document.querySelectorAll('.window').forEach(win=>{const handle=win.querySelector('.handle'),s=ensureState(win);win.addEventListener('pointerdown',()=>bringToFront(win),true);handle.addEventListener('pointerdown',e=>{bringToFront(win);s.dragging=true;const sr=stage.getBoundingClientRect(),ss=sr.width/DESIGN_W,spx=(e.clientX-sr.left)/ss,spy=(e.clientY-sr.top)/ss,sx=s.tx,sy=s.ty;handle.setPointerCapture(e.pointerId);const onMove=ev=>{const px=(ev.clientX-sr.left)/ss,py=(ev.clientY-sr.top)/ss,c=vClamp(sx+(px-spx),sy+(py-spy),win,sr,ss);s.tx=c.x;s.ty=c.y;startRAF();};const onUp=()=>{s.dragging=false;handle.releasePointerCapture(e.pointerId);handle.removeEventListener('pointermove',onMove);handle.removeEventListener('pointerup',onUp);handle.removeEventListener('pointercancel',onUp);startRAF();};handle.addEventListener('pointermove',onMove);handle.addEventListener('pointerup',onUp);handle.addEventListener('pointercancel',onUp);e.preventDefault();startRAF();});});
+      function hideIntro() {
+        intro.classList.add('is-hidden');
+        intro.setAttribute('aria-hidden', 'true');
+      }
 
-    /* DESKTOP GALLERY */
-    const galleryWin=document.getElementById('win-gallery');
-    document.getElementById('openGalleryBtn').addEventListener('click',()=>{galleryWin.classList.remove('closed');galleryWin.classList.add('open');bringToFront(galleryWin);});
-    document.getElementById('closeGalleryBtn').addEventListener('click',e=>{e.stopPropagation();galleryWin.classList.remove('open');galleryWin.classList.add('closed');});
+      center?.addEventListener('click', hideIntro);
+      center?.addEventListener('keydown', (e) => { if (e.key === 'Enter') hideIntro(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Enter') hideIntro(); });
 
-    /* IMAGE MODAL */
-    const imgModal=document.getElementById('imgModal'),imgModalImg=document.getElementById('imgModalImg'),imgModalClose=document.getElementById('imgModalClose'),modalBackdrop=document.getElementById('modalBackdrop');
+      // If intro.js hides it, great. If not, user can always tap to enter.
+    })();
+
+    // Shared image modal (works desktop + mobile)
+    const imgModal = document.getElementById('imgModal');
+    const imgModalImg = document.getElementById('imgModalImg');
+    const imgModalClose = document.getElementById('imgModalClose');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+
     function openImgModal(src, alt) {
-  imgModalImg.src = src;
-  imgModalImg.alt = alt || 'image';
-  imgModal.classList.add('open');
-  imgModal.setAttribute('aria-hidden', 'false');
+      if (!imgModal || !imgModalImg) return;
+      imgModalImg.src = src;
+      imgModalImg.alt = alt || 'image';
+      imgModal.classList.add('open');
+      imgModal.setAttribute('aria-hidden', 'false');
 
-  // lock page scroll while modal is open
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.overflow = 'hidden';
+      // lock scroll behind modal
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
 
-  imgModalClose.focus();
-}
+      imgModalClose?.focus();
+    }
 
-function closeImgModal() {
-  imgModal.classList.remove('open');
-  imgModal.setAttribute('aria-hidden', 'true');
-  imgModalImg.src = '';
-  imgModalImg.alt = '';
+    function closeImgModal() {
+      if (!imgModal || !imgModalImg) return;
+      imgModal.classList.remove('open');
+      imgModal.setAttribute('aria-hidden', 'true');
+      imgModalImg.src = '';
+      imgModalImg.alt = '';
 
-  // restore scroll
-  document.documentElement.style.overflow = '';
-  document.body.style.overflow = '';
-}
-    imgModalClose.addEventListener('click',closeImgModal);
-    modalBackdrop.addEventListener('click',closeImgModal);
-    window.addEventListener('keydown',e=>{if(e.key==='Escape'&&imgModal.classList.contains('open'))closeImgModal();});
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    }
 
-    document.getElementById('galleryGrid').addEventListener('click',e=>{const c=e.target.closest('a.g-card');if(!c)return;e.preventDefault();const src=c.getAttribute('href'),t=c.dataset.title||'picture';if(src)openImgModal(src,t);});
-    document.getElementById('mGalleryGrid').addEventListener('click',e=>{const c=e.target.closest('a.m-g-card');if(!c)return;e.preventDefault();const src=c.getAttribute('href'),t=c.dataset.title||'picture';if(src)openImgModal(src,t);});
+    imgModalClose?.addEventListener('click', closeImgModal);
+    modalBackdrop?.addEventListener('click', closeImgModal);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && imgModal?.classList.contains('open')) closeImgModal();
+    });
 
-    /* MOBILE GALLERY TOGGLE */
-    const mGallSec=document.getElementById('m-gallery-section'),mOpenBtn=document.getElementById('mOpenGalleryBtn');
-    mOpenBtn.addEventListener('click',()=>{const open=mGallSec.classList.toggle('open');mOpenBtn.textContent=open?'♡ hide pictures':'♡ click for more pictures :3';if(open)setTimeout(()=>mGallSec.scrollIntoView({behavior:'smooth',block:'start'}),60);});
+    // Mobile gallery toggle
+    (function mobileGallery(){
+      const mGallSec = document.getElementById('m-gallery-section');
+      const mOpenBtn = document.getElementById('mOpenGalleryBtn');
+      if (!mGallSec || !mOpenBtn) return;
 
-    /* MOBILE DISCORD COPY */
-    document.getElementById('mDiscordCard')?.addEventListener('click',()=>{navigator.clipboard?.writeText('frazyyfur').catch(()=>{});const card=document.getElementById('mDiscordCard');card.classList.add('copied');setTimeout(()=>card.classList.remove('copied'),1600);});
+      mOpenBtn.addEventListener('click', () => {
+        const open = mGallSec.classList.toggle('open');
+        mOpenBtn.textContent = open ? '♡ hide pictures' : '♡ click for more pictures :3';
+        if (open) setTimeout(() => mGallSec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+      });
+    })();
+
+    // Click-to-open modal on both galleries
+    document.getElementById('galleryGrid')?.addEventListener('click', (e) => {
+      const c = e.target.closest('a.g-card');
+      if (!c) return;
+      e.preventDefault();
+      openImgModal(c.getAttribute('href'), c.dataset.title || 'picture');
+    });
+
+    document.getElementById('mGalleryGrid')?.addEventListener('click', (e) => {
+      const c = e.target.closest('a.m-g-card');
+      if (!c) return;
+      e.preventDefault();
+      openImgModal(c.getAttribute('href'), c.dataset.title || 'picture');
+    });
+
+    // Mobile discord copy
+    document.getElementById('mDiscordCard')?.addEventListener('click', () => {
+      navigator.clipboard?.writeText('frazyyfur').catch(() => {});
+      const card = document.getElementById('mDiscordCard');
+      card.classList.add('copied');
+      setTimeout(() => card.classList.remove('copied'), 1600);
+    });
+
+    // Desktop-only behaviors
+    if (!isMobile) {
+      /* STAGE SCALING */
+      const DESIGN_W = 2048, DESIGN_H = 799, MARGIN_X = 110, MARGIN_Y = 70, MAX_UPSCALE = 1.28;
+      const stage = document.getElementById('stage');
+
+      function layoutStage() {
+        if (!stage) return;
+        const vw = window.innerWidth, vh = window.innerHeight;
+        let s = Math.min(vw / DESIGN_W, vh / DESIGN_H);
+
+        if (s > 1) {
+          const f = Math.min((vw - MARGIN_X * 2) / DESIGN_W, (vh - MARGIN_Y * 2) / DESIGN_H);
+          s = Math.min(MAX_UPSCALE, f);
+        } else {
+          s = Math.min(1, s);
+        }
+        s = Math.max(0.55, s);
+
+        const sw = DESIGN_W * s, sh = DESIGN_H * s;
+        const x = (vw >= sw + MARGIN_X * 2) ? MARGIN_X : Math.floor((vw - sw) / 2);
+        const y = (vh >= sh + MARGIN_Y * 2) ? MARGIN_Y : Math.floor((vh - sh) / 2);
+
+        stage.style.transform = `translate3d(${Math.round(x)}px,${Math.round(y)}px,0) scale(${s})`;
+      }
+
+      window.addEventListener('resize', layoutStage);
+      layoutStage();
+
+      /* AUTO-SIZE WINDOWS */
+      document.querySelectorAll('.window').forEach(win => {
+        const img = win.querySelector('img.skin');
+        const ss = parseFloat(win.dataset.skin || '0.90');
+        const fs = parseFloat(win.dataset.font || '1');
+        const sx = parseFloat(win.dataset.stretchX || '1');
+        const sy = parseFloat(win.dataset.stretchY || '1');
+
+        win.style.setProperty('--s', ss);
+        win.style.setProperty('--fs', fs);
+
+        const apply = () => {
+          if (!img || !img.naturalWidth) return;
+          win.style.width = (img.naturalWidth * ss * sx) + 'px';
+          win.style.height = (img.naturalHeight * ss * sy) + 'px';
+          win.classList.add('ready');
+        };
+
+        if (img?.complete && img.naturalWidth) apply();
+        else img?.addEventListener('load', apply, { once: true });
+
+        // If the image never loads, still show the fallback window
+        setTimeout(() => win.classList.add('ready'), 600);
+      });
+
+      /* DRAGGING */
+      let topZ = 10, rafActive = false;
+      const states = new Map();
+
+      function ensureState(el) {
+        if (!states.has(el)) {
+          const x = parseFloat(el.dataset.x || 0);
+          const y = parseFloat(el.dataset.y || 0);
+          states.set(el, { x, y, tx: x, ty: y, dragging: false });
+          el.style.transform = `translate3d(${x}px,${y}px,0)`;
+        }
+        return states.get(el);
+      }
+
+      function startRAF() {
+        if (rafActive) return;
+        rafActive = true;
+
+        const tick = () => {
+          let any = false;
+          states.forEach((s, el) => {
+            const k = s.dragging ? 0.62 : 0.24;
+            s.x += (s.tx - s.x) * k;
+            s.y += (s.ty - s.y) * k;
+            if (Math.abs(s.tx - s.x) < 0.05) s.x = s.tx;
+            if (Math.abs(s.ty - s.y) < 0.05) s.y = s.ty;
+            el.style.transform = `translate3d(${s.x}px,${s.y}px,0)`;
+            if (s.dragging || s.x !== s.tx || s.y !== s.ty) any = true;
+          });
+
+          if (any) requestAnimationFrame(tick);
+          else rafActive = false;
+        };
+        requestAnimationFrame(tick);
+      }
+
+      function bringToFront(w) {
+        document.querySelectorAll('.window.is-front').forEach(x => x.classList.remove('is-front'));
+        w.classList.add('is-front');
+        w.style.zIndex = (++topZ).toString();
+      }
+
+      function vClamp(nx, ny, win, sr, ss) {
+        const w = win.offsetWidth || 0, h = win.offsetHeight || 0, P = 40;
+        return {
+          x: Math.max((0 - sr.left) / ss - P, Math.min((window.innerWidth - sr.left) / ss - w + P, nx)),
+          y: Math.max((0 - sr.top) / ss - P, Math.min((window.innerHeight - sr.top) / ss - h + P, ny))
+        };
+      }
+
+      document.querySelectorAll('.window').forEach(win => {
+        const handle = win.querySelector('.handle');
+        const s = ensureState(win);
+
+        win.addEventListener('pointerdown', () => bringToFront(win), true);
+
+        handle?.addEventListener('pointerdown', e => {
+          bringToFront(win);
+          s.dragging = true;
+
+          const sr = stage.getBoundingClientRect();
+          const ss = sr.width / DESIGN_W || 1; // safety
+          const spx = (e.clientX - sr.left) / ss;
+          const spy = (e.clientY - sr.top) / ss;
+          const sx = s.tx, sy = s.ty;
+
+          handle.setPointerCapture(e.pointerId);
+
+          const onMove = ev => {
+            const px = (ev.clientX - sr.left) / ss;
+            const py = (ev.clientY - sr.top) / ss;
+            const c = vClamp(sx + (px - spx), sy + (py - spy), win, sr, ss);
+            s.tx = c.x;
+            s.ty = c.y;
+            startRAF();
+          };
+
+          const onUp = () => {
+            s.dragging = false;
+            try { handle.releasePointerCapture(e.pointerId); } catch {}
+            handle.removeEventListener('pointermove', onMove);
+            handle.removeEventListener('pointerup', onUp);
+            handle.removeEventListener('pointercancel', onUp);
+            startRAF();
+          };
+
+          handle.addEventListener('pointermove', onMove);
+          handle.addEventListener('pointerup', onUp);
+          handle.addEventListener('pointercancel', onUp);
+          e.preventDefault();
+          startRAF();
+        });
+      });
+
+      /* DESKTOP GALLERY OPEN/CLOSE */
+      const galleryWin = document.getElementById('win-gallery');
+      document.getElementById('openGalleryBtn')?.addEventListener('click', () => {
+        galleryWin?.classList.remove('closed');
+        galleryWin?.classList.add('open');
+        if (galleryWin) bringToFront(galleryWin);
+      });
+      document.getElementById('closeGalleryBtn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        galleryWin?.classList.remove('open');
+        galleryWin?.classList.add('closed');
+      });
+    }
   </script>
 
+  <!-- your existing scripts -->
   <script src="js/particles.js"    defer></script>
   <script src="js/sfx.js"          defer></script>
   <script src="js/typewriter.js"   defer></script>
