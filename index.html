@@ -1,1138 +1,810 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>frazyy.com</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>frazyy.com</title>
 
-<link rel="stylesheet" href="effects.css">
-<link rel="stylesheet" href="player.css">
-<link rel="stylesheet" href="intro.css">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap');
+  <link rel="stylesheet" href="css/effects.css">
+  <link rel="stylesheet" href="css/player.css">
+  <link rel="stylesheet" href="css/intro.css">
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; overflow: hidden; }
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-  body{
-    font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    background: #a8c8e8;
-    position: relative;
-    isolation: isolate;
-  }
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
 
-  /* Stage */
-  #desk { position:absolute; inset:0; overflow:hidden; z-index: 10; }
-  #stage{
-    position:absolute;
-    left:0; top:0;
-    width: 2048px;
-    height: 799px;
-    transform-origin: top left;
-    will-change: transform;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: geometricPrecision;
-  }
-  
-  /* Title */
-  .site-title{
-    position:absolute;
-    left: 130px;
-    top: 42px;
-    font-size: 96px;
-    font-weight: 700;
-    letter-spacing: 8px;
-    color: #141414;
-    text-shadow: 2px 2px 0 rgba(255,255,255,0.45);
-    user-select: none;
-    pointer-events: none;
-    white-space: nowrap;
-
-    /* typewriter layout */
-    display: inline-flex;
-    align-items: baseline;
-  }
-  .site-title .tw-text{ white-space: nowrap; }
-  .site-title .tw-cursor{
-    display:inline-block;
-    margin-left: 2px;
-    transform: translateY(2px);
-    animation: tw-blink 0.9s steps(1) infinite;
-  }
-  @keyframes tw-blink{ 0%,49%{opacity:1} 50%,100%{opacity:0} }
-
-  /* Window base */
-  .window{
-    position:absolute;
-    --s: 1;
-    --fs: 1;
-    transform: translate3d(0,0,0);
-    will-change: transform;
-    user-select: none;
-    filter: drop-shadow(0 12px 16px rgba(0,0,0,0.20));
-    visibility: hidden;
-
-    --label-x: 18;
-    --label-y: 8;
-    --label-fs: 12;
-  }
-  .window.ready{ visibility: visible; }
-
-  /* closed/open toggles (for gallery window) */
-  .window.closed{ opacity: 0; pointer-events: none; }
-  .window.open{ opacity: 1; pointer-events: auto; }
-  .window.ready{ transition: opacity 160ms ease; }
-
-  .skin{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    display:block;
-    pointer-events:none;
-    z-index: 0;
-  }
-
-  .handle{
-    position:absolute;
-    cursor: grab;
-    touch-action: none;
-    z-index: 3;
-  }
-  .handle:active{ cursor: grabbing; }
-
-  .content{
-    position:absolute;
-    z-index: 2;
-    overflow: hidden;
-    min-width: 0;
-    min-height: 0;
-    clip-path: inset(0 round calc(2px * var(--s)));
-    color:#222;
-  }
-
-  .std .content, .win1 .content, .wide .content{ padding: calc(3px * var(--s)); }
-
-  .content :where(p, div, span, a, button){
-    max-width: 100%;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  .scroll-soft{ overflow: auto; scrollbar-width: none; }
-  .scroll-soft::-webkit-scrollbar{ width: 0; height: 0; }
-
-  /* Safe Areas */
-  .std .handle{
-    top: calc(4px * var(--s));
-    left: calc(4px * var(--s));
-    right: calc(56px * var(--s));
-    height: calc(22px * var(--s));
-  }
-  .std .content{
-    top:    calc(40px * var(--s));
-    left:   calc(18px * var(--s));
-    right:  calc(18px * var(--s));
-    bottom: calc(18px * var(--s));
-  }
-
-  .win1 .handle{
-    top: calc(4px * var(--s));
-    left: calc(4px * var(--s));
-    right: calc(56px * var(--s));
-    height: calc(22px * var(--s));
-  }
-  .win1 .content{
-    top:    calc(38px * var(--s));
-    left:   calc(18px * var(--s));
-    right:  calc(18px * var(--s));
-    bottom: calc(18px * var(--s));
-  }
-
-  .wide .handle{
-    top: 0;
-    left: 0;
-    right: 0;
-    height: calc(22px * var(--s));
-  }
-  .wide .content{
-    top:    calc(30px * var(--s));
-    left:   calc(36px * var(--s));
-    right:  calc(36px * var(--s));
-    bottom: calc(24px * var(--s));
-  }
-
-  /* Window labels */
-  .window.win1{  --label-x: 30; --label-y: 23;  --label-fs: 14; }
-  .window.std{   --label-x: 30; --label-y: 23;  --label-fs: 14; }
-
-  .window::after{
-    content: attr(data-label);
-    position: absolute;
-    top:  calc(var(--label-y) * 1px * var(--s));
-    left: calc(var(--label-x) * 1px * var(--s));
-    font-size: calc(var(--label-fs) * 1px * var(--s));
-    font-weight: 800;
-    letter-spacing: 0.4px;
-    text-transform: lowercase;
-    color: rgba(20,20,20,0.90);
-    text-shadow:
-      1px 1px 0 rgba(255,255,255,0.65),
-      0 0 8px rgba(255,255,255,0.20);
-    pointer-events: none;
-    user-select: none;
-    white-space: nowrap;
-    z-index: 2;
-  }
-
-  /* Welcome */
-  .welcome-panel{
-    height: 100%;
-    display:flex;
-    flex-direction:column;
-    gap: 10px;
-    padding: 2px 2px;
-    min-width: 0;
-  }
-  .welcome-title{
-    font-size: 22px;
-    font-weight: 700;
-    color: #111;
-    line-height: 1.1;
-    white-space: nowrap;
-  }
-  .welcome-top{
-    display:flex;
-    align-items:center;
-    justify-content: space-between;
-    gap: 22px;
-    min-width: 0;
-  }
-  .flags-pair{ display:flex; gap:10px; align-items:center; flex-shrink:0; }
-
-  .flag-img{
-    width: 78px;
-    height: 48px;
-    border: 1px solid rgba(0,0,0,0.35);
-    border-radius: 2px;
-    overflow:hidden;
-    background: rgba(255,255,255,0.35);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.18);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .flag-img img{ width:100%; height:100%; object-fit: cover; display:block; }
-
-  .welcome-pronouns{
-    font-size: 22px;
-    line-height: 1.1;
-    color:#111;
-    white-space: nowrap;
-    min-width: 0;
-  }
-  .welcome-pronouns .they{ color: #c43a3a; }
-  .welcome-furry{
-    font-size: 22px;
-    line-height: 1.1;
-    color:#111;
-    white-space: nowrap;
-    min-width: 0;
-  }
-  .welcome-sep{
-    width: 100%;
-    height: 2px;
-    background: rgba(0,0,0,0.55);
-    opacity: 0.75;
-  }
-
-  .welcome-bottom{
-    display:flex;
-    align-items:flex-start;
-    gap: 18px;
-    min-width: 0;
-  }
-  .w-links-label{
-    font-size: 13px;
-    opacity: 0.95;
-    margin-top: 2px;
-    flex-shrink:0;
-    white-space: nowrap;
-  }
-  .w-links-row{
-    display:flex;
-    flex-wrap: nowrap;
-    gap: 26px;
-    align-items:flex-end;
-    min-width:0;
-  }
-
-  .link-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap: 6px;
-    text-decoration:none;
-    color: inherit;
-  }
-  .link-icon{
-    width: 70px;
-    height: 70px;
-    background: transparent;
-    border-radius: 50%;
-    display:grid;
-    place-items:center;
-    overflow: visible;
-  }
-  .link-icon > img,
-  .link-icon > svg{
-    width: 70px;
-    height: 70px;
-    object-fit: contain;
-    display:block;
-  }
-  .link-label{
-    font-size: 11px;
-    opacity: 0.95;
-    white-space:nowrap;
-  }
-
-  /* Music */
-  .music-title-row{
-    font-size: calc(13px * var(--fs));
-    font-weight: 700;
-    opacity: 0.75;
-    margin-bottom: 8px;
-  }
-  .music-grid{
-    display:grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-  .album-item{ display:flex; flex-direction:column; align-items:center; gap: 4px; min-width:0; }
-  .album-cover{
-    width: 100%;
-    aspect-ratio: 1/1;
-    border: 1px solid rgba(0,0,0,0.35);
-    background:#d0d0d0;
-    overflow:hidden;
-    display:flex; align-items:center; justify-content:center;
-    transition: transform 120ms ease, box-shadow 120ms ease;
-  }
-  .album-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .album-name{
-    width: 100%;
-    font-size: calc(10px * var(--fs));
-    text-align:center;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-
-  /* Clickable albums */
-  .album-link{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-    text-decoration:none;
-    color: inherit;
-    cursor:pointer;
-    min-width:0;
-  }
-  .album-link:hover .album-cover{
-    transform: translateY(-1px);
-    box-shadow: 0 6px 10px rgba(0,0,0,0.18);
-  }
-  .album-link:focus-visible{
-    outline: 2px solid rgba(0,0,0,0.55);
-    outline-offset: 3px;
-    border-radius: 6px;
-  }
-
-  /* =========================
-   THINGS (scroll + overlay image)
-   ========================= */
-.things-body{
-  height:100%;
-  font-size: calc(15px * var(--fs));
-  line-height: 1.32;
-
-  position: relative;     /* ✅ needed for absolute overlay */
-  overflow: hidden;       /* ✅ keep overlay inside window */
-  padding: 0;             /* moved to the scroll area */
-}
-
-/* scroll area */
-.things-scroll{
-  height: 100%;
-  overflow: auto;
-  scrollbar-width: none;
-  padding: 2px 6px;
-  position: relative;
-  z-index: 5;
-  /* ✅ make room so text doesn't go under the image */
-  padding-right: clamp(160px, 52%, 340px);
-}
-.things-scroll::-webkit-scrollbar{ width: 0; height: 0; }
-
-/* big “transparent” BF image (like fursona) */
-.things-bf-big{
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-
-  width: clamp(230px, 65%, 400px);
-  aspect-ratio: 1 / 1;
-  object-fit: contain;     /* ✅ important: no cropping */
-  background: transparent;
-  pointer-events: none;
-
-  z-index: 1;
-  filter: drop-shadow(0 8px 10px rgba(0,0,0,0.14));
-}
-
-
-.things-bf-badge{
-  position:absolute;
-  left: 230px;
-  bottom: 50px;
-  z-index: 4;
-  user-select:none;
-  pointer-events:none;
-}
-.things-bf-badge .t1{
-  font-weight: 900;
-  font-size: calc(14px * var(--fs));
-  line-height: 1.05;
-  color: #111;
-  text-shadow:
-    0 0 6px rgba(255,255,255,0.98),
-    0 0 14px rgba(255,255,255,0.92),
-    0 0 28px rgba(255,255,255,0.78),
-    0 0 48px rgba(255,255,255,0.62);
-}
-
-  /* =========================
-     ABOUT (FURSONA + BUTTON)
-     ========================= */
-  .about-body{
-    height:100%;
-    font-size: calc(15px * var(--fs));
-    line-height: 1.38;
-    padding: 2px 6px;
-
-    position: relative;
-    display:flex;
-    flex-direction:column;
-    min-height:0;
-    overflow:hidden;
-  }
-
-  /* main text above the fursona */
-  .about-main{
-    position: relative;
-    z-index: 2;
-    padding-right: clamp(160px, 52%, 340px);
-  }
-
-  .about-body p{ margin-bottom: 10px; }
-  .italic{ font-style: italic; font-size: calc(13px * var(--fs)); opacity:.9; }
-  .lang-sm{ font-size: calc(13px * var(--fs)); font-style: italic; opacity:.9; }
-
-  /* Big transparent fursona */
-  .about-fursona-big{
-    position:absolute;
-    right: -5px;
-    bottom: 20px;
-
-    width: clamp(340px, 80%, 540px);
-    aspect-ratio: 1 / 1;
-    object-fit: contain;
-    background: transparent;
-    pointer-events:none;
-
-    z-index: 1;
-    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.14));
-  }
-
-  /* glowing “my fursona” label (no box) */
-  .about-fursona-badge{
-    position:absolute;
-    left: 125px;
-    bottom: 32px;
-    z-index: 4;
-    user-select:none;
-    pointer-events:none;
-  }
-  .about-fursona-badge .t1{
-    font-weight: 900;
-    font-size: calc(18px * var(--fs));
-    line-height: 1.05;
-    color: #111;
-    text-shadow:
-      0 0 6px rgba(255,255,255,0.98),
-      0 0 14px rgba(255,255,255,0.92),
-      0 0 28px rgba(255,255,255,0.78),
-      0 0 48px rgba(255,255,255,0.62);
-  }
-  .about-fursona-badge .t2{
-    font-size: calc(15px * var(--fs));
-    line-height: 1.05;
-    margin-top: 2px;
-    color: #111;
-    text-shadow:
-      0 0 6px rgba(255,255,255,0.95),
-      0 0 14px rgba(255,255,255,0.80),
-      0 0 26px rgba(255,255,255,0.65);
-  }
-
-  /* ✅ TWO-LINE glowing pulsing text button */
-  .about-morepics-btn{
-    position:absolute;
-    left: 14px;
-    bottom: 100px;
-    z-index: 5;
-
-    border: 0;
-    background: transparent;
-    padding: 0;
-
-    font-family: inherit;
-    font-size: calc(14px * var(--fs));
-    font-weight: 900;
-    letter-spacing: 0.4px;
-    color: #111;
-    cursor: pointer;
-    text-align:left;
-
-    white-space: normal; /* ✅ allow <br> */
-    line-height: 1.05;
-
-    text-shadow:
-      0 0 6px rgba(255,255,255,0.95),
-      0 0 16px rgba(255,255,255,0.85),
-      0 0 30px rgba(255,255,255,0.65);
-
-    animation: glowPulse 1.2s ease-in-out infinite;
-  }
-  .about-morepics-btn span{
-    font-weight: 800;
-    opacity: 0.98;
-  }
-
-  .about-morepics-btn::before{
-    content:"";
-    position:absolute;
-    inset: -18px -22px;
-    pointer-events:none;
-    background:
-      radial-gradient(circle, rgba(255,255,255,0.90) 0 1px, transparent 2px) 0 0/16px 16px,
-      radial-gradient(circle, rgba(255,255,255,0.55) 0 1px, transparent 2px) 6px 8px/22px 22px,
-      radial-gradient(circle, rgba(255,255,255,0.35) 0 1px, transparent 2px) 12px 2px/26px 26px;
-    opacity: 0.55;
-    filter: blur(0.2px);
-    animation: sparkleDrift 1.6s linear infinite;
-  }
-
-  .about-morepics-btn:hover{ transform: translateY(-1px); }
-  .about-morepics-btn:active{ transform: translateY(0px); }
-  .about-morepics-btn:focus-visible{
-    outline: 2px solid rgba(0,0,0,0.55);
-    outline-offset: 4px;
-    border-radius: 6px;
-  }
-
-  @keyframes glowPulse{
-    0%,100%{
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.90),
-        0 0 16px rgba(255,255,255,0.75),
-        0 0 28px rgba(255,255,255,0.55);
-      opacity: 0.95;
+    body {
+      font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+                   Consolas, "Liberation Mono", "Courier New", monospace;
+      background: #a8c8e8;
+      position: relative;
+      isolation: isolate;
     }
-    50%{
-      text-shadow:
-        0 0 10px rgba(255,255,255,0.98),
-        0 0 24px rgba(255,255,255,0.90),
-        0 0 42px rgba(255,255,255,0.75);
-      opacity: 1;
+
+    /* ============================================================
+       STAGE
+    ============================================================ */
+    #desk  { position: absolute; inset: 0; overflow: hidden; z-index: 10; }
+    #stage {
+      position: absolute;
+      left: 0; top: 0;
+      width: 2048px;
+      height: 799px;
+      transform-origin: top left;
+      will-change: transform;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
     }
-  }
-  @keyframes sparkleDrift{
-    0%   { background-position: 0 0, 6px 8px, 12px 2px; }
-    100% { background-position: 18px 14px, 22px 26px, 30px 18px; }
-  }
-
-  /* =========================
-   GALLERY WINDOW (FIXED GRID + TITLE)
-   ========================= */
-.gallery-wrap{
-  height: 100%;
-  display:flex;
-  flex-direction:column;
-  gap: 8px;
-  min-height: 0;
-}
-
-.gallery-hint{
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.gallery-grid{
-  display:grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px 12px;
-  align-content: start;
-
-  overflow:auto;
-  min-height: 0;
-  padding: 2px 2px 4px;
-
-  scrollbar-width: none;
-}
-.gallery-grid::-webkit-scrollbar{ width: 0; height: 0; }
-
-/* ✅ Each tile is a clickable “card” like your music tiles */
-.g-card{
-  /* HARD OVERRIDES (fix stacking if global CSS is messing stuff up) */
-  position: static !important;
-  inset: auto !important;
-
-  display:flex;
-  flex-direction:column;
-  gap: 6px;
-  min-width: 0;
-
-  text-decoration:none;
-  color: inherit;
-}
-
-/* Square thumbnail */
-.g-thumb{
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-
-  overflow:hidden;
-  border-radius: 2px;
-
-  border: 1px solid rgba(0,0,0,0.35);
-  background: rgba(255,255,255,0.55);
-
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-
-/* ✅ Force the image to actually live INSIDE the thumb */
-.g-thumb img{
-  position: absolute !important; /* override any global stuff */
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  display: block !important;
-  pointer-events: none; /* clicking anywhere still clicks the link */
-  user-select: none;
-}
-
-/* Title under image (like your music labels) */
-.g-title{
-  font-size: 11px;
-  line-height: 1.05;
-  text-align: center;
-  opacity: 0.92;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Hover */
-.g-card:hover .g-thumb{
-  transform: translateY(-1px);
-  box-shadow: 0 6px 10px rgba(0,0,0,0.18);
-}
-
-.g-card:focus-visible{
-  outline: 2px solid rgba(0,0,0,0.55);
-  outline-offset: 3px;
-  border-radius: 6px;
-}
-  /* =========================
-   FULLSCREEN IMAGE MODAL (viewport-safe)
-   ========================= */
-:root{
-  --modalPad: 26px;    /* space from screen edges */
-  --modalMax: 760px;   /* max size of the popout */
-}
-
-.img-modal{
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  display: none;
-}
-
-.img-modal.open{
-  display: grid;
-  place-items: center;          /* ✅ true center */
-  padding: var(--modalPad);     /* ✅ prevents cutoff on 1080p */
-}
-
-.img-modal-backdrop{
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.22);
-  backdrop-filter: blur(10px) saturate(1.1);
-  -webkit-backdrop-filter: blur(10px) saturate(1.1);
-  animation: modalFade 160ms ease-out;
-}
-
-.img-modal-card{
-  position: relative;
-  isolation: isolate;
-  z-index: 1;
-
-  /* ✅ hard limits: never exceed viewport */
-  width: min(calc(100vw - (var(--modalPad) * 2)), var(--modalMax));
-  height: min(calc(100dvh - (var(--modalPad) * 2)), var(--modalMax));
-
-  /* fallback for browsers without dvh */
-  max-height: min(calc(100vh - (var(--modalPad) * 2)), var(--modalMax));
-
-  display: grid;
-  place-items: center;
-
-  padding: 0;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-
-  animation: goofyPop 420ms cubic-bezier(.15, 1.25, .25, 1);
-}
-
-.img-modal-img{
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 10px;
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 10px 16px rgba(0,0,0,0.20));
-}
-
-.img-modal-close{
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 10;
-
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.35);
-  background: rgba(0,0,0,0.22);
-
-  font: inherit;
-  font-weight: 900;
-  font-size: 14px;
-  letter-spacing: 0.4px;
-  text-transform: lowercase;
-
-  color: #fff;
-  cursor: pointer;
-
-  text-shadow:
-    0 0 6px rgba(255,255,255,0.9),
-    0 0 16px rgba(255,255,255,0.45);
-
-  box-shadow: 0 10px 18px rgba(0,0,0,0.22);
-  transition: transform 120ms ease, background 120ms ease;
-}
-.img-modal-close:hover{ transform: translateY(-1px) rotate(-2deg); background: rgba(0,0,0,0.30); }
-.img-modal-close:active{ transform: translateY(0px) rotate(0deg); }
-
-@keyframes modalFade{ from{opacity:0} to{opacity:1} }
-
-/* ✅ goofy but snappy bounce */
-@keyframes goofyPop{
-  0%   { transform: scale(0.45) rotate(-6deg); opacity: 0; }
-  45%  { transform: scale(1.22) rotate(3deg);  opacity: 1; }
-  65%  { transform: scale(0.92) rotate(-2deg); }
-  80%  { transform: scale(1.06) rotate(1deg);  }
-  92%  { transform: scale(0.99) rotate(-0.4deg); }
-  100% { transform: scale(1.00) rotate(0deg); }
-}
-/* ===== HARD RESET: welcome link buttons back to original ===== */
-#win-welcome .welcome-bottom{
-  display:flex !important;
-  align-items:flex-start !important;
-  gap:18px !important;
-  min-width:0 !important;
-}
-
-/* keep left links block from shrinking/squishing */
-#win-welcome .w-links{
-  display:flex !important;
-  flex-direction:column !important;
-  gap:10px !important;
-  min-width:0 !important;
-  margin-right:auto !important; /* pushes discord badge to the right */
-  flex: 0 0 auto !important;
-}
-
-#win-welcome .w-links-row{
-  display:flex !important;
-  flex-wrap:nowrap !important;
-  gap:26px !important;
-  align-items:flex-end !important;
-  min-width:0 !important;
-}
-
-/* lock each link tile sizing */
-#win-welcome .link-item{
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  gap:6px !important;
-  flex: 0 0 auto !important;
-  text-decoration:none !important;
-  color:#111 !important;
-}
-#win-welcome .link-item:visited{ color:#111 !important; }
-
-/* LOCK the icon circle size */
-#win-welcome .link-icon{
-  width:70px !important;
-  height:70px !important;
-  border-radius:50% !important;
-  display:grid !important;
-  place-items:center !important;
-  overflow:visible !important;
-  background:transparent !important;
-  transform:none !important;
-}
-#win-welcome .link-icon > img,
-#win-welcome .link-icon > svg{
-  width:70px !important;
-  height:70px !important;
-  display:block !important;
-  object-fit:contain !important;
-  transform:none !important;
-}
-
-/* lock label text */
-#win-welcome .w-links-label{
-  font-size:13px !important;
-  margin-top:2px !important;
-  white-space:nowrap !important;
-  color:#111 !important;
-}
-#win-welcome .link-label{
-  font-size:11px !important;
-  white-space:nowrap !important;
-  color:#111 !important;
-}
-/* =========================
-   DISCORD BADGE (WELCOME) — glass like music player + glow
-   paste at VERY BOTTOM of <style>
-   ========================= */
-
-/* keep welcome layout sane */
-#win-welcome .welcome-bottom{
-  display:flex !important;
-  align-items:flex-start !important;
-  gap:18px !important;
-  min-width:0 !important;
-}
-#win-welcome .w-links{
-  flex: 1 1 auto !important;
-  min-width:0 !important;
-}
-
-/* the badge itself */
-#win-welcome .discord-badge{
-  /* kill default button look */
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  border: 1px solid rgba(0,0,0,0.28) !important;
-  background: linear-gradient(180deg,
-    rgba(255,255,255,0.62),
-    rgba(255,255,255,0.26)
-  ) !important;
-
-  -webkit-backdrop-filter: blur(10px) saturate(1.08) !important;
-  backdrop-filter: blur(10px) saturate(1.08) !important;
-
-  border-radius: 14px !important;
-  padding: 10px 12px !important;
-
-  box-shadow:
-    0 10px 18px rgba(0,0,0,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.55) !important;
-
-  /* sizing */
-  flex: 0 0 320px !important;
-  width: 320px !important;
-  max-width: 320px !important;
-
-  /* layout */
-  position: relative !important;
-  display:flex !important;
-  align-items:center !important;
-  gap: 10px !important;
-
-  cursor:pointer !important;
-  user-select:none !important;
-  text-align:left !important;
-  color:#111 !important;
-
-  /* prevent any random global scaling */
-  transform: none !important;
-}
-
-/* glossy highlight */
-#win-welcome .discord-badge::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:14px;
-  pointer-events:none;
-  background: radial-gradient(circle at 28% 12%,
-    rgba(255,255,255,0.55),
-    transparent 58%
-  );
-  opacity: 0.9;
-}
-
-#win-welcome .discord-badge:hover{
-  transform: translateY(-1px) !important;
-}
-#win-welcome .discord-badge:active{
-  transform: translateY(0px) !important;
-}
-#win-welcome .discord-badge:focus-visible{
-  outline: 2px solid rgba(0,0,0,0.55) !important;
-  outline-offset: 3px !important;
-}
-
-/* avatar ring */
-#win-welcome .discord-pfp-ring{
-  width: 56px !important;
-  height: 56px !important;
-  border-radius: 999px !important;
-  padding: 3px !important;
-  flex: 0 0 auto !important;
-
-  background: conic-gradient(
-    rgba(120,200,255,0.95),
-    rgba(255,255,255,0.85),
-    rgba(180,120,255,0.85),
-    rgba(120,200,255,0.95)
-  ) !important;
-
-  display:block !important;
-}
-#win-welcome .discord-pfp{
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 999px !important;
-  object-fit: cover !important;
-  display:block !important;
-
-  background: rgba(255,255,255,0.35) !important;
-  border: 1px solid rgba(0,0,0,0.25) !important;
-}
-
-/* text stack */
-#win-welcome .discord-meta{
-  min-width:0 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  gap: 2px !important;
-}
-
-#win-welcome .discord-name{
-  font-weight: 900 !important;
-  font-size: 14px !important;
-  line-height: 1.05 !important;
-
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-
-  color:#111 !important;
-  text-shadow:
-    0 0 6px rgba(255,255,255,0.95),
-    0 0 14px rgba(255,255,255,0.65) !important;
-}
-
-#win-welcome .discord-user,
-#win-welcome .discord-activity{
-  font-size: 12px !important;
-  line-height: 1.05 !important;
-  opacity: 0.92 !important;
-
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-
-  color:#111 !important;
-  text-shadow:
-    0 0 6px rgba(255,255,255,0.85),
-    0 0 12px rgba(255,255,255,0.55) !important;
-}
-
-#win-welcome .discord-activity{ margin-top: 6px !important; }
-
-/* copied toast */
-#win-welcome .discord-copied{
-  position:absolute !important;
-  top: 8px !important;
-  right: 10px !important;
-
-  font-size: 11px !important;
-  font-weight: 900 !important;
-
-  opacity: 0 !important;
-  transform: translateY(-2px) !important;
-  transition: opacity 160ms ease, transform 160ms ease !important;
-
-  color:#111 !important;
-  text-shadow: 0 0 10px rgba(255,255,255,0.95) !important;
-}
-#win-welcome .discord-badge.copied .discord-copied{
-  opacity: 1 !important;
-  transform: translateY(0px) !important;
-}
-/* === make the discord badge smaller (welcome) === */
-:root{
-  --badgeW: 250px;   /* change this */
-  --ringS: 46px;     /* change this */
-}
-
-#win-welcome .discord-badge{
-  width: var(--badgeW) !important;
-  max-width: var(--badgeW) !important;
-  flex: 0 0 var(--badgeW) !important;
-
-  padding: 8px 10px !important;
-  border-radius: 12px !important;
-}
-
-#win-welcome .discord-pfp-ring{
-  width: var(--ringS) !important;
-  height: var(--ringS) !important;
-  padding: 3px !important;
-}
-
-#win-welcome .discord-name{ font-size: 13px !important; }
-#win-welcome .discord-user,
-#win-welcome .discord-activity{ font-size: 11px !important; }
-#win-welcome .discord-activity{ margin-top: 4px !important; }
-
-#win-welcome .discord-copied{
-  font-size: 10px !important;
-  top: 7px !important;
-  right: 8px !important;
-}
-
-/* stops the ugly “discord profile picture” text when src is empty */
-#win-welcome #discordPfp[src=""],
-#win-welcome #discordPfp:not([src]){
-  opacity: 0 !important;
-}
-/* ===== Discord badge final sizing/position (WELCOME) ===== */
-#win-welcome .welcome-bottom{
-  align-items: center;              /* centers badge vertically vs links row */
-}
-
-#win-welcome .discord-badge{
-  width: 230px !important;          /* smaller */
-  max-width: 230px !important;
-  flex: 0 0 230px !important;
-
-  min-height: 86px !important;      /* taller */
-  padding: 12px 12px !important;
-
-  margin-right: 22px !important;    /* pulls it away from the right edge */
-  align-self: center !important;    /* keep it vertically centered */
-  transform: translateY(2px);       /* tiny nudge down (tweak/remove) */
-}
-
-/* smaller ring/avatar */
-#win-welcome .discord-pfp-ring{
-  width: 44px !important;
-  height: 44px !important;
-  padding: 3px !important;
-}
-
-/* keep text tight so it fits nicely */
-#win-welcome .discord-name{ font-size: 13px !important; }
-#win-welcome .discord-user,
-#win-welcome .discord-activity{ font-size: 11px !important; }
-#win-welcome .discord-activity{ margin-top: 4px !important; }
-</style>
+
+    /* ============================================================
+       SITE TITLE (typewriter)
+    ============================================================ */
+    .site-title {
+      position: absolute;
+      left: 130px;
+      top: 42px;
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      color: #141414;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.45);
+      user-select: none;
+      pointer-events: none;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: baseline;
+    }
+    .site-title .tw-text   { white-space: nowrap; }
+    .site-title .tw-cursor {
+      display: inline-block;
+      margin-left: 2px;
+      transform: translateY(2px);
+      animation: tw-blink 0.9s steps(1) infinite;
+    }
+    @keyframes tw-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+    /* ============================================================
+       WINDOW BASE
+    ============================================================ */
+    .window {
+      position: absolute;
+      --s: 1;
+      --fs: 1;
+      transform: translate3d(0,0,0);
+      will-change: transform;
+      user-select: none;
+      filter: drop-shadow(0 12px 16px rgba(0,0,0,0.20));
+      visibility: hidden;
+      --label-x: 18;
+      --label-y: 8;
+      --label-fs: 12;
+    }
+    .window.ready  { visibility: visible; }
+
+    /* open / closed (gallery) */
+    .window.closed { opacity: 0; pointer-events: none; }
+    .window.open   { opacity: 1; pointer-events: auto; }
+    .window.ready  { transition: opacity 160ms ease; }
+
+    .skin {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      display: block;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .handle {
+      position: absolute;
+      cursor: grab;
+      touch-action: none;
+      z-index: 3;
+    }
+    .handle:active { cursor: grabbing; }
+
+    .content {
+      position: absolute;
+      z-index: 2;
+      overflow: hidden;
+      min-width: 0; min-height: 0;
+      clip-path: inset(0 round calc(2px * var(--s)));
+      color: #222;
+    }
+
+    .std .content,
+    .win1 .content,
+    .wide .content { padding: calc(3px * var(--s)); }
+
+    .content :where(p,div,span,a,button) {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .scroll-soft { overflow: auto; scrollbar-width: none; }
+    .scroll-soft::-webkit-scrollbar { width: 0; height: 0; }
+
+    /* --- safe-area regions per skin type --- */
+    .std .handle, .win1 .handle {
+      top:   calc(4px  * var(--s));
+      left:  calc(4px  * var(--s));
+      right: calc(56px * var(--s));
+      height: calc(22px * var(--s));
+    }
+
+    .std .content {
+      top:    calc(40px * var(--s));
+      left:   calc(18px * var(--s));
+      right:  calc(18px * var(--s));
+      bottom: calc(18px * var(--s));
+    }
+    .win1 .content {
+      top:    calc(38px * var(--s));
+      left:   calc(18px * var(--s));
+      right:  calc(18px * var(--s));
+      bottom: calc(18px * var(--s));
+    }
+
+    .wide .handle {
+      top: 0; left: 0; right: 0;
+      height: calc(22px * var(--s));
+    }
+    .wide .content {
+      top:    calc(30px * var(--s));
+      left:   calc(36px * var(--s));
+      right:  calc(36px * var(--s));
+      bottom: calc(24px * var(--s));
+    }
+
+    /* --- window title labels --- */
+    .window.win1  { --label-x: 30; --label-y: 23; --label-fs: 14; }
+    .window.std   { --label-x: 30; --label-y: 23; --label-fs: 14; }
+
+    .window::after {
+      content: attr(data-label);
+      position: absolute;
+      top:  calc(var(--label-y)  * 1px * var(--s));
+      left: calc(var(--label-x)  * 1px * var(--s));
+      font-size: calc(var(--label-fs) * 1px * var(--s));
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: lowercase;
+      color: rgba(20,20,20,0.90);
+      text-shadow:
+        1px 1px 0 rgba(255,255,255,0.65),
+        0 0 8px rgba(255,255,255,0.20);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 4;
+    }
+
+    /* ============================================================
+       WELCOME WINDOW
+    ============================================================ */
+    .welcome-panel {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 2px;
+      min-width: 0;
+    }
+    .welcome-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+    .welcome-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      min-width: 0;
+    }
+    .flags-pair   { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+    .flag-img {
+      width: 78px; height: 48px;
+      border: 1px solid rgba(0,0,0,0.35);
+      border-radius: 2px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.35);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.18);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .flag-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .welcome-pronouns { font-size: 22px; line-height: 1.1; color: #111; white-space: nowrap; }
+    .welcome-pronouns .they { color: #c43a3a; }
+    .welcome-furry { font-size: 22px; line-height: 1.1; color: #111; white-space: nowrap; }
+    .welcome-sep { width: 100%; height: 2px; background: rgba(0,0,0,0.55); opacity: 0.75; }
+
+    .welcome-bottom { display: flex; gap: 18px; align-items: center; min-width: 0; }
+    .w-links        { flex: 1 1 auto; min-width: 0; }
+
+    .w-links-label { font-size: 13px; opacity: 0.95; margin-top: 2px; flex-shrink: 0; white-space: nowrap; }
+    .w-links-row {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 26px;
+      align-items: flex-end;
+      min-width: 0;
+    }
+
+    .link-item  { display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: inherit; }
+    .link-icon  {
+      width: 70px; height: 70px;
+      background: transparent;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      overflow: visible;
+    }
+    .link-icon > img,
+    .link-icon > svg { width: 70px; height: 70px; object-fit: contain; display: block; }
+    .link-label { font-size: 11px; opacity: 0.95; white-space: nowrap; }
+
+    /* ============================================================
+       DISCORD BADGE
+    ============================================================ */
+    :root {
+      --badgeW:    240px;
+      --badgeMinH: 88px;
+      --pfpS:      46px;
+      --glass1: rgba(255,255,255,0.55);
+      --glass2: rgba(255,255,255,0.18);
+      --edge:   rgba(0,0,0,0.25);
+      --shadow: rgba(0,0,0,0.18);
+      --glow1:  rgba(255,255,255,0.90);
+      --glow2:  rgba(255,255,255,0.55);
+    }
+
+    .discord-badge {
+      flex: 0 0 var(--badgeW);
+      width: var(--badgeW);
+      max-width: var(--badgeW);
+      min-height: var(--badgeMinH);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--edge);
+      background:
+        radial-gradient(140px 90px at 22% 18%, rgba(255,255,255,0.55), transparent 60%),
+        linear-gradient(180deg, var(--glass1), var(--glass2));
+      backdrop-filter: blur(10px) saturate(1.08);
+      -webkit-backdrop-filter: blur(10px) saturate(1.08);
+      box-shadow: 0 10px 18px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.55);
+      color: #111;
+      text-align: left;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: transform 120ms ease;
+    }
+    .discord-badge::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      pointer-events: none;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.18) 0 1px, transparent 2px) 0 0/18px 18px,
+        radial-gradient(circle, rgba(255,255,255,0.10) 0 1px, transparent 2px) 8px 10px/22px 22px;
+      opacity: 0.35;
+      filter: blur(0.2px);
+    }
+    .discord-badge:hover  { transform: translateY(-1px); }
+    .discord-badge:active { transform: translateY(0px); }
+    .discord-badge:focus-visible { outline: 2px solid rgba(0,0,0,0.55); outline-offset: 3px; }
+
+    .discord-pfp-ring {
+      width: var(--pfpS); height: var(--pfpS);
+      border-radius: 999px;
+      padding: 3px;
+      flex: 0 0 auto;
+      background: conic-gradient(
+        rgba(120,200,255,0.95),
+        rgba(255,255,255,0.85),
+        rgba(180,120,255,0.85),
+        rgba(120,200,255,0.95)
+      );
+    }
+    .discord-pfp {
+      width: 100%; height: 100%;
+      border-radius: 999px;
+      display: block;
+      object-fit: cover;
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(0,0,0,0.22);
+    }
+
+    .discord-meta { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .discord-name {
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1.05;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 0 8px var(--glow1), 0 0 18px var(--glow2);
+    }
+    .discord-user,
+    .discord-activity {
+      font-size: 11px;
+      line-height: 1.05;
+      opacity: 0.92;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 0 7px rgba(255,255,255,0.80), 0 0 14px rgba(255,255,255,0.45);
+    }
+    .discord-activity { margin-top: 4px; opacity: 0.85; }
+
+    .discord-copied {
+      position: absolute;
+      top: 8px; right: 10px;
+      font-size: 10px;
+      font-weight: 900;
+      opacity: 0;
+      transform: translateY(-2px);
+      transition: opacity 160ms ease, transform 160ms ease;
+      text-shadow: 0 0 10px rgba(255,255,255,0.90);
+    }
+    .discord-badge.copied .discord-copied { opacity: 1; transform: translateY(0); }
+
+    /* ============================================================
+       MUSIC WINDOW
+    ============================================================ */
+    .music-title-row {
+      font-size: calc(13px * var(--fs));
+      font-weight: 700;
+      opacity: 0.75;
+      margin-bottom: 8px;
+    }
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .album-item { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+    .album-cover {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border: 1px solid rgba(0,0,0,0.35);
+      background: #d0d0d0;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .album-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .album-name {
+      width: 100%;
+      font-size: calc(10px * var(--fs));
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .album-link {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      min-width: 0;
+    }
+    .album-link:hover .album-cover { transform: translateY(-1px); box-shadow: 0 6px 10px rgba(0,0,0,0.18); }
+    .album-link:focus-visible { outline: 2px solid rgba(0,0,0,0.55); outline-offset: 3px; border-radius: 6px; }
+
+    /* ============================================================
+       THINGS WINDOW
+    ============================================================ */
+    .things-body {
+      height: 100%;
+      font-size: calc(15px * var(--fs));
+      line-height: 1.32;
+      position: relative;
+      overflow: hidden;
+    }
+    .things-scroll {
+      height: 100%;
+      overflow: auto;
+      scrollbar-width: none;
+      padding: 2px 6px;
+      padding-right: clamp(160px, 52%, 340px);
+      position: relative;
+      z-index: 5;
+    }
+    .things-scroll::-webkit-scrollbar { width: 0; height: 0; }
+
+    .things-bf-big {
+      position: absolute;
+      right: 10px; bottom: 10px;
+      width: clamp(230px, 65%, 400px);
+      aspect-ratio: 1/1;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 1;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.14));
+    }
+    .things-bf-badge {
+      position: absolute;
+      left: 230px; bottom: 50px;
+      z-index: 4;
+      user-select: none;
+      pointer-events: none;
+    }
+    .things-bf-badge .t1 {
+      font-weight: 900;
+      font-size: calc(14px * var(--fs));
+      line-height: 1.05;
+      color: #111;
+      text-shadow:
+        0 0 6px rgba(255,255,255,0.98),
+        0 0 14px rgba(255,255,255,0.92),
+        0 0 28px rgba(255,255,255,0.78),
+        0 0 48px rgba(255,255,255,0.62);
+    }
+
+    /* ============================================================
+       ABOUT WINDOW
+    ============================================================ */
+    .about-body {
+      height: 100%;
+      font-size: calc(15px * var(--fs));
+      line-height: 1.38;
+      padding: 2px 6px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .about-main {
+      position: relative;
+      z-index: 2;
+      padding-right: clamp(160px, 52%, 340px);
+    }
+    .about-body p { margin-bottom: 10px; }
+    .italic  { font-style: italic; font-size: calc(13px * var(--fs)); opacity: .9; }
+    .lang-sm { font-size: calc(13px * var(--fs)); font-style: italic; opacity: .9; }
+
+    .about-fursona-big {
+      position: absolute;
+      right: -5px; bottom: 20px;
+      width: clamp(340px, 80%, 540px);
+      aspect-ratio: 1/1;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 1;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.14));
+    }
+    .about-fursona-badge {
+      position: absolute;
+      left: 125px; bottom: 32px;
+      z-index: 4;
+      user-select: none;
+      pointer-events: none;
+    }
+    .about-fursona-badge .t1 {
+      font-weight: 900;
+      font-size: calc(18px * var(--fs));
+      line-height: 1.05;
+      color: #111;
+      text-shadow:
+        0 0 6px rgba(255,255,255,0.98),
+        0 0 14px rgba(255,255,255,0.92),
+        0 0 28px rgba(255,255,255,0.78),
+        0 0 48px rgba(255,255,255,0.62);
+    }
+    .about-fursona-badge .t2 {
+      font-size: calc(15px * var(--fs));
+      line-height: 1.05;
+      margin-top: 2px;
+      color: #111;
+      text-shadow:
+        0 0 6px rgba(255,255,255,0.95),
+        0 0 14px rgba(255,255,255,0.80),
+        0 0 26px rgba(255,255,255,0.65);
+    }
+
+    /* glowing "more pics" button */
+    .about-morepics-btn {
+      position: absolute;
+      left: 14px; bottom: 100px;
+      z-index: 5;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      font-family: inherit;
+      font-size: calc(14px * var(--fs));
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      color: #111;
+      cursor: pointer;
+      text-align: left;
+      white-space: normal;
+      line-height: 1.05;
+      text-shadow:
+        0 0 6px rgba(255,255,255,0.95),
+        0 0 16px rgba(255,255,255,0.85),
+        0 0 30px rgba(255,255,255,0.65);
+      animation: glowPulse 1.2s ease-in-out infinite;
+      transition: transform 120ms ease;
+    }
+    .about-morepics-btn span { font-weight: 800; opacity: 0.98; }
+    .about-morepics-btn::before {
+      content: "";
+      position: absolute;
+      inset: -18px -22px;
+      pointer-events: none;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.90) 0 1px, transparent 2px) 0 0/16px 16px,
+        radial-gradient(circle, rgba(255,255,255,0.55) 0 1px, transparent 2px) 6px 8px/22px 22px,
+        radial-gradient(circle, rgba(255,255,255,0.35) 0 1px, transparent 2px) 12px 2px/26px 26px;
+      opacity: 0.55;
+      filter: blur(0.2px);
+      animation: sparkleDrift 1.6s linear infinite;
+    }
+    .about-morepics-btn:hover  { transform: translateY(-1px); }
+    .about-morepics-btn:active { transform: translateY(0px); }
+    .about-morepics-btn:focus-visible { outline: 2px solid rgba(0,0,0,0.55); outline-offset: 4px; border-radius: 6px; }
+
+    @keyframes glowPulse {
+      0%,100% {
+        text-shadow: 0 0 6px rgba(255,255,255,0.90), 0 0 16px rgba(255,255,255,0.75), 0 0 28px rgba(255,255,255,0.55);
+        opacity: 0.95;
+      }
+      50% {
+        text-shadow: 0 0 10px rgba(255,255,255,0.98), 0 0 24px rgba(255,255,255,0.90), 0 0 42px rgba(255,255,255,0.75);
+        opacity: 1;
+      }
+    }
+    @keyframes sparkleDrift {
+      0%   { background-position: 0 0,     6px 8px,   12px 2px; }
+      100% { background-position: 18px 14px, 22px 26px, 30px 18px; }
+    }
+
+    /* ============================================================
+       GALLERY WINDOW
+    ============================================================ */
+    .gallery-wrap {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+    .gallery-hint { font-size: 12px; opacity: 0.8; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px 12px;
+      align-content: start;
+      overflow: auto;
+      min-height: 0;
+      padding: 2px 2px 4px;
+      scrollbar-width: none;
+    }
+    .gallery-grid::-webkit-scrollbar { width: 0; height: 0; }
+
+    .g-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+    .g-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.35);
+      background: rgba(255,255,255,0.55);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .g-thumb img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+    }
+    .g-title {
+      font-size: 11px;
+      line-height: 1.05;
+      text-align: center;
+      opacity: 0.92;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .g-card:hover .g-thumb { transform: translateY(-1px); box-shadow: 0 6px 10px rgba(0,0,0,0.18); }
+    .g-card:focus-visible   { outline: 2px solid rgba(0,0,0,0.55); outline-offset: 3px; border-radius: 6px; }
+
+    /* close button hitbox for gallery (positioned over png X) */
+    .close-hit {
+      position: absolute;
+      top:   calc(4px  * var(--s));
+      right: calc(4px  * var(--s));
+      width: calc(28px * var(--s));
+      height: calc(28px * var(--s));
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    /* ============================================================
+       FULLSCREEN IMAGE MODAL
+    ============================================================ */
+    :root {
+      --modalPad: 26px;
+      --modalMax: 760px;
+    }
+
+    .img-modal { position: fixed; inset: 0; z-index: 2000; display: none; }
+    .img-modal.open {
+      display: grid;
+      place-items: center;
+      padding: var(--modalPad);
+    }
+
+    .img-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.22);
+      backdrop-filter: blur(10px) saturate(1.1);
+      -webkit-backdrop-filter: blur(10px) saturate(1.1);
+      animation: modalFade 160ms ease-out;
+    }
+
+    .img-modal-card {
+      position: relative;
+      isolation: isolate;
+      z-index: 1;
+      width:  min(calc(100vw - var(--modalPad) * 2), var(--modalMax));
+      height: min(calc(100dvh - var(--modalPad) * 2), var(--modalMax));
+      max-height: min(calc(100vh - var(--modalPad) * 2), var(--modalMax));
+      display: grid;
+      place-items: center;
+      background: transparent;
+      border: 0;
+      animation: goofyPop 420ms cubic-bezier(.15,1.25,.25,1);
+    }
+
+    .img-modal-img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.20));
+    }
+
+    .img-modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      z-index: 10;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(0,0,0,0.22);
+      font: inherit;
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: 0.4px;
+      text-transform: lowercase;
+      color: #fff;
+      cursor: pointer;
+      text-shadow: 0 0 6px rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.45);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.22);
+      transition: transform 120ms ease, background 120ms ease;
+    }
+    .img-modal-close:hover  { transform: translateY(-1px) rotate(-2deg); background: rgba(0,0,0,0.30); }
+    .img-modal-close:active { transform: translateY(0) rotate(0deg); }
+
+    @keyframes modalFade { from{opacity:0} to{opacity:1} }
+    @keyframes goofyPop {
+      0%   { transform: scale(0.45) rotate(-6deg); opacity: 0; }
+      45%  { transform: scale(1.22) rotate(3deg);  opacity: 1; }
+      65%  { transform: scale(0.92) rotate(-2deg); }
+      80%  { transform: scale(1.06) rotate(1deg); }
+      92%  { transform: scale(0.99) rotate(-0.4deg); }
+      100% { transform: scale(1.00) rotate(0deg); }
+    }
+  </style>
 </head>
 
 <body>
-  <div id="intro" class="intro" aria-hidden="false">
-  <canvas id="introFx" aria-hidden="true"></canvas>
-  <div class="intro-vhs" aria-hidden="true"></div>
 
-  <div id="introCenter" class="intro-center" role="button" tabindex="0" aria-label="Press Enter to enter">
-    <span class="intro-text">
-      <span id="introTyped"></span><span class="intro-cursor">_</span>
-    </span>
+  <!-- INTRO SCREEN -->
+  <div id="intro" class="intro" aria-hidden="false">
+    <canvas id="introFx" aria-hidden="true"></canvas>
+    <div class="intro-vhs" aria-hidden="true"></div>
+    <div id="introCenter" class="intro-center" role="button" tabindex="0" aria-label="Press Enter to enter">
+      <span class="intro-text">
+        <span id="introTyped"></span><span class="intro-cursor">_</span>
+      </span>
+    </div>
   </div>
-</div>
+
+  <!-- BACKGROUND LAYERS -->
   <div id="bg"></div>
   <div id="tint"></div>
   <canvas id="fx"></canvas>
   <div id="vhs"></div>
-<!-- ✅ FIXED FRUTIGER AERO MUSIC PLAYER (not draggable) -->
-<div id="faPlayer" class="fa-player" aria-label="music player">
-  <button class="fa-cover" id="faNextBtn" type="button" aria-label="next track">
-    <img id="faCoverImg" src="covers/default.png" alt="cover" draggable="false">
-  </button>
 
-  <div class="fa-mid">
-    <div class="fa-title" id="faTitle">no song loaded</div>
+  <!-- MUSIC PLAYER -->
+  <div id="faPlayer" class="fa-player" aria-label="music player">
+    <button class="fa-cover" id="faNextBtn" type="button" aria-label="next track">
+      <img id="faCoverImg" src="img/default.png" alt="album cover" draggable="false">
+    </button>
 
-    <input class="fa-seek" id="faSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="seek">
-
-    <div class="fa-time">
-      <span id="faCur">0:00</span>
-      <span id="faDur">0:00</span>
+    <div class="fa-mid">
+      <div class="fa-title" id="faTitle">no song loaded</div>
+      <input class="fa-seek" id="faSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="seek">
+      <div class="fa-time">
+        <span id="faCur">0:00</span>
+        <span id="faDur">0:00</span>
+      </div>
     </div>
-  </div>
-<div class="fa-volwrap" aria-label="volume">
-  <span class="fa-volicon" aria-hidden="true">🔊</span>
-  <input class="fa-vol" id="faVol" type="range" min="0" max="100" value="18" step="1" aria-label="volume">
-</div>
-  <button class="fa-btn fa-play" id="faToggle" type="button" aria-label="play/stop">▶</button>
 
-  <audio id="faAudio" preload="metadata"></audio>
-</div>
+    <div class="fa-volwrap" aria-label="volume">
+      <span class="fa-volicon" aria-hidden="true">🔊</span>
+      <input class="fa-vol" id="faVol" type="range" min="0" max="100" value="18" step="1" aria-label="volume">
+    </div>
+
+    <button class="fa-btn fa-play" id="faToggle" type="button" aria-label="play/stop">▶</button>
+    <audio id="faAudio" preload="metadata"></audio>
+  </div>
+
+  <!-- STAGE -->
   <div id="desk">
     <div id="stage">
+
       <h1 class="site-title" data-type="frazyy.com" aria-label="frazyy.com"></h1>
 
-      <!-- WELCOME -->
+      <!-- ==================== WELCOME ==================== -->
       <div class="window wide" id="win-welcome"
            data-x="140" data-y="190"
            data-skin="0.90" data-font="1.00"
            data-stretch-x="1.10" data-stretch-y="1.00">
-        <img class="skin" src="window4.png" alt="welcome window skin" />
+        <img class="skin" src="img/window4.png" alt="">
         <div class="handle"></div>
         <div class="content">
           <div class="welcome-panel">
+
             <div class="welcome-title">welcome to my website!! \(>~<)/♡</div>
 
             <div class="welcome-top">
               <div class="flags-pair">
-                <div class="flag-img" title="mlm flag"><img src="mlm.png" alt="mlm flag"></div>
-                <div class="flag-img" title="demiboy flag"><img src="Demiboyflag.webp" alt="demiboy flag"></div>
+                <div class="flag-img" title="mlm flag">
+                  <img src="img/mlm.png" alt="mlm flag">
+                </div>
+                <div class="flag-img" title="demiboy flag">
+                  <img src="img/Demiboyflag.webp" alt="demiboy flag">
+                </div>
               </div>
-
               <div class="welcome-pronouns">he/him <span class="they">they/them</span></div>
               <div class="welcome-furry">i'm a furry</div>
             </div>
@@ -1140,213 +812,198 @@
             <div class="welcome-sep"></div>
 
             <div class="welcome-bottom">
-  <div class="w-links">
-    <div class="w-links-label">my links:</div>
+              <div class="w-links">
+                <div class="w-links-label">my links:</div>
+                <div class="w-links-row">
+                  <a class="link-item" href="https://www.tiktok.com/@frazthecutie" target="_blank" rel="noopener noreferrer" title="tiktok">
+                    <div class="link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
+                    <div class="link-label">my tiktok</div>
+                  </a>
+                  <a class="link-item" href="https://steamcommunity.com/id/frazbear123" target="_blank" rel="noopener noreferrer" title="steam">
+                    <div class="link-icon"><img src="img/steam.gif" alt="steam"></div>
+                    <div class="link-label">my steam</div>
+                  </a>
+                  <a class="link-item" href="https://open.spotify.com/user/317gozuu2rm2iysfwogiumsufzjm?si=bb93aa604a85461d" target="_blank" rel="noopener noreferrer" title="spotify">
+                    <div class="link-icon"><img src="img/spotify.gif" alt="spotify"></div>
+                    <div class="link-label">my spotify</div>
+                  </a>
+                  <a class="link-item" href="https://x.com/frazyyfur" target="_blank" rel="noopener noreferrer" title="twitter">
+                    <div class="link-icon"><img src="img/twitter.gif" alt="twitter"></div>
+                    <div class="link-label">my x/twitter</div>
+                  </a>
+                  <a class="link-item" href="https://www.roblox.com/users/475388036/profile" target="_blank" rel="noopener noreferrer" title="roblox">
+                    <div class="link-icon"><img src="img/roblox.gif" alt="roblox"></div>
+                    <div class="link-label">my roblox</div>
+                  </a>
+                </div>
+              </div>
 
-    <div class="w-links-row">
-      <a class="link-item" href="https://www.tiktok.com/@frazthecutie" title="tiktok">
-        <div class="link-icon"><img src="tiktok.gif" alt="tiktok"></div>
-        <div class="link-label">my tiktok</div>
-      </a>
-
-      <a class="link-item" href="https://steamcommunity.com/id/frazbear123" title="steam">
-        <div class="link-icon"><img src="steam.gif" alt="steam"></div>
-        <div class="link-label">my steam</div>
-      </a>
-
-      <a class="link-item" href="https://open.spotify.com/user/317gozuu2rm2iysfwogiumsufzjm?si=bb93aa604a85461d" title="spotify">
-        <div class="link-icon"><img src="spotify.gif" alt="spotify"></div>
-        <div class="link-label">my spotify</div>
-      </a>
-
-      <a class="link-item" href="https://x.com/frazyyfur" title="twitter">
-        <div class="link-icon"><img src="twitter.gif" alt="twitter"></div>
-        <div class="link-label">my x/twitter</div>
-      </a>
-
-      <a class="link-item" href="https://www.roblox.com/users/475388036/profile" title="roblox">
-        <div class="link-icon"><img src="roblox.gif" alt="roblox"></div>
-        <div class="link-label">my roblox</div>
-      </a>
-    </div>
-  </div>
-
-  <!-- discord badge (new look) -->
-  <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
-    <div class="discord-pfp-ring">
-      <img class="discord-pfp" id="discordPfp" src="" alt="discord profile picture">
-    </div>
-
-    <div class="discord-meta">
-      <div class="discord-name" id="discordName">loading…</div>
-      <div class="discord-user" id="discordUser">@frazyyfur</div>
-      <div class="discord-activity" id="discordActivity">loading activity…</div>
-    </div>
-
-    <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
-  </button>
-</div>
-
+              <!-- Discord badge -->
+              <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
+                <div class="discord-pfp-ring">
+                  <img class="discord-pfp" id="discordPfp"
+                       src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
+                </div>
+                <div class="discord-meta">
+                  <div class="discord-name"     id="discordName">loading…</div>
+                  <div class="discord-user"     id="discordUser">@frazyyfur</div>
+                  <div class="discord-activity" id="discordActivity">loading activity…</div>
+                </div>
+                <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
+              </button>
+            </div>
 
           </div>
         </div>
       </div>
 
-      <!-- MUSIC -->
+      <!-- ==================== MUSIC ==================== -->
       <div class="window win1" id="win-music"
            data-label="music i like.exe"
            data-x="470" data-y="500"
            data-skin="0.90" data-font="1.00">
-        <img class="skin" src="window1.png" alt="music window skin" />
+        <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
         <div class="content">
           <div class="music-title-row"></div>
-
           <div class="music-grid">
+
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer" aria-label="Open serve da ba$$ on Spotify">
-                <div class="album-cover"><img src="che2.png" alt="serve da ba$$ cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer" aria-label="serve da ba$$ on Spotify">
+                <div class="album-cover"><img src="img/che2.png" alt="serve da ba$$"></div>
                 <div class="album-name">serve da ba$$</div>
               </a>
             </div>
 
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer" aria-label="Open get n*ked on Spotify">
-                <div class="album-cover"><img src="che3.png" alt="get n*ked cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer" aria-label="get n*ked on Spotify">
+                <div class="album-cover"><img src="img/che3.png" alt="get n*ked"></div>
                 <div class="album-name">get n*ked</div>
               </a>
             </div>
 
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca" target="_blank" rel="noopener noreferrer" aria-label="Open death by mp3 on Spotify">
-                <div class="album-cover"><img src="slayr.png" alt="death by mp3 cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca" target="_blank" rel="noopener noreferrer" aria-label="death by mp3 on Spotify">
+                <div class="album-cover"><img src="img/slayr.png" alt="death by mp3"></div>
                 <div class="album-name">death by mp3</div>
               </a>
             </div>
 
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0" target="_blank" rel="noopener noreferrer" aria-label="Open tylenol on Spotify">
-                <div class="album-cover"><img src="jaydes.png" alt="tylenol cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0" target="_blank" rel="noopener noreferrer" aria-label="tylenol on Spotify">
+                <div class="album-cover"><img src="img/jaydes.png" alt="tylenol"></div>
                 <div class="album-name">tylenol</div>
               </a>
             </div>
 
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/4pTeMPZunwlT9ZVaE9NvvO?si=1a3090b1d9fa4174" target="_blank" rel="noopener noreferrer" aria-label="Open king nothingg on Spotify">
-                <div class="album-cover"><img src="bladee.png" alt="king nothingg cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/4pTeMPZunwlT9ZVaE9NvvO?si=1a3090b1d9fa4174" target="_blank" rel="noopener noreferrer" aria-label="king nothingg on Spotify">
+                <div class="album-cover"><img src="img/bladee.png" alt="king nothingg"></div>
                 <div class="album-name">king nothingg</div>
               </a>
             </div>
 
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/5abyhbZPOfEii6LTduwpx6?si=7dd6597e42d7485d" target="_blank" rel="noopener noreferrer" aria-label="Open medicine on Spotify">
-                <div class="album-cover"><img src="bunii.png" alt="medicine cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/5abyhbZPOfEii6LTduwpx6?si=7dd6597e42d7485d" target="_blank" rel="noopener noreferrer" aria-label="medicine on Spotify">
+                <div class="album-cover"><img src="img/bunii.png" alt="medicine"></div>
                 <div class="album-name">medicine</div>
               </a>
             </div>
 
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/02ul0OpdRoGyBRxwzoxjp5?si=3f8e123c3a724d7c" target="_blank" rel="noopener noreferrer" aria-label="Open sos on Spotify">
-                <div class="album-cover"><img src="che1.png" alt="sos cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/02ul0OpdRoGyBRxwzoxjp5?si=3f8e123c3a724d7c" target="_blank" rel="noopener noreferrer" aria-label="sos on Spotify">
+                <div class="album-cover"><img src="img/che1.png" alt="sos"></div>
                 <div class="album-name">sos</div>
               </a>
             </div>
 
             <div class="album-item">
-              <a class="album-link" href="https://open.spotify.com/track/7bO7a1KrtmGNDIOy2u3siZ?si=cc1ada00b8434ec3" target="_blank" rel="noopener noreferrer" aria-label="Open fomdj on Spotify">
-                <div class="album-cover"><img src="carti.png" alt="fomdj cover"></div>
+              <a class="album-link" href="https://open.spotify.com/track/7bO7a1KrtmGNDIOy2u3siZ?si=cc1ada00b8434ec3" target="_blank" rel="noopener noreferrer" aria-label="fomdj on Spotify">
+                <div class="album-cover"><img src="img/carti.png" alt="fomdj"></div>
                 <div class="album-name">fomdj</div>
               </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== THINGS ==================== -->
+      <div class="window std" id="win-things"
+           data-label="things i like.exe"
+           data-x="920" data-y="120"
+           data-skin="0.90" data-font="1.18">
+        <img class="skin" src="img/window3.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="things-body">
+            <div class="things-scroll">
+              <div class="sec-hdr"><strong>♡ playing games!!</strong></div>
+              <div class="thing-item">&gt; counter strike 2</div>
+              <div class="thing-item">&gt; roblox</div>
+              <div class="thing-item">&gt; minecraft</div>
+              <div class="thing-item">&gt; terraria</div>
+              <div class="thing-item">&gt; vrchat</div>
+              <div class="thing-item">&gt; geometry dash</div>
+              <div class="thing-item">&gt; osu!</div>
+              <div class="thing-item">&gt; geoguessr</div>
+
+              <hr class="whr">
+
+              <div class="sec-hdr"><strong>♡ coding and game development</strong></div>
+              <div class="thing-item">&gt; roblox studio</div>
+              <div class="thing-item">&gt; unreal engine</div>
+              <div class="thing-item">&gt; unity</div>
+              <div class="thing-item">&gt; lua</div>
+              <div class="thing-item">&gt; c++</div>
+              <div class="thing-item">&gt; html</div>
+              <div class="thing-item">&gt; java</div>
+
+              <hr class="whr">
+
+              <div class="sec-hdr"><strong>♡ cats ^w^</strong></div>
+              <div class="sec-hdr"><strong>♡ listening to music</strong></div>
+
+              <hr class="whr">
+
+              <div class="sec-hdr"><strong>♡ MY BOYFRIENND &lt;333</strong></div>
+            </div>
+
+            <img class="things-bf-big" src="img/bf1.png" alt="my boyfriend">
+            <div class="things-bf-badge">
+              <div class="t1">my boyfriend btw &lt;3</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- THINGS -->
-      <div class="window std" id="win-things"
-           data-label="things i like.exe"
-           data-x="920" data-y="120"
-           data-skin="0.90" data-font="1.18">
-        <img class="skin" src="window3.png" alt="things window skin" />
-        <div class="handle"></div>
-        <div class="content">
-          <div class="things-body">
-  <div class="things-scroll">
-    <div class="sec-hdr"><strong>♡ playing games!!</strong></div>
-    <div class="thing-item">&gt; counter strike 2</div>
-    <div class="thing-item">&gt; roblox</div>
-    <div class="thing-item">&gt; minecraft</div>
-    <div class="thing-item">&gt; terraria</div>
-    <div class="thing-item">&gt; vrchat</div>
-    <div class="thing-item">&gt; geometry dash</div>
-    <div class="thing-item">&gt; osu!</div>
-    <div class="thing-item">&gt; geoguessr</div>
-
-    <hr class="whr">
-
-    <div class="sec-hdr"><strong>♡ coding and game development</strong></div>
-    <div class="thing-item">&gt; roblox studio</div>
-    <div class="thing-item">&gt; unreal engine</div>
-    <div class="thing-item">&gt; unity</div>
-    <div class="thing-item">&gt; lua</div>
-    <div class="thing-item">&gt; c++</div>
-    <div class="thing-item">&gt; html</div>
-    <div class="thing-item">&gt; java</div>
-
-    <hr class="whr">
-
-    <div class="sec-hdr"><strong>♡ cats ^w^</strong></div>
-    <div class="sec-hdr"><strong>♡ listening to music</strong></div>
-
-    <hr class="whr">
-
-    <div class="sec-hdr"><strong>♡ MY BOYFRIENND &lt;333</strong></div>
-  </div>
-
-  <!-- ✅ floating BF image (like fursona) -->
-  <img class="things-bf-big" src="bf1.png" alt="my boyfriend">
-
-  <!-- ✅ optional badge text -->
-  <div class="things-bf-badge">
-    <div class="t1">my boyfriend btw &lt;3</div>
-  </div>
-</div>
-        </div>
-      </div>
-
-      <!-- ABOUT -->
+      <!-- ==================== ABOUT ==================== -->
       <div class="window std" id="win-about"
            data-label="about me.exe"
            data-x="1500" data-y="120"
            data-skin="0.90" data-font="1.12">
-        <img class="skin" src="window3.png" alt="about window skin" />
+        <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
         <div class="content">
           <div class="about-body">
 
-            <img class="about-fursona-big" src="frazyy.png" alt="my fursona">
+            <img class="about-fursona-big" src="img/frazyy.png" alt="my fursona lumi">
 
             <div class="about-main">
               <p>♡ hii im frazyy</p>
-
               <p><strong>♡ im from estonia</strong><br>
                 <span class="lang-sm">i can speak 3 languages<br>(english, russian and estonian)</span>
               </p>
-
               <p><strong>♡ im a roblox game developer</strong></p>
-
               <p><strong>♡ im a huge nerd i love coding and even school</strong></p>
-
               <p><strong>♡ i have a fursuit</strong><br>
                 <span class="italic">check more pictures in<br>the frazy folder&lt;3</span>
               </p>
-
               <p><strong>♡ im into fashion!!!</strong><br>
                 <span class="italic">and im also a femboy probably</span>
               </p>
             </div>
 
-            <!-- ✅ two-line button -->
             <button class="about-morepics-btn" id="openGalleryBtn" type="button">
               Click here<br><span>for more pictures :3</span>
             </button>
@@ -1360,457 +1017,299 @@
         </div>
       </div>
 
-      <!-- ✅ GALLERY WINDOW (window2.png) -->
+      <!-- ==================== GALLERY ==================== -->
       <div class="window std closed" id="win-gallery"
            data-label="frazy folder.exe"
            data-x="1180" data-y="210"
            data-skin="0.90" data-font="1.00">
-        <img class="skin" src="window5.png" alt="gallery window skin" />
+        <img class="skin" src="img/window5.png" alt="">
         <div class="handle"></div>
-
-        <!-- close hitbox on png X area -->
-        <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close"></button>
+        <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close gallery"></button>
 
         <div class="content">
           <div class="gallery-wrap">
-            <div class="gallery-hint">
-              add pics: duplicate a <strong>.g-item</strong> and change the filename
-            </div>
+            <div class="gallery-hint">click a picture to view it fullscreen ♡</div>
 
             <div class="gallery-grid" id="galleryGrid">
-  <a class="g-card" href="frazyy.png" data-title="pic 1">
-    <div class="g-thumb"><img src="frazyy.png" alt="pic 1" draggable="false"></div>
-    <div class="g-title">pic 1</div>
-  </a>
-
-  <a class="g-card" href="frazyy1.jpg" data-title="pic 2">
-    <div class="g-thumb"><img src="frazyy1.jpg" alt="pic 2" draggable="false"></div>
-    <div class="g-title">pic 2</div>
-  </a>
-
-  <a class="g-card" href="frazyy2.png" data-title="pic 3">
-    <div class="g-thumb"><img src="frazyy2.png" alt="pic 3" draggable="false"></div>
-    <div class="g-title">pic 3</div>
-  </a>
-
-  <a class="g-card" href="bf1.png" data-title="pic 4">
-    <div class="g-thumb"><img src="bf1.png" alt="pic 4" draggable="false"></div>
-    <div class="g-title">pic 4</div>
-  </a>
-
-  <a class="g-card" href="frazyy3.jpg" data-title="pic 5">
-    <div class="g-thumb"><img src="frazyy3.jpg" alt="pic 5" draggable="false"></div>
-    <div class="g-title">pic 5</div>
-  </a>
-
-  <a class="g-card" href="frazyy4.jpg" data-title="pic 6">
-    <div class="g-thumb"><img src="frazyy4.jpg" alt="pic 6" draggable="false"></div>
-    <div class="g-title">pic 6</div>
-  </a>
-
-  <a class="g-card" href="frazyy5.png" data-title="pic 7">
-    <div class="g-thumb"><img src="frazyy5.png" alt="pic 7" draggable="false"></div>
-    <div class="g-title">pic 7</div>
-  </a>
-
-  <a class="g-card" href="frazyy6.jpg" data-title="pic 8">
-    <div class="g-thumb"><img src="frazyy6.jpg" alt="pic 8" draggable="false"></div>
-    <div class="g-title">pic 8</div>
-  </a>
-
-  <a class="g-card" href="frazyy7.png" data-title="pic 9">
-    <div class="g-thumb"><img src="frazyy7.png" alt="pic 9" draggable="false"></div>
-    <div class="g-title">pic 9</div>
-  </a>
-
-  <a class="g-card" href="frazyy8.png" data-title="pic 10">
-    <div class="g-thumb"><img src="frazyy8.png" alt="pic 10" draggable="false"></div>
-    <div class="g-title">pic 10</div>
-  </a>
-
-  <a class="g-card" href="frazyy9.png" data-title="pic 11">
-    <div class="g-thumb"><img src="frazyy9.png" alt="pic 11" draggable="false"></div>
-    <div class="g-title">pic 11</div>
-  </a>
-
-  <a class="g-card" href="frazyy10.JPG" data-title="pic 12">
-    <div class="g-thumb"><img src="frazyy10.JPG" alt="pic 12" draggable="false"></div>
-    <div class="g-title">pic 12</div>
-  </a>
-
-  <a class="g-card" href="frazyy11.jpg" data-title="pic 13">
-    <div class="g-thumb"><img src="frazyy11.jpg" alt="pic 13" draggable="false"></div>
-    <div class="g-title">pic 13</div>
-  </a>
-
-  <a class="g-card" href="frazyy12.png" data-title="pic 14">
-    <div class="g-thumb"><img src="frazyy12.png" alt="pic 14" draggable="false"></div>
-    <div class="g-title">pic 14</div>
-  </a>
-
-  <a class="g-card" href="frazyy13.JPG" data-title="pic 15">
-    <div class="g-thumb"><img src="frazyy13.JPG" alt="pic 15" draggable="false"></div>
-    <div class="g-title">pic 15</div>
-  </a>
-
-  <a class="g-card" href="frazyy14.JPG" data-title="pic 16">
-    <div class="g-thumb"><img src="frazyy14.JPG" alt="pic 16" draggable="false"></div>
-    <div class="g-title">pic 16</div>
-  </a>
-
-  <a class="g-card" href="frazyy15.jpg" data-title="pic 17">
-    <div class="g-thumb"><img src="frazyy15.jpg" alt="pic 17" draggable="false"></div>
-    <div class="g-title">pic 17</div>
-  </a>
-
-  <a class="g-card" href="frazyy16.jpg" data-title="pic 18">
-    <div class="g-thumb"><img src="frazyy16.jpg" alt="pic 18" draggable="false"></div>
-    <div class="g-title">pic 18</div>
-  </a>
-
-  <a class="g-card" href="frazyy17.jpg" data-title="pic 19">
-    <div class="g-thumb"><img src="frazyy17.jpg" alt="pic 19" draggable="false"></div>
-    <div class="g-title">pic 19</div>
-  </a>
-
-  <a class="g-card" href="frazyy18.png" data-title="pic 20">
-    <div class="g-thumb"><img src="frazyy18.png" alt="pic 20" draggable="false"></div>
-    <div class="g-title">pic 20</div>
-  </a>
-
-  <a class="g-card" href="frazyy19.png" data-title="pic 21">
-    <div class="g-thumb"><img src="frazyy19.png" alt="pic 21" draggable="false"></div>
-    <div class="g-title">pic 21</div>
-  </a>
-
-  <a class="g-card" href="frazyy20.png" data-title="pic 22">
-    <div class="g-thumb"><img src="frazyy20.png" alt="pic 22" draggable="false"></div>
-    <div class="g-title">pic 22</div>
-  </a>
-
-  <a class="g-card" href="frazyy21.png" data-title="pic 23">
-    <div class="g-thumb"><img src="frazyy21.png" alt="pic 23" draggable="false"></div>
-    <div class="g-title">pic 23</div>
-  </a>
-
-  <a class="g-card" href="frazyy22.png" data-title="pic 24">
-    <div class="g-thumb"><img src="frazyy22.png" alt="pic 24" draggable="false"></div>
-    <div class="g-title">pic 24</div>
-  </a>
-
-  <!-- ✅ fixed typo: frazyy23jpg -> frazyy23.jpg -->
-  <a class="g-card" href="frazyy23.jpg" data-title="pic 25">
-    <div class="g-thumb"><img src="frazyy23.jpg" alt="pic 25" draggable="false"></div>
-    <div class="g-title">pic 25</div>
-  </a>
-
-  <a class="g-card" href="frazyy24.png" data-title="pic 26">
-    <div class="g-thumb"><img src="frazyy24.png" alt="pic 26" draggable="false"></div>
-    <div class="g-title">pic 26</div>
-  </a>
-  <a class="g-card" href="frazyy25.jpg" data-title="pic 27">
-    <div class="g-thumb"><img src="frazyy25.jpg" alt="pic 27" draggable="false"></div>
-    <div class="g-title">pic 27</div>
-  </a>
-  <a class="g-card" href="frazyy26.jpg" data-title="pic 28">
-    <div class="g-thumb"><img src="frazyy26.jpg" alt="pic 28" draggable="false"></div>
-    <div class="g-title">pic 28</div>
-  </a>
-  
-</div>
+              <a class="g-card" href="img/frazyy.png"    data-title="pic 1">  <div class="g-thumb"><img src="img/frazyy.png"    alt="pic 1"  draggable="false"></div><div class="g-title">pic 1</div></a>
+              <a class="g-card" href="img/frazyy1.jpg"   data-title="pic 2">  <div class="g-thumb"><img src="img/frazyy1.jpg"   alt="pic 2"  draggable="false"></div><div class="g-title">pic 2</div></a>
+              <a class="g-card" href="img/frazyy2.png"   data-title="pic 3">  <div class="g-thumb"><img src="img/frazyy2.png"   alt="pic 3"  draggable="false"></div><div class="g-title">pic 3</div></a>
+              <a class="g-card" href="img/bf1.png"       data-title="pic 4">  <div class="g-thumb"><img src="img/bf1.png"       alt="pic 4"  draggable="false"></div><div class="g-title">pic 4</div></a>
+              <a class="g-card" href="img/frazyy3.jpg"   data-title="pic 5">  <div class="g-thumb"><img src="img/frazyy3.jpg"   alt="pic 5"  draggable="false"></div><div class="g-title">pic 5</div></a>
+              <a class="g-card" href="img/frazyy4.jpg"   data-title="pic 6">  <div class="g-thumb"><img src="img/frazyy4.jpg"   alt="pic 6"  draggable="false"></div><div class="g-title">pic 6</div></a>
+              <a class="g-card" href="img/frazyy5.png"   data-title="pic 7">  <div class="g-thumb"><img src="img/frazyy5.png"   alt="pic 7"  draggable="false"></div><div class="g-title">pic 7</div></a>
+              <a class="g-card" href="img/frazyy6.jpg"   data-title="pic 8">  <div class="g-thumb"><img src="img/frazyy6.jpg"   alt="pic 8"  draggable="false"></div><div class="g-title">pic 8</div></a>
+              <a class="g-card" href="img/frazyy7.png"   data-title="pic 9">  <div class="g-thumb"><img src="img/frazyy7.png"   alt="pic 9"  draggable="false"></div><div class="g-title">pic 9</div></a>
+              <a class="g-card" href="img/frazyy8.png"   data-title="pic 10"> <div class="g-thumb"><img src="img/frazyy8.png"   alt="pic 10" draggable="false"></div><div class="g-title">pic 10</div></a>
+              <a class="g-card" href="img/frazyy9.png"   data-title="pic 11"> <div class="g-thumb"><img src="img/frazyy9.png"   alt="pic 11" draggable="false"></div><div class="g-title">pic 11</div></a>
+              <a class="g-card" href="img/frazyy10.JPG"  data-title="pic 12"> <div class="g-thumb"><img src="img/frazyy10.JPG"  alt="pic 12" draggable="false"></div><div class="g-title">pic 12</div></a>
+              <a class="g-card" href="img/frazyy11.jpg"  data-title="pic 13"> <div class="g-thumb"><img src="img/frazyy11.jpg"  alt="pic 13" draggable="false"></div><div class="g-title">pic 13</div></a>
+              <a class="g-card" href="img/frazyy12.png"  data-title="pic 14"> <div class="g-thumb"><img src="img/frazyy12.png"  alt="pic 14" draggable="false"></div><div class="g-title">pic 14</div></a>
+              <a class="g-card" href="img/frazyy13.JPG"  data-title="pic 15"> <div class="g-thumb"><img src="img/frazyy13.JPG"  alt="pic 15" draggable="false"></div><div class="g-title">pic 15</div></a>
+              <a class="g-card" href="img/frazyy14.JPG"  data-title="pic 16"> <div class="g-thumb"><img src="img/frazyy14.JPG"  alt="pic 16" draggable="false"></div><div class="g-title">pic 16</div></a>
+              <a class="g-card" href="img/frazyy15.jpg"  data-title="pic 17"> <div class="g-thumb"><img src="img/frazyy15.jpg"  alt="pic 17" draggable="false"></div><div class="g-title">pic 17</div></a>
+              <a class="g-card" href="img/frazyy16.jpg"  data-title="pic 18"> <div class="g-thumb"><img src="img/frazyy16.jpg"  alt="pic 18" draggable="false"></div><div class="g-title">pic 18</div></a>
+              <a class="g-card" href="img/frazyy17.jpg"  data-title="pic 19"> <div class="g-thumb"><img src="img/frazyy17.jpg"  alt="pic 19" draggable="false"></div><div class="g-title">pic 19</div></a>
+              <a class="g-card" href="img/frazyy18.png"  data-title="pic 20"> <div class="g-thumb"><img src="img/frazyy18.png"  alt="pic 20" draggable="false"></div><div class="g-title">pic 20</div></a>
+              <a class="g-card" href="img/frazyy19.png"  data-title="pic 21"> <div class="g-thumb"><img src="img/frazyy19.png"  alt="pic 21" draggable="false"></div><div class="g-title">pic 21</div></a>
+              <a class="g-card" href="img/frazyy20.png"  data-title="pic 22"> <div class="g-thumb"><img src="img/frazyy20.png"  alt="pic 22" draggable="false"></div><div class="g-title">pic 22</div></a>
+              <a class="g-card" href="img/frazyy21.png"  data-title="pic 23"> <div class="g-thumb"><img src="img/frazyy21.png"  alt="pic 23" draggable="false"></div><div class="g-title">pic 23</div></a>
+              <a class="g-card" href="img/frazyy22.png"  data-title="pic 24"> <div class="g-thumb"><img src="img/frazyy22.png"  alt="pic 24" draggable="false"></div><div class="g-title">pic 24</div></a>
+              <a class="g-card" href="img/frazyy23.jpg"  data-title="pic 25"> <div class="g-thumb"><img src="img/frazyy23.jpg"  alt="pic 25" draggable="false"></div><div class="g-title">pic 25</div></a>
+              <a class="g-card" href="img/frazyy24.png"  data-title="pic 26"> <div class="g-thumb"><img src="img/frazyy24.png"  alt="pic 26" draggable="false"></div><div class="g-title">pic 26</div></a>
+              <a class="g-card" href="img/frazyy25.jpg"  data-title="pic 27"> <div class="g-thumb"><img src="img/frazyy25.jpg"  alt="pic 27" draggable="false"></div><div class="g-title">pic 27</div></a>
+              <a class="g-card" href="img/frazyy26.jpg"  data-title="pic 28"> <div class="g-thumb"><img src="img/frazyy26.jpg"  alt="pic 28" draggable="false"></div><div class="g-title">pic 28</div></a>
             </div>
           </div>
         </div>
       </div>
 
+    </div><!-- /stage -->
+  </div><!-- /desk -->
+
+  <!-- FULLSCREEN IMAGE MODAL -->
+  <div id="imgModal" class="img-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="image preview">
+    <div class="img-modal-backdrop" id="modalBackdrop"></div>
+    <div class="img-modal-card">
+      <img id="imgModalImg" class="img-modal-img" src="" alt="">
+      <button class="img-modal-close" id="imgModalClose" type="button">close</button>
     </div>
   </div>
 
-  <!-- ✅ FULLSCREEN IMAGE MODAL -->
-  <div id="imgModal" class="img-modal" aria-hidden="true">
-  <div class="img-modal-backdrop" data-close="1"></div>
+  <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+  <script>
+    /* ----------------------------------------------------------
+       STAGE SCALING
+    ---------------------------------------------------------- */
+    const DESIGN_W    = 2048;
+    const DESIGN_H    = 799;
+    const MARGIN_X    = 110;
+    const MARGIN_Y    = 70;
+    const MAX_UPSCALE = 1.28;
 
-  <div class="img-modal-card" role="dialog" aria-modal="true" aria-label="image preview">
-    <img id="imgModalImg" class="img-modal-img" src="" alt="">
-    <button class="img-modal-close" type="button" data-close="1">close</button>
-   </div>
-  </div>
+    const stage = document.getElementById('stage');
 
-<script>
-  const DESIGN_W = 2048;
-  const DESIGN_H = 799;
-  const SKIN_SCALE_DEFAULT = 0.90;
+    function layoutStage() {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-  const stage = document.getElementById('stage');
+      let scale = Math.min(vw / DESIGN_W, vh / DESIGN_H);
 
-  // Better stage scaling: looks right on 1080p AND 2K/4K
-  const MARGIN_X = 110;
-  const MARGIN_Y = 70;
-  const MAX_UPSCALE = 1.28;
+      if (scale > 1) {
+        const fitWithMargins = Math.min(
+          (vw - MARGIN_X * 2) / DESIGN_W,
+          (vh - MARGIN_Y * 2) / DESIGN_H
+        );
+        scale = Math.min(MAX_UPSCALE, fitWithMargins);
+      } else {
+        scale = Math.min(1, scale);
+      }
 
-  function layoutStage(){
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+      scale = Math.max(0.55, scale);
 
-    let scale = Math.min(vw / DESIGN_W, vh / DESIGN_H);
+      const scaledW = DESIGN_W * scale;
+      const scaledH = DESIGN_H * scale;
+      const x = (vw >= scaledW + MARGIN_X * 2) ? MARGIN_X : Math.floor((vw - scaledW) / 2);
+      const y = (vh >= scaledH + MARGIN_Y * 2) ? MARGIN_Y : Math.floor((vh - scaledH) / 2);
 
-    if (scale > 1) {
-      const fitWithMargins = Math.min(
-        (vw - MARGIN_X * 2) / DESIGN_W,
-        (vh - MARGIN_Y * 2) / DESIGN_H
-      );
-      scale = Math.min(MAX_UPSCALE, fitWithMargins);
-    } else {
-      scale = Math.min(1, scale);
+      stage.style.transform = `translate3d(${Math.round(x)}px,${Math.round(y)}px,0) scale(${scale})`;
     }
+    window.addEventListener('resize', layoutStage);
+    layoutStage();
 
-    scale = Math.max(0.55, scale);
+    /* ----------------------------------------------------------
+       AUTO-SIZE WINDOWS FROM SKIN PNG
+    ---------------------------------------------------------- */
+    document.querySelectorAll('.window').forEach(win => {
+      const img       = win.querySelector('img.skin');
+      const skinScale = parseFloat(win.dataset.skin     || '0.90');
+      const fontScale = parseFloat(win.dataset.font     || '1');
+      const stretchX  = parseFloat(win.dataset.stretchX || '1');
+      const stretchY  = parseFloat(win.dataset.stretchY || '1');
 
-    const scaledW = DESIGN_W * scale;
-    const scaledH = DESIGN_H * scale;
+      win.style.setProperty('--s',  skinScale);
+      win.style.setProperty('--fs', fontScale);
 
-    const x = (vw >= scaledW + MARGIN_X * 2)
-      ? MARGIN_X
-      : Math.floor((vw - scaledW) / 2);
-
-    const y = (vh >= scaledH + MARGIN_Y * 2)
-      ? MARGIN_Y
-      : Math.floor((vh - scaledH) / 2);
-
-    stage.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0) scale(${scale})`;
-  }
-
-  window.addEventListener('resize', layoutStage);
-  layoutStage();
-
-  // Auto-size windows to (natural PNG size * skinScale * optional stretch)
-  document.querySelectorAll('.window').forEach(win => {
-    const img = win.querySelector('img.skin');
-    const skinScale = parseFloat(win.dataset.skin || SKIN_SCALE_DEFAULT);
-    const fontScale = parseFloat(win.dataset.font || 1);
-    const stretchX = parseFloat(win.dataset.stretchX || 1);
-    const stretchY = parseFloat(win.dataset.stretchY || 1);
-
-    win.style.setProperty('--s', skinScale);
-    win.style.setProperty('--fs', fontScale);
-
-    img.addEventListener('load', () => {
-      win.style.width  = (img.naturalWidth  * skinScale * stretchX) + 'px';
-      win.style.height = (img.naturalHeight * skinScale * stretchY) + 'px';
-      win.classList.add('ready');
-    }, { once: true });
-
-    if (img.complete) img.dispatchEvent(new Event('load'));
-  });
-
-  // ====== Smooth dragging ======
-  let topZ = 10;
-  const states = new Map();
-  let rafRunning = false;
-
-  function ensureState(el){
-    if (!states.has(el)){
-      const x = parseFloat(el.dataset.x || '0');
-      const y = parseFloat(el.dataset.y || '0');
-      states.set(el, { x, y, tx: x, ty: y, dragging: false });
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    }
-    return states.get(el);
-  }
-
-  function startRAF(){
-    if (rafRunning) return;
-    rafRunning = true;
-
-    const tick = () => {
-      let any = false;
-      states.forEach((s, el) => {
-        const k = s.dragging ? 0.62 : 0.24;
-        s.x += (s.tx - s.x) * k;
-        s.y += (s.ty - s.y) * k;
-
-        if (Math.abs(s.tx - s.x) < 0.05) s.x = s.tx;
-        if (Math.abs(s.ty - s.y) < 0.05) s.y = s.ty;
-
-        el.style.transform = `translate3d(${s.x}px, ${s.y}px, 0)`;
-        if (s.dragging || s.x !== s.tx || s.y !== s.ty) any = true;
-      });
-
-      if (any) requestAnimationFrame(tick);
-      else rafRunning = false;
-    };
-    requestAnimationFrame(tick);
-  }
-
-  function bringToFront(win){
-    document.querySelectorAll('.window.is-front').forEach(w => w.classList.remove('is-front'));
-    win.classList.add('is-front');
-    win.style.zIndex = (++topZ).toString();
-  }
-
-  // clamp to viewport (so you can drag around the whole visible screen)
-  function viewportClamp(nx, ny, win, stageRect, stageScale){
-    const w = win.offsetWidth || 0;
-    const h = win.offsetHeight || 0;
-
-    const minX = (0 - stageRect.left) / stageScale;
-    const maxX = (window.innerWidth - stageRect.left) / stageScale;
-    const minY = (0 - stageRect.top) / stageScale;
-    const maxY = (window.innerHeight - stageRect.top) / stageScale;
-
-    const PAD = 40;
-    return {
-      x: Math.max(minX - PAD, Math.min(maxX - w + PAD, nx)),
-      y: Math.max(minY - PAD, Math.min(maxY - h + PAD, ny))
-    };
-  }
-
-  document.querySelectorAll('.window').forEach(win => {
-    const handle = win.querySelector('.handle');
-    const s = ensureState(win);
-
-    win.addEventListener('pointerdown', () => bringToFront(win), true);
-
-    handle.addEventListener('pointerdown', (e) => {
-      bringToFront(win);
-      s.dragging = true;
-
-      const stageRect = stage.getBoundingClientRect();
-      const stageScale = stageRect.width / DESIGN_W;
-
-      const startPX = (e.clientX - stageRect.left) / stageScale;
-      const startPY = (e.clientY - stageRect.top) / stageScale;
-
-      const startX = s.tx;
-      const startY = s.ty;
-
-      handle.setPointerCapture(e.pointerId);
-
-      const move = (ev) => {
-        const px = (ev.clientX - stageRect.left) / stageScale;
-        const py = (ev.clientY - stageRect.top) / stageScale;
-
-        let nx = startX + (px - startPX);
-        let ny = startY + (py - startPY);
-
-        const c = viewportClamp(nx, ny, win, stageRect, stageScale);
-        s.tx = c.x;
-        s.ty = c.y;
-
-        startRAF();
+      const applySize = () => {
+        win.style.width  = (img.naturalWidth  * skinScale * stretchX) + 'px';
+        win.style.height = (img.naturalHeight * skinScale * stretchY) + 'px';
+        win.classList.add('ready');
       };
 
-      const up = () => {
-        s.dragging = false;
-        handle.releasePointerCapture(e.pointerId);
-        handle.removeEventListener('pointermove', move);
-        handle.removeEventListener('pointerup', up);
-        handle.removeEventListener('pointercancel', up);
-        startRAF();
-      };
-
-      handle.addEventListener('pointermove', move);
-      handle.addEventListener('pointerup', up);
-      handle.addEventListener('pointercancel', up);
-
-      e.preventDefault();
-      startRAF();
+      if (img.complete && img.naturalWidth) { applySize(); }
+      else { img.addEventListener('load', applySize, { once: true }); }
     });
-  });
 
-  // =========================
-  // Gallery open/close logic
-  // =========================
-  const galleryWin = document.getElementById("win-gallery");
-  const openBtn = document.getElementById("openGalleryBtn");
-  const closeBtn = document.getElementById("closeGalleryBtn");
+    /* ----------------------------------------------------------
+       SMOOTH WINDOW DRAGGING
+    ---------------------------------------------------------- */
+    let topZ      = 10;
+    let rafActive = false;
+    const states  = new Map();
 
-  function openGallery(){
-    if (!galleryWin) return;
-    galleryWin.classList.remove("closed");
-    galleryWin.classList.add("open");
-    bringToFront(galleryWin);
-  }
-
-  function closeGallery(){
-    if (!galleryWin) return;
-    galleryWin.classList.remove("open");
-    galleryWin.classList.add("closed");
-  }
-
-  openBtn?.addEventListener("click", openGallery);
-  closeBtn?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    closeGallery();
-  });
-
-  // =========================
-  // ✅ Fullscreen modal for images
-  // =========================
-  const imgModal = document.getElementById("imgModal");
-  const imgModalImg = document.getElementById("imgModalImg");
-
-  function openImgModal(src, alt = ""){
-    if (!imgModal || !imgModalImg) return;
-    imgModalImg.src = src;
-    imgModalImg.alt = alt || "image";
-    imgModal.classList.add("open");
-    imgModal.setAttribute("aria-hidden", "false");
-
-    // focus close button for keyboard users
-    const close = imgModal.querySelector("[data-close]");
-    close?.focus?.();
-  }
-
-  function closeImgModal(){
-    if (!imgModal || !imgModalImg) return;
-    imgModal.classList.remove("open");
-    imgModal.setAttribute("aria-hidden", "true");
-    imgModalImg.src = "";
-    imgModalImg.alt = "";
-  }
-
-  // click backdrop or X to close
-  imgModal?.addEventListener("click", (e) => {
-    const t = e.target;
-    if (t && t.closest && t.closest("[data-close]")) {
-      closeImgModal();
+    function ensureState(el) {
+      if (!states.has(el)) {
+        const x = parseFloat(el.dataset.x || '0');
+        const y = parseFloat(el.dataset.y || '0');
+        states.set(el, { x, y, tx: x, ty: y, dragging: false });
+        el.style.transform = `translate3d(${x}px,${y}px,0)`;
+      }
+      return states.get(el);
     }
-  });
 
-  // ESC closes
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && imgModal?.classList.contains("open")) {
-      closeImgModal();
+    function startRAF() {
+      if (rafActive) return;
+      rafActive = true;
+      const tick = () => {
+        let any = false;
+        states.forEach((s, el) => {
+          const k = s.dragging ? 0.62 : 0.24;
+          s.x += (s.tx - s.x) * k;
+          s.y += (s.ty - s.y) * k;
+          if (Math.abs(s.tx - s.x) < 0.05) s.x = s.tx;
+          if (Math.abs(s.ty - s.y) < 0.05) s.y = s.ty;
+          el.style.transform = `translate3d(${s.x}px,${s.y}px,0)`;
+          if (s.dragging || s.x !== s.tx || s.y !== s.ty) any = true;
+        });
+        if (any) requestAnimationFrame(tick);
+        else rafActive = false;
+      };
+      requestAnimationFrame(tick);
     }
-  });
 
-  // intercept gallery thumbnail clicks (NO new tab)
-  const galleryGrid = document.getElementById("galleryGrid");
-  galleryGrid?.addEventListener("click", (e) => {
-    const a = e.target.closest("a.g-card");
-    if (!a) return;
-    e.preventDefault();
-    const src = a.getAttribute("href");
-    const galleryGrid = document.getElementById("galleryGrid");
-galleryGrid?.addEventListener("click", (e) => {
-  const a = e.target.closest("a.g-card");
-  if (!a) return;
-  e.preventDefault();
+    function bringToFront(win) {
+      document.querySelectorAll('.window.is-front').forEach(w => w.classList.remove('is-front'));
+      win.classList.add('is-front');
+      win.style.zIndex = (++topZ).toString();
+    }
 
-  const src = a.getAttribute("href");
-  const title = a.dataset.title || a.querySelector(".g-title")?.textContent || "picture";
-  if (src) openImgModal(src, title);
-});
-    if (src) openImgModal(src, alt);
-  });
-</script>
+    function viewportClamp(nx, ny, win, stageRect, stageScale) {
+      const w    = win.offsetWidth  || 0;
+      const h    = win.offsetHeight || 0;
+      const minX = (0 - stageRect.left) / stageScale;
+      const maxX = (window.innerWidth  - stageRect.left) / stageScale;
+      const minY = (0 - stageRect.top)  / stageScale;
+      const maxY = (window.innerHeight - stageRect.top)  / stageScale;
+      const PAD  = 40;
+      return {
+        x: Math.max(minX - PAD, Math.min(maxX - w + PAD, nx)),
+        y: Math.max(minY - PAD, Math.min(maxY - h + PAD, ny))
+      };
+    }
 
-<script src="particles.js" defer></script>
-<script src="sfx.js" defer></script>
-<script src="typewriter.js" defer></script>
-<script src="player.js" defer></script>
-<script src="intro.js" defer></script>
-<script src="discordBadge.js" defer></script>
+    document.querySelectorAll('.window').forEach(win => {
+      const handle = win.querySelector('.handle');
+      const s      = ensureState(win);
+
+      win.addEventListener('pointerdown', () => bringToFront(win), true);
+
+      handle.addEventListener('pointerdown', e => {
+        bringToFront(win);
+        s.dragging = true;
+
+        const stageRect  = stage.getBoundingClientRect();
+        const stageScale = stageRect.width / DESIGN_W;
+        const startPX    = (e.clientX - stageRect.left) / stageScale;
+        const startPY    = (e.clientY - stageRect.top)  / stageScale;
+        const startX     = s.tx;
+        const startY     = s.ty;
+
+        handle.setPointerCapture(e.pointerId);
+
+        const onMove = ev => {
+          const px = (ev.clientX - stageRect.left) / stageScale;
+          const py = (ev.clientY - stageRect.top)  / stageScale;
+          const c  = viewportClamp(startX + (px - startPX), startY + (py - startPY), win, stageRect, stageScale);
+          s.tx = c.x;
+          s.ty = c.y;
+          startRAF();
+        };
+
+        const onUp = () => {
+          s.dragging = false;
+          handle.releasePointerCapture(e.pointerId);
+          handle.removeEventListener('pointermove', onMove);
+          handle.removeEventListener('pointerup',   onUp);
+          handle.removeEventListener('pointercancel', onUp);
+          startRAF();
+        };
+
+        handle.addEventListener('pointermove',   onMove);
+        handle.addEventListener('pointerup',     onUp);
+        handle.addEventListener('pointercancel', onUp);
+        e.preventDefault();
+        startRAF();
+      });
+    });
+
+    /* ----------------------------------------------------------
+       GALLERY OPEN / CLOSE
+    ---------------------------------------------------------- */
+    const galleryWin = document.getElementById('win-gallery');
+    const openBtn    = document.getElementById('openGalleryBtn');
+    const closeBtn   = document.getElementById('closeGalleryBtn');
+
+    function openGallery() {
+      galleryWin.classList.remove('closed');
+      galleryWin.classList.add('open');
+      bringToFront(galleryWin);
+    }
+    function closeGallery() {
+      galleryWin.classList.remove('open');
+      galleryWin.classList.add('closed');
+    }
+
+    openBtn.addEventListener('click', openGallery);
+    closeBtn.addEventListener('click', e => { e.stopPropagation(); closeGallery(); });
+
+    /* ----------------------------------------------------------
+       FULLSCREEN IMAGE MODAL
+    ---------------------------------------------------------- */
+    const imgModal     = document.getElementById('imgModal');
+    const imgModalImg  = document.getElementById('imgModalImg');
+    const imgModalClose= document.getElementById('imgModalClose');
+    const modalBackdrop= document.getElementById('modalBackdrop');
+
+    function openImgModal(src, alt) {
+      imgModalImg.src = src;
+      imgModalImg.alt = alt || 'image';
+      imgModal.classList.add('open');
+      imgModal.setAttribute('aria-hidden', 'false');
+      imgModalClose.focus();
+    }
+    function closeImgModal() {
+      imgModal.classList.remove('open');
+      imgModal.setAttribute('aria-hidden', 'true');
+      imgModalImg.src = '';
+      imgModalImg.alt = '';
+    }
+
+    imgModalClose.addEventListener('click', closeImgModal);
+    modalBackdrop.addEventListener('click', closeImgModal);
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && imgModal.classList.contains('open')) closeImgModal();
+    });
+
+    /* Gallery thumbnail clicks → open modal (no new tab) */
+    document.getElementById('galleryGrid').addEventListener('click', e => {
+      const card = e.target.closest('a.g-card');
+      if (!card) return;
+      e.preventDefault();
+      const src   = card.getAttribute('href');
+      const title = card.dataset.title || card.querySelector('.g-title')?.textContent || 'picture';
+      if (src) openImgModal(src, title);
+    });
+  </script>
+
+  <script src="js/particles.js"    defer></script>
+  <script src="js/sfx.js"          defer></script>
+  <script src="js/typewriter.js"   defer></script>
+  <script src="js/player.js"       defer></script>
+  <script src="js/intro.js"        defer></script>
+  <script src="js/discordBadge.js" defer></script>
+
 </body>
 </html>
