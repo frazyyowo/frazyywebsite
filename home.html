@@ -485,40 +485,13 @@
       overflow: auto;
       scrollbar-width: none;
       padding: 2px 6px;
-      padding-right: clamp(160px, 52%, 340px);
+      padding-right: 6px;\
       position: relative;
       z-index: 5;
     }
     .things-scroll::-webkit-scrollbar { width: 0; height: 0; }
 
-    .things-bf-big {
-      position: absolute;
-      right: 10px; bottom: 10px;
-      width: clamp(230px, 65%, 400px);
-      aspect-ratio: 1/1;
-      object-fit: contain;
-      pointer-events: none;
-      z-index: 1;
-      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.14));
-    }
-    .things-bf-badge {
-      position: absolute;
-      left: 230px; bottom: 50px;
-      z-index: 4;
-      user-select: none;
-      pointer-events: none;
-    }
-    .things-bf-badge .t1 {
-      font-weight: 900;
-      font-size: calc(14px * var(--fs));
-      line-height: 1.05;
-      color: #111;
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.98),
-        0 0 14px rgba(255,255,255,0.92),
-        0 0 28px rgba(255,255,255,0.78),
-        0 0 48px rgba(255,255,255,0.62);
-    }
+  
 
     /* ============================================================
        ABOUT WINDOW
@@ -1059,15 +1032,10 @@
               <div class="sec-hdr"><strong>♡ cats ^w^</strong></div>
               <div class="sec-hdr"><strong>♡ listening to music</strong></div>
 
-              <hr class="whr">
-
-              <div class="sec-hdr"><strong>♡ MY BOYFRIENND &lt;333</strong></div>
+             
             </div>
 
-            <img class="things-bf-big" src="img/bf1.png" alt="my boyfriend">
-            <div class="things-bf-badge">
-              <div class="t1">my boyfriend btw &lt;3</div>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -1128,7 +1096,6 @@
               <a class="g-card" href="img/frazyy.png"    data-title="pic 1">  <div class="g-thumb"><img src="img/frazyy.png"    alt="pic 1"  draggable="false"></div><div class="g-title">pic 1</div></a>
               <a class="g-card" href="img/frazyy1.jpg"   data-title="pic 2">  <div class="g-thumb"><img src="img/frazyy1.jpg"   alt="pic 2"  draggable="false"></div><div class="g-title">pic 2</div></a>
               <a class="g-card" href="img/frazyy2.png"   data-title="pic 3">  <div class="g-thumb"><img src="img/frazyy2.png"   alt="pic 3"  draggable="false"></div><div class="g-title">pic 3</div></a>
-              <a class="g-card" href="img/bf2.png"       data-title="pic 4">  <div class="g-thumb"><img src="img/bf2.png"       alt="pic 4"  draggable="false"></div><div class="g-title">pic 4</div></a>
               <a class="g-card" href="img/frazyy3.jpg"   data-title="pic 5">  <div class="g-thumb"><img src="img/frazyy3.jpg"   alt="pic 5"  draggable="false"></div><div class="g-title">pic 5</div></a>
               <a class="g-card" href="img/frazyy4.jpg"   data-title="pic 6">  <div class="g-thumb"><img src="img/frazyy4.jpg"   alt="pic 6"  draggable="false"></div><div class="g-title">pic 6</div></a>
               <a class="g-card" href="img/frazyy5.png"   data-title="pic 7">  <div class="g-thumb"><img src="img/frazyy5.png"   alt="pic 7"  draggable="false"></div><div class="g-title">pic 7</div></a>
