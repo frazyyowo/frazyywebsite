@@ -36,9 +36,7 @@
       font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
                    Consolas, "Liberation Mono", "Courier New", monospace;
       color: var(--ink);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0) 28%),
-        #a8c8e8;
+      background: #a8c8e8;
       position: relative;
       isolation: isolate;
       -webkit-font-smoothing: antialiased;
@@ -46,17 +44,7 @@
     }
 
     body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -1;
-      opacity: 0.24;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.28) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.24) 1px, transparent 1px);
-      background-size: 46px 46px;
-      transform: rotate(-0.4deg) scale(1.02);
+      display: none;
     }
 
     a, button, input {
@@ -152,30 +140,30 @@
       position: absolute;
       left: 0;
       top: 0;
-      width: 2200px;
-      height: 1000px;
+      width: 2048px;
+      height: 799px;
       transform-origin: top left;
       will-change: transform;
     }
 
     .site-title {
       position: absolute;
-      left: 92px;
-      top: 30px;
+      left: 130px;
+      top: 38px;
       display: inline-flex;
       align-items: baseline;
-      max-width: 1320px;
+      max-width: 1160px;
       white-space: nowrap;
       user-select: none;
       pointer-events: none;
       color: var(--ink);
-      font-size: 126px;
+      font-size: 112px;
       line-height: 0.9;
       font-weight: 800;
-      letter-spacing: 9px;
+      letter-spacing: 8px;
       text-shadow:
         3px 3px 0 rgba(255,255,255,0.55),
-        8px 10px 0 rgba(66, 103, 140, 0.10);
+        5px 6px 0 rgba(66, 103, 140, 0.08);
     }
 
     .site-title .tw-text { white-space: nowrap; }
@@ -204,10 +192,8 @@
       user-select: none;
       visibility: hidden;
       filter: drop-shadow(0 18px 20px rgba(12, 28, 44, 0.23));
-      border-radius: calc(18px * var(--s));
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.22)),
-        rgba(168, 200, 232, 0.66);
+      border-radius: 0;
+      background: transparent;
     }
 
     .window.ready {
@@ -226,7 +212,7 @@
     }
 
     .window.is-front {
-      filter: drop-shadow(0 22px 25px rgba(12, 28, 44, 0.28));
+      filter: drop-shadow(0 18px 20px rgba(12, 28, 44, 0.25));
     }
 
     .window::before {
@@ -235,7 +221,7 @@
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      opacity: 0.34;
+      opacity: 0.28;
       background-image:
         url("img/paw.png"),
         url("img/paw.png"),
@@ -476,31 +462,25 @@
 
     .link-item {
       min-width: 0;
-      min-height: 108px;
-      display: grid;
-      grid-template-rows: 70px auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
       justify-items: center;
       align-items: center;
-      gap: 5px;
-      padding: 8px 5px 7px;
+      gap: 6px;
+      padding: 0;
       color: inherit;
       text-decoration: none;
-      border: 1px solid rgba(0,0,0,0.13);
-      border-radius: 11px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.18));
-      box-shadow:
-        0 7px 13px rgba(30, 55, 78, 0.12),
-        inset 0 1px 0 rgba(255,255,255,0.58);
-      transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      transition: transform 140ms ease, filter 140ms ease;
     }
 
     .link-item:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       filter: brightness(1.04);
-      box-shadow:
-        0 10px 16px rgba(30, 55, 78, 0.16),
-        inset 0 1px 0 rgba(255,255,255,0.64);
     }
 
     .link-item:active {
@@ -556,26 +536,27 @@
 
     .discord-badge {
       width: 100%;
-      min-height: 108px;
+      min-height: 96px;
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 13px 14px;
-      color: #111;
+      padding: 12px;
+      color: #f7fbff;
       text-align: left;
-      border: 1px solid rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.42);
       border-radius: 14px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.20));
+      background: linear-gradient(180deg, rgba(54,70,86,0.90), rgba(31,43,58,0.88));
       box-shadow:
-        0 8px 16px rgba(30, 55, 78, 0.13),
-        inset 0 1px 0 rgba(255,255,255,0.58);
+        0 14px 24px rgba(0,0,0,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.24);
       cursor: pointer;
       position: relative;
       overflow: hidden;
       appearance: none;
       -webkit-appearance: none;
-      transition: transform 140ms ease, filter 140ms ease;
+      backdrop-filter: blur(10px) saturate(1.15);
+      -webkit-backdrop-filter: blur(10px) saturate(1.15);
+      transition: transform 120ms ease, filter 120ms ease;
     }
 
     .discord-badge:hover {
@@ -588,8 +569,8 @@
     }
 
     .discord-pfp-ring {
-      width: 58px;
-      height: 58px;
+      width: 52px;
+      height: 52px;
       padding: 3px;
       flex: 0 0 auto;
       border-radius: 999px;
@@ -616,7 +597,7 @@
     }
 
     .discord-name {
-      color: #111;
+      color: #fff;
       font-size: 15px;
       line-height: 1.06;
       font-weight: 900;
@@ -627,7 +608,7 @@
 
     .discord-user,
     .discord-activity {
-      color: rgba(17,17,17,0.78);
+      color: rgba(235,245,255,0.90);
       font-size: 12px;
       line-height: 1.15;
       font-weight: 700;
@@ -637,7 +618,7 @@
     }
 
     .discord-activity {
-      opacity: 0.84;
+      color: rgba(222,238,255,0.84);
     }
 
     .discord-copied {
@@ -726,11 +707,11 @@
     .about-body {
       height: 100%;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(220px, 42%);
-      gap: 16px;
+      grid-template-columns: minmax(0, 1fr) minmax(210px, 44%);
+      gap: 10px;
       min-width: 0;
       min-height: 0;
-      padding: 4px 7px 7px;
+      padding: 2px 6px;
       position: relative;
     }
 
@@ -744,7 +725,7 @@
 
     .about-kicker {
       color: #111;
-      font-size: calc(25px * var(--fs));
+      font-size: calc(22px * var(--fs));
       line-height: 1.02;
       font-weight: 900;
       margin-bottom: 8px;
@@ -753,7 +734,7 @@
 
     .about-lede {
       color: rgba(17,17,17,0.88);
-      font-size: calc(14px * var(--fs));
+      font-size: calc(13px * var(--fs));
       line-height: 1.34;
       font-weight: 700;
       margin-bottom: 12px;
@@ -771,11 +752,11 @@
       display: inline-flex;
       align-items: center;
       min-height: 27px;
-      padding: 5px 8px;
-      border: 1px solid rgba(0,0,0,0.13);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.34);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.52);
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
       color: rgba(17,17,17,0.84);
       font-size: calc(11px * var(--fs));
       line-height: 1;
@@ -783,8 +764,15 @@
       white-space: nowrap;
     }
 
+    .about-facts span:not(:last-child)::after,
+    .about-tag:not(:last-child)::after {
+      content: "/";
+      margin-left: 7px;
+      color: rgba(17,17,17,0.42);
+    }
+
     .about-section {
-      padding: 10px 0;
+      padding: 8px 0;
       border-top: 1px solid rgba(0,0,0,0.20);
     }
 
@@ -850,18 +838,7 @@
     }
 
     .about-visual::before {
-      content: "";
-      position: absolute;
-      left: 5%;
-      right: 5%;
-      bottom: 78px;
-      height: 34%;
-      z-index: -1;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.30);
-      border: 1px solid rgba(255,255,255,0.42);
-      transform: rotate(-3deg);
-      filter: blur(0.2px);
+      display: none;
     }
 
     .about-fursona-big {
@@ -876,28 +853,29 @@
 
     .about-morepics-btn {
       width: min(100%, 276px);
-      min-height: 58px;
+      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 9px;
-      padding: 11px 15px;
+      padding: 0;
       margin-top: 7px;
-      border: 1px solid rgba(0,0,0,0.17);
-      border-radius: 14px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.24));
-      box-shadow:
-        0 9px 15px rgba(30, 55, 78, 0.15),
-        inset 0 1px 0 rgba(255,255,255,0.62);
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
       color: #111;
-      font-size: calc(13px * var(--fs));
+      font-size: calc(14px * var(--fs));
       line-height: 1.08;
       font-weight: 900;
       letter-spacing: 0.2px;
       text-align: center;
       cursor: pointer;
       text-transform: lowercase;
+      text-shadow:
+        0 0 6px rgba(255,255,255,0.95),
+        0 0 16px rgba(255,255,255,0.85),
+        0 0 30px rgba(255,255,255,0.65);
       transition: transform 140ms ease, filter 140ms ease;
     }
 
@@ -1517,10 +1495,10 @@
       </h1>
 
       <div class="window wide" id="win-welcome"
-           data-x="100" data-y="214"
+           data-x="130" data-y="190"
            data-w="1160" data-h="378"
-           data-skin="1.02" data-font="1.04"
-           data-stretch-x="1.18" data-stretch-y="1.08">
+           data-skin="0.96" data-font="1.02"
+           data-stretch-x="1.14" data-stretch-y="1.05">
         <img class="skin" src="img/window4.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -1593,9 +1571,9 @@
 
       <div class="window win1" id="win-music"
            data-label="music i like.exe"
-           data-x="165" data-y="635"
+           data-x="285" data-y="498"
            data-w="500" data-h="430"
-           data-skin="1.02" data-font="1.04">
+           data-skin="0.96" data-font="1.02">
         <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -1615,10 +1593,10 @@
 
       <div class="window std" id="win-about"
            data-label="about me.exe"
-           data-x="1280" data-y="142"
+           data-x="1120" data-y="118"
            data-w="720" data-h="610"
-           data-skin="1.04" data-font="1.09"
-           data-stretch-x="1.22" data-stretch-y="1.22">
+           data-skin="0.98" data-font="1.04"
+           data-stretch-x="1.12" data-stretch-y="1.18">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -1679,10 +1657,10 @@
 
       <div class="window std closed" id="win-gallery"
            data-label="frazy folder.exe"
-           data-x="1230" data-y="260"
+           data-x="1180" data-y="205"
            data-w="740" data-h="560"
-           data-skin="1.03" data-font="1.03"
-           data-stretch-x="1.18" data-stretch-y="1.20">
+           data-skin="0.98" data-font="1.02"
+           data-stretch-x="1.12" data-stretch-y="1.16">
         <img class="skin" src="img/window5.png" alt="">
         <div class="handle"></div>
         <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close gallery"></button>
@@ -1815,11 +1793,11 @@
   </div>
 
   <script>
-    const DESIGN_W = 2200;
-    const DESIGN_H = 1000;
-    const MARGIN_X = 42;
-    const MARGIN_Y = 28;
-    const MAX_UPSCALE = 1.06;
+    const DESIGN_W = 2048;
+    const DESIGN_H = 799;
+    const MARGIN_X = 110;
+    const MARGIN_Y = 70;
+    const MAX_UPSCALE = 1.24;
 
     const stage = document.getElementById("stage");
 
@@ -1845,8 +1823,8 @@
 
       const scaledW = DESIGN_W * scale;
       const scaledH = DESIGN_H * scale;
-      const x = Math.floor((vw - scaledW) / 2);
-      const y = Math.floor((vh - scaledH) / 2);
+      const x = (vw >= scaledW + MARGIN_X * 2) ? MARGIN_X : Math.floor((vw - scaledW) / 2);
+      const y = (vh >= scaledH + MARGIN_Y * 2) ? MARGIN_Y : Math.floor((vh - scaledH) / 2);
 
       stage.style.transform = `translate3d(${Math.round(x)}px,${Math.round(y)}px,0) scale(${scale})`;
     }
