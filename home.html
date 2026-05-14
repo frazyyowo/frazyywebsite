@@ -10,55 +10,180 @@
   <link rel="stylesheet" href="css/intro.css">
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; }
 
-    body {
-      font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
-                   Consolas, "Liberation Mono", "Courier New", monospace;
-      background: #a8c8e8;
-      position: relative;
-      isolation: isolate;
+    :root {
+      --ink: #141414;
+      --paper: rgba(255, 255, 255, 0.58);
+      --paper-soft: rgba(255, 255, 255, 0.32);
+      --sky: #a8c8e8;
+      --blue-shadow: rgba(55, 92, 128, 0.20);
+      --pink: #d75d86;
+      --mint: #5aa684;
+      --gold: #b8913b;
     }
 
-    #desk { position: absolute; inset: 0; overflow: hidden; z-index: 10; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100dvh;
+      overflow: hidden;
+      font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+                   Consolas, "Liberation Mono", "Courier New", monospace;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0) 28%),
+        #a8c8e8;
+      position: relative;
+      isolation: isolate;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.24;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.28) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.24) 1px, transparent 1px);
+      background-size: 46px 46px;
+      transform: rotate(-0.4deg) scale(1.02);
+    }
+
+    a, button, input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    #bg,
+    #tint,
+    #fx,
+    #vhs,
+    #introFx,
+    .intro-vhs {
+      pointer-events: none;
+    }
+
+    #bg,
+    #tint,
+    #fx,
+    #vhs {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #bg { z-index: -4; }
+    #tint { z-index: -3; }
+    #fx { z-index: -2; }
+    #vhs { z-index: 1; }
+
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      display: grid;
+      place-items: center;
+      min-height: 100dvh;
+      background:
+        linear-gradient(180deg, rgba(168,200,232,0.94), rgba(125,164,202,0.94));
+    }
+
+    .intro.is-hidden {
+      display: none !important;
+    }
+
+    #introFx {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .intro-center {
+      position: relative;
+      z-index: 1;
+      padding: 16px 20px;
+      color: #111;
+      font-size: clamp(20px, 4vw, 40px);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.55);
+    }
+
+    .intro-cursor {
+      animation: tw-blink 0.9s steps(1) infinite;
+    }
+
+    #desk {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 10;
+    }
 
     #stage {
       position: absolute;
       left: 0;
       top: 0;
-      width: 2048px;
-      height: 799px;
+      width: 2200px;
+      height: 1000px;
       transform-origin: top left;
       will-change: transform;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: geometricPrecision;
     }
 
     .site-title {
       position: absolute;
-      left: 130px;
-      top: 42px;
-      font-size: 96px;
-      font-weight: 700;
-      letter-spacing: 8px;
-      color: #141414;
-      text-shadow: 2px 2px 0 rgba(255,255,255,0.45);
-      user-select: none;
-      pointer-events: none;
-      white-space: nowrap;
+      left: 92px;
+      top: 30px;
       display: inline-flex;
       align-items: baseline;
+      max-width: 1320px;
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
+      color: var(--ink);
+      font-size: 126px;
+      line-height: 0.9;
+      font-weight: 800;
+      letter-spacing: 9px;
+      text-shadow:
+        3px 3px 0 rgba(255,255,255,0.55),
+        8px 10px 0 rgba(66, 103, 140, 0.10);
     }
 
     .site-title .tw-text { white-space: nowrap; }
 
     .site-title .tw-cursor {
       display: inline-block;
-      margin-left: 2px;
-      transform: translateY(2px);
+      margin-left: 4px;
+      transform: translateY(3px);
       animation: tw-blink 0.9s steps(1) infinite;
     }
 
@@ -71,123 +196,65 @@
       position: absolute;
       --s: 1;
       --fs: 1;
+      --label-x: 26;
+      --label-y: 18;
+      --label-fs: 13;
       transform: translate3d(0,0,0);
       will-change: transform;
       user-select: none;
-      filter: drop-shadow(0 12px 16px rgba(0,0,0,0.20));
       visibility: hidden;
-      --label-x: 18;
-      --label-y: 8;
-      --label-fs: 12;
+      filter: drop-shadow(0 18px 20px rgba(12, 28, 44, 0.23));
+      border-radius: calc(18px * var(--s));
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.22)),
+        rgba(168, 200, 232, 0.66);
     }
 
-    .window.ready { visibility: visible; transition: opacity 160ms ease; }
-    .window.closed { opacity: 0; pointer-events: none; }
-    .window.open { opacity: 1; pointer-events: auto; }
+    .window.ready {
+      visibility: visible;
+      transition: opacity 180ms ease, filter 160ms ease;
+    }
+
+    .window.closed {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .window.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .window.is-front {
+      filter: drop-shadow(0 22px 25px rgba(12, 28, 44, 0.28));
+    }
 
     .window::before {
       content: "";
       position: absolute;
       inset: 0;
-      pointer-events: none;
       z-index: 1;
-      opacity: 0.32;
-      background-image: url("img/paw.png"), url("img/paw.png");
-      background-repeat: no-repeat, no-repeat;
+      pointer-events: none;
+      opacity: 0.34;
+      background-image:
+        url("img/paw.png"),
+        url("img/paw.png"),
+        url("img/paw.png"),
+        url("img/paw.png");
+      background-repeat: no-repeat;
       background-size:
-        calc(48px * var(--s)) calc(48px * var(--s)),
-        calc(62px * var(--s)) calc(62px * var(--s));
+        calc(52px * var(--s)) calc(52px * var(--s)),
+        calc(44px * var(--s)) calc(44px * var(--s)),
+        calc(42px * var(--s)) calc(42px * var(--s)),
+        calc(58px * var(--s)) calc(58px * var(--s));
       background-position:
         calc(15px * var(--s)) calc(34px * var(--s)),
-        calc(100% - 68px * var(--s)) calc(100% - 72px * var(--s));
-      filter: drop-shadow(0 2px 3px rgba(255,255,255,0.35));
-    }
-
-    .skin {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .handle {
-      position: absolute;
-      cursor: grab;
-      touch-action: none;
-      z-index: 3;
-    }
-
-    .handle:active { cursor: grabbing; }
-
-    .content {
-      position: absolute;
-      z-index: 2;
-      overflow: hidden;
-      min-width: 0;
-      min-height: 0;
-      clip-path: inset(0 round calc(2px * var(--s)));
-      color: #222;
-    }
-
-    .std .content,
-    .win1 .content,
-    .wide .content {
-      padding: calc(3px * var(--s));
-    }
-
-    .content :where(p,div,span,a,button) {
-      max-width: 100%;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    .scroll-soft { overflow: auto; scrollbar-width: none; }
-    .scroll-soft::-webkit-scrollbar { width: 0; height: 0; }
-
-    .std .handle,
-    .win1 .handle {
-      top: calc(4px * var(--s));
-      left: calc(4px * var(--s));
-      right: calc(56px * var(--s));
-      height: calc(22px * var(--s));
-    }
-
-    .std .content {
-      top: calc(40px * var(--s));
-      left: calc(18px * var(--s));
-      right: calc(18px * var(--s));
-      bottom: calc(18px * var(--s));
-    }
-
-    .win1 .content {
-      top: calc(38px * var(--s));
-      left: calc(18px * var(--s));
-      right: calc(18px * var(--s));
-      bottom: calc(18px * var(--s));
-    }
-
-    .wide .handle {
-      top: 0;
-      left: 0;
-      right: 0;
-      height: calc(22px * var(--s));
-    }
-
-    .wide .content {
-      top: calc(30px * var(--s));
-      left: calc(36px * var(--s));
-      right: calc(36px * var(--s));
-      bottom: calc(24px * var(--s));
-    }
-
-    .window.win1,
-    .window.std {
-      --label-x: 30;
-      --label-y: 23;
-      --label-fs: 14;
+        calc(100% - 62px * var(--s)) calc(32px * var(--s)),
+        calc(20px * var(--s)) calc(100% - 60px * var(--s)),
+        calc(100% - 74px * var(--s)) calc(100% - 78px * var(--s));
+      filter:
+        drop-shadow(0 1px 0 rgba(255,255,255,0.72))
+        drop-shadow(0 3px 4px rgba(70,90,110,0.13));
     }
 
     .window::after {
@@ -195,292 +262,393 @@
       position: absolute;
       top: calc(var(--label-y) * 1px * var(--s));
       left: calc(var(--label-x) * 1px * var(--s));
-      font-size: calc(var(--label-fs) * 1px * var(--s));
-      font-weight: 800;
-      letter-spacing: 0.4px;
-      text-transform: lowercase;
-      color: rgba(20,20,20,0.90);
-      text-shadow:
-        1px 1px 0 rgba(255,255,255,0.65),
-        0 0 8px rgba(255,255,255,0.20);
+      z-index: 4;
       pointer-events: none;
       user-select: none;
       white-space: nowrap;
-      z-index: 4;
+      color: rgba(20,20,20,0.92);
+      font-size: calc(var(--label-fs) * 1px * var(--s));
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      text-transform: lowercase;
+      text-shadow:
+        1px 1px 0 rgba(255,255,255,0.72),
+        0 0 10px rgba(255,255,255,0.36);
+    }
+
+    .skin {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: fill;
+      pointer-events: none;
+    }
+
+    .handle {
+      position: absolute;
+      z-index: 5;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .handle:active {
+      cursor: grabbing;
+    }
+
+    .content {
+      position: absolute;
+      z-index: 2;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      color: var(--ink);
+      clip-path: inset(0 round calc(4px * var(--s)));
+    }
+
+    .content :where(p, div, span, a, button, strong) {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    .scroll-soft {
+      overflow: auto;
+      scrollbar-width: none;
+    }
+
+    .scroll-soft::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .std .handle,
+    .win1 .handle {
+      top: calc(4px * var(--s));
+      left: calc(4px * var(--s));
+      right: calc(58px * var(--s));
+      height: calc(25px * var(--s));
+    }
+
+    .wide .handle {
+      top: 0;
+      left: 0;
+      right: 0;
+      height: calc(27px * var(--s));
+    }
+
+    .std .content {
+      top: calc(42px * var(--s));
+      left: calc(22px * var(--s));
+      right: calc(22px * var(--s));
+      bottom: calc(22px * var(--s));
+      padding: calc(5px * var(--s));
+    }
+
+    .win1 .content {
+      top: calc(40px * var(--s));
+      left: calc(20px * var(--s));
+      right: calc(20px * var(--s));
+      bottom: calc(20px * var(--s));
+      padding: calc(5px * var(--s));
+    }
+
+    .wide .content {
+      top: calc(32px * var(--s));
+      left: calc(42px * var(--s));
+      right: calc(42px * var(--s));
+      bottom: calc(28px * var(--s));
+      padding: calc(4px * var(--s));
+    }
+
+    .window.win1,
+    .window.std {
+      --label-x: 31;
+      --label-y: 23;
+      --label-fs: 14;
     }
 
     .welcome-panel {
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 2px;
+      display: grid;
+      grid-template-rows: auto auto 1px minmax(0, 1fr);
+      gap: 12px;
       min-width: 0;
     }
 
     .welcome-title {
-      font-size: 22px;
-      font-weight: 700;
       color: #111;
-      line-height: 1.1;
+      font-size: calc(25px * var(--fs));
+      line-height: 1.06;
+      font-weight: 900;
       white-space: nowrap;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.52);
     }
 
     .welcome-top {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      gap: 22px;
+      justify-content: space-between;
+      gap: 20px;
       min-width: 0;
     }
 
     .flags-pair {
       display: flex;
-      gap: 10px;
       align-items: center;
-      flex-shrink: 0;
+      gap: 10px;
+      flex: 0 0 auto;
     }
 
     .flag-img {
-      width: 78px;
-      height: 48px;
-      border: 1px solid rgba(0,0,0,0.35);
-      border-radius: 2px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.35);
-      box-shadow: 0 2px 0 rgba(0,0,0,0.18);
+      width: calc(82px * var(--fs));
+      height: calc(50px * var(--fs));
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.35);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.46);
+      box-shadow: 0 3px 0 rgba(0,0,0,0.13), inset 0 1px 0 rgba(255,255,255,0.60);
     }
 
     .flag-img img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
       display: block;
+      object-fit: cover;
     }
 
     .welcome-pronouns {
-      font-size: 22px;
-      line-height: 1.1;
+      flex: 1 1 auto;
+      min-width: 0;
       color: #111;
+      font-size: calc(23px * var(--fs));
+      line-height: 1.08;
+      font-weight: 800;
+      text-align: right;
       white-space: nowrap;
     }
 
-    .welcome-pronouns .they { color: #c43a3a; }
+    .welcome-pronouns .they {
+      color: #c43a3a;
+    }
 
     .welcome-sep {
       width: 100%;
       height: 2px;
-      background: rgba(0,0,0,0.55);
-      opacity: 0.75;
+      background: rgba(0,0,0,0.52);
+      opacity: 0.7;
     }
 
     .welcome-bottom {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 276px;
       gap: 18px;
-      align-items: center;
-      min-width: 0;
+      align-items: stretch;
+      min-height: 0;
     }
 
     .w-links {
-      flex: 1 1 auto;
       min-width: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 8px;
     }
 
-    .w-links-label {
-      font-size: 13px;
-      opacity: 0.95;
-      margin-top: 2px;
-      flex-shrink: 0;
-      white-space: nowrap;
+    .w-links-label,
+    .discord-label {
+      color: rgba(17,17,17,0.82);
+      font-size: calc(13px * var(--fs));
+      line-height: 1.1;
+      font-weight: 900;
+      text-transform: lowercase;
     }
 
     .w-links-row {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 26px;
-      align-items: flex-end;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 9px;
       min-width: 0;
     }
 
     .link-item {
-      display: flex;
-      flex-direction: column;
+      min-width: 0;
+      min-height: 108px;
+      display: grid;
+      grid-template-rows: 70px auto;
+      justify-items: center;
       align-items: center;
-      gap: 6px;
-      text-decoration: none;
+      gap: 5px;
+      padding: 8px 5px 7px;
       color: inherit;
+      text-decoration: none;
+      border: 1px solid rgba(0,0,0,0.13);
+      border-radius: 11px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.18));
+      box-shadow:
+        0 7px 13px rgba(30, 55, 78, 0.12),
+        inset 0 1px 0 rgba(255,255,255,0.58);
+      transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease;
+    }
+
+    .link-item:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+      box-shadow:
+        0 10px 16px rgba(30, 55, 78, 0.16),
+        inset 0 1px 0 rgba(255,255,255,0.64);
+    }
+
+    .link-item:active {
+      transform: translateY(0);
+    }
+
+    .link-item:focus-visible,
+    .album-link:focus-visible,
+    .g-card:focus-visible,
+    .about-morepics-btn:focus-visible,
+    .discord-badge:focus-visible,
+    .img-modal-close:focus-visible {
+      outline: 2px solid rgba(15, 50, 90, 0.66);
+      outline-offset: 4px;
+      border-radius: 10px;
     }
 
     .link-icon {
-      width: 70px;
-      height: 70px;
-      background: transparent;
-      border-radius: 50%;
+      width: 68px;
+      height: 68px;
       display: grid;
       place-items: center;
       overflow: visible;
     }
 
-    .link-icon > img,
-    .link-icon > svg {
-      width: 70px;
-      height: 70px;
-      object-fit: contain;
+    .link-icon img,
+    .link-icon svg {
+      width: 68px;
+      height: 68px;
       display: block;
+      object-fit: contain;
     }
 
     .link-label {
-      font-size: 11px;
-      opacity: 0.95;
+      width: 100%;
+      color: rgba(17,17,17,0.88);
+      font-size: calc(11px * var(--fs));
+      line-height: 1.05;
+      font-weight: 900;
+      text-align: center;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: lowercase;
     }
 
-    :root {
-      --badgeW: 248px;
-      --badgeMinH: 90px;
-      --pfpS: 48px;
+    .discord-col {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 8px;
+      min-width: 0;
     }
 
     .discord-badge {
-      flex: 0 0 var(--badgeW);
-      width: var(--badgeW);
-      max-width: var(--badgeW);
-      min-height: var(--badgeMinH);
+      width: 100%;
+      min-height: 108px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px;
-      border-radius: var(--fa-radius, 14px);
-      border: 1px solid rgba(255,255,255,0.42);
-      background: linear-gradient(180deg, rgba(54,70,86,0.90), rgba(31,43,58,0.88));
-      box-shadow:
-        0 14px 24px rgba(0,0,0,0.26),
-        inset 0 1px 0 rgba(255,255,255,0.24);
-      -webkit-backdrop-filter: blur(10px) saturate(1.15);
-      backdrop-filter: blur(10px) saturate(1.15);
-      color: #f7fbff;
+      gap: 12px;
+      padding: 13px 14px;
+      color: #111;
       text-align: left;
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.50), rgba(255,255,255,0.20));
+      box-shadow:
+        0 8px 16px rgba(30, 55, 78, 0.13),
+        inset 0 1px 0 rgba(255,255,255,0.58);
       cursor: pointer;
-      user-select: none;
       position: relative;
       overflow: hidden;
       appearance: none;
       -webkit-appearance: none;
-      isolation: isolate;
-      transition: transform 120ms ease, filter 120ms ease;
-    }
-
-    .discord-badge::before {
-      content: "";
-      position: absolute;
-      inset: 1px;
-      border-radius: calc(var(--fa-radius, 14px) - 1px);
-      pointer-events: none;
-      background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.07) 48%, transparent);
-      opacity: 0.95;
-      z-index: 0;
-    }
-
-    .discord-badge > * {
-      position: relative;
-      z-index: 1;
+      transition: transform 140ms ease, filter 140ms ease;
     }
 
     .discord-badge:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.05);
+      transform: translateY(-2px);
+      filter: brightness(1.04);
     }
 
     .discord-badge:active {
-      transform: translateY(0);
-      filter: brightness(0.98);
-    }
-
-    .discord-badge:focus-visible {
-      outline: 2px solid rgba(180,230,255,0.75);
-      outline-offset: 4px;
-      border-radius: 14px;
+      transform: translateY(0) scale(0.99);
     }
 
     .discord-pfp-ring {
-      width: var(--pfpS);
-      height: var(--pfpS);
-      border-radius: 999px;
+      width: 58px;
+      height: 58px;
       padding: 3px;
       flex: 0 0 auto;
-      background: radial-gradient(circle at 30% 25%,
-        rgba(255,255,255,0.94) 0%,
-        rgba(210,235,255,0.74) 35%,
-        rgba(120,190,255,0.38) 70%,
-        rgba(20,80,140,0.28) 100%);
-      box-shadow:
-        0 10px 16px rgba(0,0,0,0.30),
-        inset 0 1px 1px rgba(255,255,255,0.35);
+      border-radius: 999px;
+      background:
+        conic-gradient(from 20deg, rgba(120,200,255,0.95), rgba(255,255,255,0.88), rgba(215,93,134,0.72), rgba(90,166,132,0.78), rgba(120,200,255,0.95));
+      box-shadow: 0 7px 12px rgba(0,0,0,0.16);
     }
 
     .discord-pfp {
       width: 100%;
       height: 100%;
-      border-radius: 999px;
       display: block;
       object-fit: cover;
-      border: 1px solid rgba(255,255,255,0.28);
-      background: rgba(255,255,255,0.10);
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.18);
+      background: rgba(255,255,255,0.35);
     }
 
     .discord-meta {
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
 
     .discord-name {
+      color: #111;
+      font-size: 15px;
+      line-height: 1.06;
       font-weight: 900;
-      font-size: 13px;
-      line-height: 1.05;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #fff;
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.55),
-        0 0 16px var(--fa-glow, rgba(130,200,255,0.45));
     }
 
     .discord-user,
     .discord-activity {
-      font-size: 11px;
-      line-height: 1.05;
+      color: rgba(17,17,17,0.78);
+      font-size: 12px;
+      line-height: 1.15;
+      font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: rgba(235,245,255,0.90);
-      opacity: 1;
-      text-shadow: 0 0 8px rgba(255,255,255,0.18);
     }
 
     .discord-activity {
-      margin-top: 4px;
-      color: rgba(222,238,255,0.84);
+      opacity: 0.84;
     }
 
     .discord-copied {
       position: absolute;
-      top: 8px;
-      right: 10px;
+      top: 9px;
+      right: 11px;
       font-size: 10px;
       font-weight: 900;
       opacity: 0;
       transform: translateY(-2px);
       transition: opacity 160ms ease, transform 160ms ease;
-      color: rgba(255,255,255,0.98);
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.70),
-        0 0 16px var(--fa-glow, rgba(130,200,255,0.45));
     }
 
     .discord-badge.copied .discord-copied {
@@ -489,59 +657,61 @@
     }
 
     .music-title-row {
+      min-height: calc(18px * var(--fs));
+      color: rgba(17,17,17,0.72);
       font-size: calc(13px * var(--fs));
-      font-weight: 700;
-      opacity: 0.75;
+      font-weight: 800;
       margin-bottom: 8px;
     }
 
     .music-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
     }
 
-    .album-item {
+    .album-item,
+    .album-link {
+      min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      min-width: 0;
+      gap: 5px;
     }
 
     .album-link {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      text-decoration: none;
+      width: 100%;
       color: inherit;
+      text-decoration: none;
       cursor: pointer;
-      min-width: 0;
     }
 
     .album-cover {
       width: 100%;
       aspect-ratio: 1 / 1;
-      border: 1px solid rgba(0,0,0,0.35);
-      background: #d0d0d0;
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.34);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.52);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.52);
       transition: transform 120ms ease, box-shadow 120ms ease;
     }
 
     .album-cover img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
       display: block;
+      object-fit: cover;
     }
 
     .album-name {
       width: 100%;
+      color: rgba(17,17,17,0.86);
       font-size: calc(10px * var(--fs));
+      line-height: 1.08;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
@@ -549,200 +719,242 @@
     }
 
     .album-link:hover .album-cover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.18);
-    }
-
-    .album-link:focus-visible {
-      outline: 2px solid rgba(0,0,0,0.55);
-      outline-offset: 3px;
-      border-radius: 6px;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 12px rgba(30, 55, 78, 0.16);
     }
 
     .about-body {
       height: 100%;
-      font-size: calc(15px * var(--fs));
-      line-height: 1.36;
-      padding: 2px 6px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 42%);
+      gap: 16px;
+      min-width: 0;
       min-height: 0;
-      overflow: hidden;
+      padding: 4px 7px 7px;
+      position: relative;
     }
 
-    .about-main {
+    .about-copy {
+      min-width: 0;
+      min-height: 0;
+      padding: 2px 4px 6px 0;
       position: relative;
       z-index: 2;
-      height: 100%;
-      overflow: auto;
-      scrollbar-width: none;
-      padding-right: clamp(160px, 48%, 330px);
-      padding-bottom: 118px;
     }
 
-    .about-main::-webkit-scrollbar { width: 0; height: 0; }
-
-    .about-body p { margin-bottom: 9px; }
-
-    .italic,
-    .lang-sm {
-      font-size: calc(13px * var(--fs));
-      font-style: italic;
-      opacity: 0.90;
+    .about-kicker {
+      color: #111;
+      font-size: calc(25px * var(--fs));
+      line-height: 1.02;
+      font-weight: 900;
+      margin-bottom: 8px;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.58);
     }
 
-    .about-likes {
-      font-size: calc(13px * var(--fs));
-      line-height: 1.32;
-      opacity: 0.95;
+    .about-lede {
+      color: rgba(17,17,17,0.88);
+      font-size: calc(14px * var(--fs));
+      line-height: 1.34;
+      font-weight: 700;
+      margin-bottom: 12px;
     }
 
-    .about-likes div { margin-top: 4px; }
+    .about-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .about-facts span,
+    .about-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 27px;
+      padding: 5px 8px;
+      border: 1px solid rgba(0,0,0,0.13);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.34);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.52);
+      color: rgba(17,17,17,0.84);
+      font-size: calc(11px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .about-section {
+      padding: 10px 0;
+      border-top: 1px solid rgba(0,0,0,0.20);
+    }
+
+    .about-section:first-of-type {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .about-section h3 {
+      color: #111;
+      font-size: calc(14px * var(--fs));
+      line-height: 1.1;
+      font-weight: 900;
+      margin-bottom: 6px;
+      text-transform: lowercase;
+    }
+
+    .about-section p,
+    .about-list {
+      color: rgba(17,17,17,0.82);
+      font-size: calc(12px * var(--fs));
+      line-height: 1.34;
+      font-weight: 700;
+    }
+
+    .about-list {
+      display: grid;
+      gap: 5px;
+      list-style: none;
+    }
+
+    .about-list li {
+      position: relative;
+      padding-left: 15px;
+    }
+
+    .about-list li::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--pink);
+      font-weight: 900;
+    }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .about-visual {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      align-items: end;
+      justify-items: center;
+      position: relative;
+      z-index: 1;
+      padding-top: 6px;
+    }
+
+    .about-visual::before {
+      content: "";
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      bottom: 78px;
+      height: 34%;
+      z-index: -1;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.30);
+      border: 1px solid rgba(255,255,255,0.42);
+      transform: rotate(-3deg);
+      filter: blur(0.2px);
+    }
 
     .about-fursona-big {
-      position: absolute;
-      right: -5px;
-      bottom: 20px;
-      width: clamp(330px, 74%, 510px);
-      aspect-ratio: 1 / 1;
+      width: min(100%, 385px);
+      max-height: 390px;
+      display: block;
       object-fit: contain;
       pointer-events: none;
-      z-index: 1;
-      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.14));
-    }
-
-    .about-fursona-badge {
-      position: absolute;
-      left: 122px;
-      bottom: 32px;
-      z-index: 4;
       user-select: none;
-      pointer-events: none;
-    }
-
-    .about-fursona-badge .t1 {
-      font-weight: 900;
-      font-size: calc(18px * var(--fs));
-      line-height: 1.05;
-      color: #111;
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.98),
-        0 0 14px rgba(255,255,255,0.92),
-        0 0 28px rgba(255,255,255,0.78),
-        0 0 48px rgba(255,255,255,0.62);
-    }
-
-    .about-fursona-badge .t2 {
-      font-size: calc(15px * var(--fs));
-      line-height: 1.05;
-      margin-top: 2px;
-      color: #111;
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.95),
-        0 0 14px rgba(255,255,255,0.80),
-        0 0 26px rgba(255,255,255,0.65);
+      filter: drop-shadow(0 12px 14px rgba(22, 40, 58, 0.18));
     }
 
     .about-morepics-btn {
-      position: absolute;
-      left: 14px;
-      bottom: 100px;
-      z-index: 5;
-      border: 0;
-      background: transparent;
-      padding: 0;
-      font-family: inherit;
-      font-size: calc(14px * var(--fs));
-      font-weight: 900;
-      letter-spacing: 0.4px;
-      color: #111;
-      cursor: pointer;
-      text-align: left;
-      white-space: normal;
-      line-height: 1.05;
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.95),
-        0 0 16px rgba(255,255,255,0.85),
-        0 0 30px rgba(255,255,255,0.65);
-      animation: glowPulse 1.2s ease-in-out infinite;
-      transition: transform 120ms ease;
-    }
-
-    .about-morepics-btn span {
-      font-weight: 800;
-      opacity: 0.98;
-    }
-
-    .about-morepics-btn::before {
-      content: "";
-      position: absolute;
-      inset: -18px -22px;
-      pointer-events: none;
+      width: min(100%, 276px);
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 11px 15px;
+      margin-top: 7px;
+      border: 1px solid rgba(0,0,0,0.17);
+      border-radius: 14px;
       background:
-        radial-gradient(circle, rgba(255,255,255,0.90) 0 1px, transparent 2px) 0 0 / 16px 16px,
-        radial-gradient(circle, rgba(255,255,255,0.55) 0 1px, transparent 2px) 6px 8px / 22px 22px,
-        radial-gradient(circle, rgba(255,255,255,0.35) 0 1px, transparent 2px) 12px 2px / 26px 26px;
-      opacity: 0.55;
-      filter: blur(0.2px);
-      animation: sparkleDrift 1.6s linear infinite;
+        linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.24));
+      box-shadow:
+        0 9px 15px rgba(30, 55, 78, 0.15),
+        inset 0 1px 0 rgba(255,255,255,0.62);
+      color: #111;
+      font-size: calc(13px * var(--fs));
+      line-height: 1.08;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      text-align: center;
+      cursor: pointer;
+      text-transform: lowercase;
+      transition: transform 140ms ease, filter 140ms ease;
     }
 
-    .about-morepics-btn:hover { transform: translateY(-1px); }
-    .about-morepics-btn:active { transform: translateY(0); }
-
-    .about-morepics-btn:focus-visible {
-      outline: 2px solid rgba(0,0,0,0.55);
-      outline-offset: 4px;
-      border-radius: 6px;
+    .about-morepics-btn::after {
+      content: ">";
+      color: var(--pink);
+      font-size: calc(20px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
     }
 
-    @keyframes glowPulse {
-      0%, 100% {
-        text-shadow: 0 0 6px rgba(255,255,255,0.90), 0 0 16px rgba(255,255,255,0.75), 0 0 28px rgba(255,255,255,0.55);
-        opacity: 0.95;
-      }
-      50% {
-        text-shadow: 0 0 10px rgba(255,255,255,0.98), 0 0 24px rgba(255,255,255,0.90), 0 0 42px rgba(255,255,255,0.75);
-        opacity: 1;
-      }
+    .about-morepics-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
     }
 
-    @keyframes sparkleDrift {
-      0% { background-position: 0 0, 6px 8px, 12px 2px; }
-      100% { background-position: 18px 14px, 22px 26px, 30px 18px; }
+    .about-morepics-btn:active {
+      transform: translateY(0) scale(0.99);
     }
 
     .gallery-wrap {
       height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       min-height: 0;
     }
 
-    .gallery-hint { font-size: 12px; opacity: 0.8; }
+    .gallery-title {
+      color: rgba(17,17,17,0.82);
+      font-size: calc(13px * var(--fs));
+      font-weight: 900;
+    }
 
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px 12px;
+      gap: 11px 12px;
       align-content: start;
-      overflow: auto;
       min-height: 0;
       padding: 2px 2px 4px;
+      overflow: auto;
       scrollbar-width: none;
     }
 
-    .gallery-grid::-webkit-scrollbar { width: 0; height: 0; }
+    .gallery-grid::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
 
     .g-card {
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      min-width: 0;
-      text-decoration: none;
       color: inherit;
+      text-decoration: none;
       cursor: pointer;
     }
 
@@ -751,9 +963,10 @@
       width: 100%;
       aspect-ratio: 1 / 1;
       overflow: hidden;
-      border-radius: 2px;
-      border: 1px solid rgba(0,0,0,0.35);
-      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(0,0,0,0.34);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.52);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.52);
       transition: transform 120ms ease, box-shadow 120ms ease;
     }
 
@@ -762,44 +975,40 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
       display: block;
+      object-fit: cover;
       pointer-events: none;
       user-select: none;
     }
 
     .g-title {
-      font-size: 11px;
+      width: 100%;
+      color: rgba(17,17,17,0.82);
+      font-size: calc(10px * var(--fs));
       line-height: 1.05;
       text-align: center;
-      opacity: 0.92;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .g-card:hover .g-thumb {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.18);
-    }
-
-    .g-card:focus-visible {
-      outline: 2px solid rgba(0,0,0,0.55);
-      outline-offset: 3px;
-      border-radius: 6px;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 12px rgba(30, 55, 78, 0.16);
     }
 
     #win-gallery {
-      --close-x: 30;
-      --close-y: 15;
-      --close-w: 40;
-      --close-h: 20;
+      --close-x: 31;
+      --close-y: 16;
+      --close-w: 42;
+      --close-h: 22;
     }
 
     #win-gallery .close-hit {
       position: absolute;
       top: calc(var(--close-y) * 1px * var(--s));
       right: calc(var(--close-x) * 1px * var(--s));
+      z-index: 10;
       width: calc(var(--close-w) * 1px * var(--s));
       height: calc(var(--close-h) * 1px * var(--s));
       border: 0;
@@ -808,21 +1017,110 @@
       background: transparent;
       opacity: 0;
       cursor: pointer;
-      z-index: 10;
       appearance: none;
       -webkit-appearance: none;
     }
 
     #win-gallery .close-hit:focus-visible {
       opacity: 1;
-      outline: 2px solid rgba(180,230,255,0.75);
+      outline: 2px solid rgba(15, 50, 90, 0.66);
       outline-offset: 2px;
       border-radius: 10px;
     }
 
-    :root {
-      --modalPad: 26px;
-      --modalMax: 760px;
+    .fa-player {
+      position: fixed;
+      left: 22px;
+      bottom: 20px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: min(560px, calc(100vw - 44px));
+      padding: 10px 12px;
+      border: 1px solid rgba(0,0,0,0.14);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.25));
+      box-shadow:
+        0 12px 20px rgba(30, 55, 78, 0.17),
+        inset 0 1px 0 rgba(255,255,255,0.62);
+      backdrop-filter: blur(14px) saturate(1.08);
+      -webkit-backdrop-filter: blur(14px) saturate(1.08);
+      color: #111;
+    }
+
+    .fa-cover {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(0,0,0,0.22);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.42);
+      cursor: pointer;
+    }
+
+    .fa-cover img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .fa-mid {
+      min-width: 160px;
+      width: 260px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .fa-title {
+      font-size: 12px;
+      line-height: 1.1;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fa-seek,
+    .fa-vol {
+      width: 100%;
+      accent-color: #5c7fa6;
+    }
+
+    .fa-time {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 10px;
+      opacity: 0.78;
+      font-weight: 800;
+    }
+
+    .fa-volwrap {
+      width: 98px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .fa-btn {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid rgba(0,0,0,0.17);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.46);
+      color: #111;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.62);
     }
 
     .img-modal {
@@ -835,44 +1133,37 @@
     .img-modal.open {
       display: grid;
       place-items: center;
-      padding: var(--modalPad);
+      padding: 26px;
     }
 
     .img-modal-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.22);
-      backdrop-filter: blur(10px) saturate(1.1);
-      -webkit-backdrop-filter: blur(10px) saturate(1.1);
+      background: rgba(0,0,0,0.24);
+      backdrop-filter: blur(10px) saturate(1.08);
+      -webkit-backdrop-filter: blur(10px) saturate(1.08);
       animation: modalFade 160ms ease-out;
     }
 
     .img-modal-card {
       position: relative;
-      isolation: isolate;
       z-index: 1;
-      max-width: min(calc(100vw - var(--modalPad) * 2), var(--modalMax));
-      max-height: min(calc(100dvh - var(--modalPad) * 2), var(--modalMax));
-      width: auto;
-      height: auto;
+      max-width: min(calc(100vw - 52px), 780px);
+      max-height: min(calc(100dvh - 52px), 780px);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: transparent;
-      border: 0;
       animation: goofyPop 420ms cubic-bezier(.15,1.25,.25,1);
     }
 
     .img-modal-img {
       display: block;
-      max-width: min(calc(100vw - var(--modalPad) * 2), var(--modalMax));
-      max-height: min(calc(100dvh - var(--modalPad) * 2), var(--modalMax));
+      max-width: min(calc(100vw - 52px), 780px);
+      max-height: min(calc(100dvh - 52px), 780px);
       width: auto;
       height: auto;
-      border-radius: 10px;
-      position: relative;
-      z-index: 1;
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.20));
+      border-radius: 12px;
+      filter: drop-shadow(0 14px 18px rgba(0,0,0,0.26));
     }
 
     .img-modal-close {
@@ -881,28 +1172,23 @@
       right: 14px;
       z-index: 10;
       padding: 8px 12px;
-      border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.35);
-      background: rgba(0,0,0,0.22);
-      font: inherit;
-      font-weight: 900;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.26);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.22);
+      color: #fff;
       font-size: 14px;
+      font-weight: 900;
       letter-spacing: 0.4px;
       text-transform: lowercase;
-      color: #fff;
       cursor: pointer;
-      text-shadow: 0 0 6px rgba(255,255,255,0.9), 0 0 16px rgba(255,255,255,0.45);
-      box-shadow: 0 10px 18px rgba(0,0,0,0.22);
+      text-shadow: 0 0 8px rgba(255,255,255,0.56);
       transition: transform 120ms ease, background 120ms ease;
     }
 
     .img-modal-close:hover {
-      transform: translateY(-1px) rotate(-2deg);
-      background: rgba(0,0,0,0.30);
-    }
-
-    .img-modal-close:active {
-      transform: translateY(0) rotate(0deg);
+      transform: translateY(-1px);
+      background: rgba(0,0,0,0.34);
     }
 
     @keyframes modalFade {
@@ -911,12 +1197,276 @@
     }
 
     @keyframes goofyPop {
-      0% { transform: scale(0.45) rotate(-6deg); opacity: 0; }
-      45% { transform: scale(1.22) rotate(3deg); opacity: 1; }
-      65% { transform: scale(0.92) rotate(-2deg); }
-      80% { transform: scale(1.06) rotate(1deg); }
-      92% { transform: scale(0.99) rotate(-0.4deg); }
-      100% { transform: scale(1) rotate(0deg); }
+      0% { transform: scale(0.52) rotate(-5deg); opacity: 0; }
+      45% { transform: scale(1.13) rotate(2deg); opacity: 1; }
+      68% { transform: scale(0.96) rotate(-1deg); }
+      86% { transform: scale(1.03) rotate(0.4deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    #mobile-root {
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      html, body {
+        min-height: 100%;
+      }
+
+      body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
+      }
+
+      #desk,
+      .fa-player {
+        display: none;
+      }
+
+      #intro.is-hidden {
+        display: none !important;
+      }
+
+      #mobile-root {
+        position: relative;
+        z-index: 10;
+        width: min(100%, 520px);
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin: 0 auto;
+        padding: 18px 14px calc(28px + env(safe-area-inset-bottom));
+      }
+
+      #mobile-root .site-title {
+        position: static;
+        width: 100%;
+        min-height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0 6px;
+        text-align: center;
+        font-size: clamp(38px, 11vw, 58px);
+        line-height: 1;
+        letter-spacing: 3px;
+        text-shadow: 2px 2px 0 rgba(255,255,255,0.48);
+      }
+
+      .m-card {
+        position: relative;
+        overflow: hidden;
+        padding: 18px 14px;
+        border: 1px solid rgba(255,255,255,0.50);
+        border-radius: 18px;
+        background:
+          linear-gradient(175deg, rgba(255,255,255,0.56), rgba(255,255,255,0.24));
+        box-shadow:
+          0 10px 22px rgba(30, 55, 78, 0.14),
+          inset 0 1px 0 rgba(255,255,255,0.62);
+        backdrop-filter: blur(16px) saturate(1.12);
+        -webkit-backdrop-filter: blur(16px) saturate(1.12);
+      }
+
+      .m-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.22;
+        background-image:
+          url("img/paw.png"),
+          url("img/paw.png"),
+          url("img/paw.png"),
+          url("img/paw.png");
+        background-repeat: no-repeat;
+        background-size: 40px 40px, 34px 34px, 32px 32px, 46px 46px;
+        background-position: 10px 10px, calc(100% - 44px) 14px, 12px calc(100% - 42px), calc(100% - 52px) calc(100% - 52px);
+      }
+
+      .m-card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .m-welcome-title {
+        margin-bottom: 14px;
+        color: #111;
+        font-size: 17px;
+        line-height: 1.25;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .m-badges-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      .m-flag {
+        width: 62px;
+        height: 38px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.28);
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+      }
+
+      .m-flag img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .m-pronouns {
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .m-pronouns .they {
+        color: #c43a3a;
+      }
+
+      .m-sep {
+        width: 100%;
+        height: 1px;
+        margin: 14px 0;
+        background: rgba(0,0,0,0.32);
+      }
+
+      .m-links-label,
+      .m-discord-label {
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 900;
+        opacity: 0.86;
+        text-transform: lowercase;
+      }
+
+      .m-links-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .m-link-item {
+        width: 100%;
+        min-height: 68px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 14px 10px 10px;
+        color: inherit;
+        text-decoration: none;
+        border: 1px solid rgba(0,0,0,0.13);
+        border-radius: 14px;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,0.44), rgba(255,255,255,0.20));
+        box-shadow:
+          0 7px 14px rgba(30, 55, 78, 0.10),
+          inset 0 1px 0 rgba(255,255,255,0.52);
+        transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+      }
+
+      .m-link-item:active {
+        transform: scale(0.985);
+      }
+
+      .m-link-icon,
+      .m-link-icon img {
+        width: 48px;
+        height: 48px;
+      }
+
+      .m-link-icon {
+        flex: 0 0 auto;
+        display: grid;
+        place-items: center;
+      }
+
+      .m-link-icon img {
+        display: block;
+        object-fit: contain;
+      }
+
+      .m-link-label {
+        min-width: 0;
+        flex: 1 1 auto;
+        font-size: 15px;
+        line-height: 1.1;
+        font-weight: 900;
+        opacity: 0.92;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-transform: lowercase;
+      }
+
+      .m-link-arrow {
+        flex: 0 0 auto;
+        font-size: 18px;
+        line-height: 1;
+        font-weight: 900;
+        opacity: 0.45;
+      }
+
+      .m-discord-wrap {
+        margin-top: 14px;
+      }
+
+      .m-discord-wrap .discord-badge {
+        min-height: 82px;
+      }
+
+      .contact-mail {
+        margin-top: auto;
+        padding-top: 8px;
+        text-align: center;
+        font-size: 12px;
+        line-height: 1.25;
+        font-weight: 900;
+        opacity: 0.86;
+        text-shadow: 1px 1px 0 rgba(255,255,255,0.45);
+      }
+
+      .contact-mail a {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
+
+    @media (max-width: 380px) {
+      #mobile-root {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .m-card {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      #mobile-root .site-title {
+        letter-spacing: 2px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
@@ -952,27 +1502,30 @@
     </div>
 
     <div class="fa-volwrap" aria-label="volume">
-      <span class="fa-volicon" aria-hidden="true">🔊</span>
+      <span class="fa-volicon" aria-hidden="true">vol</span>
       <input class="fa-vol" id="faVol" type="range" min="0" max="100" value="18" step="1" aria-label="volume">
     </div>
 
-    <button class="fa-btn fa-play" id="faToggle" type="button" aria-label="play/stop">▶</button>
+    <button class="fa-btn fa-play" id="faToggle" type="button" aria-label="play or stop">▶</button>
     <audio id="faAudio" preload="metadata"></audio>
   </div>
 
   <div id="desk">
     <div id="stage">
-      <h1 class="site-title" data-type="frazyy.com" aria-label="frazyy.com"></h1>
+      <h1 class="site-title" data-type="frazyy.com" aria-label="frazyy.com">
+        <span class="tw-text">frazyy.com</span><span class="tw-cursor">_</span>
+      </h1>
 
       <div class="window wide" id="win-welcome"
-           data-x="140" data-y="190"
-           data-skin="0.90" data-font="1.00"
-           data-stretch-x="1.10" data-stretch-y="1.00">
+           data-x="100" data-y="214"
+           data-w="1160" data-h="378"
+           data-skin="1.02" data-font="1.04"
+           data-stretch-x="1.18" data-stretch-y="1.08">
         <img class="skin" src="img/window4.png" alt="">
         <div class="handle"></div>
         <div class="content">
           <div class="welcome-panel">
-            <div class="welcome-title">welcome to my website!! \(>~<)/♡</div>
+            <div class="welcome-title">welcome to my website!! (&gt;~&lt;)/&lt;3</div>
 
             <div class="welcome-top">
               <div class="flags-pair">
@@ -992,40 +1545,47 @@
               <div class="w-links">
                 <div class="w-links-label">my links:</div>
                 <div class="w-links-row">
-                  <a class="link-item" href="https://www.tiktok.com/@frazthecutie" target="_blank" rel="noopener noreferrer" title="tiktok">
+                  <a class="link-item" href="https://www.tiktok.com/@frazypaws" target="_blank" rel="noopener noreferrer" title="tiktok">
                     <div class="link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
-                    <div class="link-label">my tiktok</div>
+                    <div class="link-label">tiktok</div>
                   </a>
                   <a class="link-item" href="https://steamcommunity.com/id/frazbear123" target="_blank" rel="noopener noreferrer" title="steam">
                     <div class="link-icon"><img src="img/steam.gif" alt="steam"></div>
-                    <div class="link-label">my steam</div>
+                    <div class="link-label">steam</div>
                   </a>
-                  <a class="link-item" href="https://open.spotify.com/user/317gozuu2rm2iysfwogiumsufzjm?si=bb93aa604a85461d" target="_blank" rel="noopener noreferrer" title="spotify">
-                    <div class="link-icon"><img src="img/spotify.gif" alt="spotify"></div>
-                    <div class="link-label">my spotify</div>
+                  <a class="link-item" href="https://www.instagram.com/frazyypaws/" target="_blank" rel="noopener noreferrer" title="instagram">
+                    <div class="link-icon"><img src="img/instagram.gif" alt="instagram"></div>
+                    <div class="link-label">instagram</div>
                   </a>
-                  <a class="link-item" href="https://x.com/frazyyfur" target="_blank" rel="noopener noreferrer" title="twitter">
+                  <a class="link-item" href="https://x.com/frazyypaws" target="_blank" rel="noopener noreferrer" title="twitter">
                     <div class="link-icon"><img src="img/twitter.gif" alt="twitter"></div>
-                    <div class="link-label">my x/twitter</div>
+                    <div class="link-label">twitter</div>
                   </a>
                   <a class="link-item" href="https://www.roblox.com/users/475388036/profile" target="_blank" rel="noopener noreferrer" title="roblox">
                     <div class="link-icon"><img src="img/roblox.gif" alt="roblox"></div>
-                    <div class="link-label">my roblox</div>
+                    <div class="link-label">roblox</div>
+                  </a>
+                  <a class="link-item" href="https://discord.gg/7eduHPDz25" target="_blank" rel="noopener noreferrer" title="discord server">
+                    <div class="link-icon"><img src="img/discordserver.gif" alt="discord server"></div>
+                    <div class="link-label">discord server</div>
                   </a>
                 </div>
               </div>
 
-              <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
-                <div class="discord-pfp-ring">
-                  <img class="discord-pfp" id="discordPfp" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
-                </div>
-                <div class="discord-meta">
-                  <div class="discord-name" id="discordName">loading...</div>
-                  <div class="discord-user" id="discordUser">@frazyyfur</div>
-                  <div class="discord-activity" id="discordActivity">loading activity...</div>
-                </div>
-                <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
-              </button>
+              <div class="discord-col">
+                <div class="discord-label">my discord:</div>
+                <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
+                  <div class="discord-pfp-ring">
+                    <img class="discord-pfp" id="discordPfp" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
+                  </div>
+                  <div class="discord-meta">
+                    <div class="discord-name" id="discordName">frazyypaws</div>
+                    <div class="discord-user" id="discordUser">@frazyypaws</div>
+                    <div class="discord-activity" id="discordActivity">click to copy username</div>
+                  </div>
+                  <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1033,12 +1593,13 @@
 
       <div class="window win1" id="win-music"
            data-label="music i like.exe"
-           data-x="300" data-y="500"
-           data-skin="0.90" data-font="1.00">
+           data-x="165" data-y="635"
+           data-w="500" data-h="430"
+           data-skin="1.02" data-font="1.04">
         <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
         <div class="content">
-          <div class="music-title-row"></div>
+          <div class="music-title-row">songs i like rn</div>
           <div class="music-grid">
             <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che2.png" alt="serve da ba$$"></div><div class="album-name">serve da ba$$</div></a></div>
             <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che3.png" alt="get n*ked"></div><div class="album-name">get n*ked</div></a></div>
@@ -1054,45 +1615,63 @@
 
       <div class="window std" id="win-about"
            data-label="about me.exe"
-           data-x="1140" data-y="125"
-           data-skin="0.90" data-font="1.08"
-           data-stretch-x="1.08" data-stretch-y="1.16">
+           data-x="1280" data-y="142"
+           data-w="720" data-h="610"
+           data-skin="1.04" data-font="1.09"
+           data-stretch-x="1.22" data-stretch-y="1.22">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
         <div class="content">
           <div class="about-body">
-            <img class="about-fursona-big" src="img/frazyy.png" alt="my fursona lumi">
+            <div class="about-copy scroll-soft">
+              <div class="about-kicker">hii, im frazyy</div>
+              <p class="about-lede">
+                estonian roblox game developer, coding nerd, fashion enjoyer, and professional music-loop repeater.
+              </p>
 
-            <div class="about-main">
-              <p>♡ hii im frazyy</p>
-              <p><strong>♡ im from estonia</strong><br>
-                <span class="lang-sm">i can speak 3 languages<br>(english, russian and estonian)</span>
-              </p>
-              <p><strong>♡ im a roblox game developer</strong></p>
-              <p><strong>♡ im a huge nerd, i love coding and even school</strong></p>
-              <p><strong>♡ i have a fursuit</strong><br>
-                <span class="italic">check more pictures in<br>the frazy folder&lt;3</span>
-              </p>
-              <p><strong>♡ im into fashion!!!</strong></p>
+              <div class="about-facts" aria-label="quick facts">
+                <span>estonia</span>
+                <span>he/him + they/them</span>
+                <span>3 languages</span>
+                <span>roblox dev</span>
+              </div>
 
-              <p>
-                <strong>♡ things i like</strong><br>
-                <span class="about-likes">
-                  <div>&gt; games: counter strike 2, roblox, minecraft, terraria, vrchat, geometry dash, osu!, geoguessr</div>
-                  <div>&gt; coding: roblox studio, unreal engine, unity, lua, c++, html, java</div>
-                  <div>&gt; cats ^w^</div>
-                  <div>&gt; listening to music</div>
-                </span>
-              </p>
+              <section class="about-section">
+                <h3>quick intro</h3>
+                <p>
+                  i can speak english, russian, and estonian. i love making stuff in roblox studio, messing with code,
+                  learning engines, and somehow i even like school.
+                </p>
+              </section>
+
+              <section class="about-section">
+                <h3>also me</h3>
+                <ul class="about-list">
+                  <li>i have a fursuit, and the frazy folder has more pictures.</li>
+                  <li>i am into fashion and outfits that actually have personality.</li>
+                  <li>i like building weird little internet places like this one.</li>
+                </ul>
+              </section>
+
+              <section class="about-section">
+                <h3>things i like</h3>
+                <ul class="about-list">
+                  <li>games: counter strike 2, roblox, minecraft, terraria, vrchat, geometry dash, osu!, geoguessr</li>
+                  <li>coding: roblox studio, unreal engine, unity, lua, c++, html, java</li>
+                  <li>cats, listening to music, and making things look cooler than they need to be</li>
+                </ul>
+                <div class="about-tags" aria-label="favorite tags">
+                  <span class="about-tag">games</span>
+                  <span class="about-tag">coding</span>
+                  <span class="about-tag">music</span>
+                  <span class="about-tag">fashion</span>
+                </div>
+              </section>
             </div>
 
-            <button class="about-morepics-btn" id="openGalleryBtn" type="button">
-              Click here<br><span>for more pictures :3</span>
-            </button>
-
-            <div class="about-fursona-badge">
-              <div class="t1">my fursona btw &lt;3</div>
-              <div class="t2">his name is lumi</div>
+            <div class="about-visual">
+              <img class="about-fursona-big" src="img/frazyy.png" alt="frazyy picture">
+              <button class="about-morepics-btn" id="openGalleryBtn" type="button">more pictures :3</button>
             </div>
           </div>
         </div>
@@ -1100,50 +1679,132 @@
 
       <div class="window std closed" id="win-gallery"
            data-label="frazy folder.exe"
-           data-x="1180" data-y="210"
-           data-skin="0.90" data-font="1.00">
+           data-x="1230" data-y="260"
+           data-w="740" data-h="560"
+           data-skin="1.03" data-font="1.03"
+           data-stretch-x="1.18" data-stretch-y="1.20">
         <img class="skin" src="img/window5.png" alt="">
         <div class="handle"></div>
         <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close gallery"></button>
 
         <div class="content">
           <div class="gallery-wrap">
-            <div class="gallery-hint">click a picture to view it fullscreen ♡</div>
-
+            <div class="gallery-title">frazy folder</div>
             <div class="gallery-grid" id="galleryGrid">
               <a class="g-card" href="img/frazyy.png" data-title="pic 1"><div class="g-thumb"><img src="img/frazyy.png" alt="pic 1" draggable="false"></div><div class="g-title">pic 1</div></a>
               <a class="g-card" href="img/frazyy1.jpg" data-title="pic 2"><div class="g-thumb"><img src="img/frazyy1.jpg" alt="pic 2" draggable="false"></div><div class="g-title">pic 2</div></a>
               <a class="g-card" href="img/frazyy2.png" data-title="pic 3"><div class="g-thumb"><img src="img/frazyy2.png" alt="pic 3" draggable="false"></div><div class="g-title">pic 3</div></a>
-              <a class="g-card" href="img/frazyy3.jpg" data-title="pic 5"><div class="g-thumb"><img src="img/frazyy3.jpg" alt="pic 5" draggable="false"></div><div class="g-title">pic 5</div></a>
-              <a class="g-card" href="img/frazyy4.jpg" data-title="pic 6"><div class="g-thumb"><img src="img/frazyy4.jpg" alt="pic 6" draggable="false"></div><div class="g-title">pic 6</div></a>
-              <a class="g-card" href="img/frazyy5.png" data-title="pic 7"><div class="g-thumb"><img src="img/frazyy5.png" alt="pic 7" draggable="false"></div><div class="g-title">pic 7</div></a>
-              <a class="g-card" href="img/frazyy6.jpg" data-title="pic 8"><div class="g-thumb"><img src="img/frazyy6.jpg" alt="pic 8" draggable="false"></div><div class="g-title">pic 8</div></a>
-              <a class="g-card" href="img/frazyy7.png" data-title="pic 9"><div class="g-thumb"><img src="img/frazyy7.png" alt="pic 9" draggable="false"></div><div class="g-title">pic 9</div></a>
-              <a class="g-card" href="img/frazyy8.png" data-title="pic 10"><div class="g-thumb"><img src="img/frazyy8.png" alt="pic 10" draggable="false"></div><div class="g-title">pic 10</div></a>
-              <a class="g-card" href="img/frazyy9.png" data-title="pic 11"><div class="g-thumb"><img src="img/frazyy9.png" alt="pic 11" draggable="false"></div><div class="g-title">pic 11</div></a>
-              <a class="g-card" href="img/frazyy10.jpg" data-title="pic 12"><div class="g-thumb"><img src="img/frazyy10.jpg" alt="pic 12" draggable="false"></div><div class="g-title">pic 12</div></a>
-              <a class="g-card" href="img/frazyy11.jpg" data-title="pic 13"><div class="g-thumb"><img src="img/frazyy11.jpg" alt="pic 13" draggable="false"></div><div class="g-title">pic 13</div></a>
-              <a class="g-card" href="img/frazyy12.png" data-title="pic 14"><div class="g-thumb"><img src="img/frazyy12.png" alt="pic 14" draggable="false"></div><div class="g-title">pic 14</div></a>
-              <a class="g-card" href="img/frazyy13.JPG" data-title="pic 15"><div class="g-thumb"><img src="img/frazyy13.JPG" alt="pic 15" draggable="false"></div><div class="g-title">pic 15</div></a>
-              <a class="g-card" href="img/frazyy14.JPG" data-title="pic 16"><div class="g-thumb"><img src="img/frazyy14.JPG" alt="pic 16" draggable="false"></div><div class="g-title">pic 16</div></a>
-              <a class="g-card" href="img/frazyy15.jpg" data-title="pic 17"><div class="g-thumb"><img src="img/frazyy15.jpg" alt="pic 17" draggable="false"></div><div class="g-title">pic 17</div></a>
-              <a class="g-card" href="img/frazyy16.jpg" data-title="pic 18"><div class="g-thumb"><img src="img/frazyy16.jpg" alt="pic 18" draggable="false"></div><div class="g-title">pic 18</div></a>
-              <a class="g-card" href="img/frazyy17.jpg" data-title="pic 19"><div class="g-thumb"><img src="img/frazyy17.jpg" alt="pic 19" draggable="false"></div><div class="g-title">pic 19</div></a>
-              <a class="g-card" href="img/frazyy18.png" data-title="pic 20"><div class="g-thumb"><img src="img/frazyy18.png" alt="pic 20" draggable="false"></div><div class="g-title">pic 20</div></a>
-              <a class="g-card" href="img/frazyy19.png" data-title="pic 21"><div class="g-thumb"><img src="img/frazyy19.png" alt="pic 21" draggable="false"></div><div class="g-title">pic 21</div></a>
-              <a class="g-card" href="img/frazyy20.png" data-title="pic 22"><div class="g-thumb"><img src="img/frazyy20.png" alt="pic 22" draggable="false"></div><div class="g-title">pic 22</div></a>
-              <a class="g-card" href="img/frazyy21.png" data-title="pic 23"><div class="g-thumb"><img src="img/frazyy21.png" alt="pic 23" draggable="false"></div><div class="g-title">pic 23</div></a>
-              <a class="g-card" href="img/frazyy22.png" data-title="pic 24"><div class="g-thumb"><img src="img/frazyy22.png" alt="pic 24" draggable="false"></div><div class="g-title">pic 24</div></a>
-              <a class="g-card" href="img/frazyy23.jpg" data-title="pic 25"><div class="g-thumb"><img src="img/frazyy23.jpg" alt="pic 25" draggable="false"></div><div class="g-title">pic 25</div></a>
-              <a class="g-card" href="img/frazyy24.png" data-title="pic 26"><div class="g-thumb"><img src="img/frazyy24.png" alt="pic 26" draggable="false"></div><div class="g-title">pic 26</div></a>
-              <a class="g-card" href="img/frazyy25.jpg" data-title="pic 27"><div class="g-thumb"><img src="img/frazyy25.jpg" alt="pic 27" draggable="false"></div><div class="g-title">pic 27</div></a>
-              <a class="g-card" href="img/frazyy26.jpg" data-title="pic 28"><div class="g-thumb"><img src="img/frazyy26.jpg" alt="pic 28" draggable="false"></div><div class="g-title">pic 28</div></a>
+              <a class="g-card" href="img/frazyy3.jpg" data-title="pic 4"><div class="g-thumb"><img src="img/frazyy3.jpg" alt="pic 4" draggable="false"></div><div class="g-title">pic 4</div></a>
+              <a class="g-card" href="img/frazyy4.jpg" data-title="pic 5"><div class="g-thumb"><img src="img/frazyy4.jpg" alt="pic 5" draggable="false"></div><div class="g-title">pic 5</div></a>
+              <a class="g-card" href="img/frazyy5.png" data-title="pic 6"><div class="g-thumb"><img src="img/frazyy5.png" alt="pic 6" draggable="false"></div><div class="g-title">pic 6</div></a>
+              <a class="g-card" href="img/frazyy6.jpg" data-title="pic 7"><div class="g-thumb"><img src="img/frazyy6.jpg" alt="pic 7" draggable="false"></div><div class="g-title">pic 7</div></a>
+              <a class="g-card" href="img/frazyy7.png" data-title="pic 8"><div class="g-thumb"><img src="img/frazyy7.png" alt="pic 8" draggable="false"></div><div class="g-title">pic 8</div></a>
+              <a class="g-card" href="img/frazyy8.png" data-title="pic 9"><div class="g-thumb"><img src="img/frazyy8.png" alt="pic 9" draggable="false"></div><div class="g-title">pic 9</div></a>
+              <a class="g-card" href="img/frazyy9.png" data-title="pic 10"><div class="g-thumb"><img src="img/frazyy9.png" alt="pic 10" draggable="false"></div><div class="g-title">pic 10</div></a>
+              <a class="g-card" href="img/frazyy10.jpg" data-title="pic 11"><div class="g-thumb"><img src="img/frazyy10.jpg" alt="pic 11" draggable="false"></div><div class="g-title">pic 11</div></a>
+              <a class="g-card" href="img/frazyy11.jpg" data-title="pic 12"><div class="g-thumb"><img src="img/frazyy11.jpg" alt="pic 12" draggable="false"></div><div class="g-title">pic 12</div></a>
+              <a class="g-card" href="img/frazyy12.png" data-title="pic 13"><div class="g-thumb"><img src="img/frazyy12.png" alt="pic 13" draggable="false"></div><div class="g-title">pic 13</div></a>
+              <a class="g-card" href="img/frazyy13.JPG" data-title="pic 14"><div class="g-thumb"><img src="img/frazyy13.JPG" alt="pic 14" draggable="false"></div><div class="g-title">pic 14</div></a>
+              <a class="g-card" href="img/frazyy14.JPG" data-title="pic 15"><div class="g-thumb"><img src="img/frazyy14.JPG" alt="pic 15" draggable="false"></div><div class="g-title">pic 15</div></a>
+              <a class="g-card" href="img/frazyy15.jpg" data-title="pic 16"><div class="g-thumb"><img src="img/frazyy15.jpg" alt="pic 16" draggable="false"></div><div class="g-title">pic 16</div></a>
+              <a class="g-card" href="img/frazyy16.jpg" data-title="pic 17"><div class="g-thumb"><img src="img/frazyy16.jpg" alt="pic 17" draggable="false"></div><div class="g-title">pic 17</div></a>
+              <a class="g-card" href="img/frazyy17.jpg" data-title="pic 18"><div class="g-thumb"><img src="img/frazyy17.jpg" alt="pic 18" draggable="false"></div><div class="g-title">pic 18</div></a>
+              <a class="g-card" href="img/frazyy18.png" data-title="pic 19"><div class="g-thumb"><img src="img/frazyy18.png" alt="pic 19" draggable="false"></div><div class="g-title">pic 19</div></a>
+              <a class="g-card" href="img/frazyy19.png" data-title="pic 20"><div class="g-thumb"><img src="img/frazyy19.png" alt="pic 20" draggable="false"></div><div class="g-title">pic 20</div></a>
+              <a class="g-card" href="img/frazyy20.png" data-title="pic 21"><div class="g-thumb"><img src="img/frazyy20.png" alt="pic 21" draggable="false"></div><div class="g-title">pic 21</div></a>
+              <a class="g-card" href="img/frazyy21.png" data-title="pic 22"><div class="g-thumb"><img src="img/frazyy21.png" alt="pic 22" draggable="false"></div><div class="g-title">pic 22</div></a>
+              <a class="g-card" href="img/frazyy22.png" data-title="pic 23"><div class="g-thumb"><img src="img/frazyy22.png" alt="pic 23" draggable="false"></div><div class="g-title">pic 23</div></a>
+              <a class="g-card" href="img/frazyy23.jpg" data-title="pic 24"><div class="g-thumb"><img src="img/frazyy23.jpg" alt="pic 24" draggable="false"></div><div class="g-title">pic 24</div></a>
+              <a class="g-card" href="img/frazyy24.png" data-title="pic 25"><div class="g-thumb"><img src="img/frazyy24.png" alt="pic 25" draggable="false"></div><div class="g-title">pic 25</div></a>
+              <a class="g-card" href="img/frazyy25.jpg" data-title="pic 26"><div class="g-thumb"><img src="img/frazyy25.jpg" alt="pic 26" draggable="false"></div><div class="g-title">pic 26</div></a>
+              <a class="g-card" href="img/frazyy26.jpg" data-title="pic 27"><div class="g-thumb"><img src="img/frazyy26.jpg" alt="pic 27" draggable="false"></div><div class="g-title">pic 27</div></a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <main id="mobile-root">
+    <h1 class="site-title" data-type="frazyy.com" aria-label="frazyy.com">
+      <span class="tw-text">frazyy.com</span><span class="tw-cursor">_</span>
+    </h1>
+
+    <section class="m-card" aria-label="welcome">
+      <div class="m-welcome-title">welcome to my website!</div>
+
+      <div class="m-badges-row">
+        <div class="m-flag"><img src="img/mlm.png" alt="mlm flag"></div>
+        <div class="m-flag"><img src="img/Demiboyflag.webp" alt="demiboy flag"></div>
+        <span class="m-pronouns">he/him <span class="they">they/them</span></span>
+      </div>
+
+      <div class="m-sep"></div>
+
+      <div class="m-links-label">my links:</div>
+
+      <div class="m-links-list">
+        <a class="m-link-item" href="https://www.tiktok.com/@frazypaws" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
+          <div class="m-link-label">tiktok</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+
+        <a class="m-link-item" href="https://steamcommunity.com/id/frazbear123" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon"><img src="img/steam.gif" alt="steam"></div>
+          <div class="m-link-label">steam</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+
+        <a class="m-link-item" href="https://www.instagram.com/frazyypaws/" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon"><img src="img/instagram.gif" alt="instagram"></div>
+          <div class="m-link-label">instagram</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+
+        <a class="m-link-item" href="https://x.com/frazyypaws" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon"><img src="img/twitter.gif" alt="twitter"></div>
+          <div class="m-link-label">twitter</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+
+        <a class="m-link-item" href="https://www.roblox.com/users/475388036/profile" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon"><img src="img/roblox.gif" alt="roblox"></div>
+          <div class="m-link-label">roblox</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+
+        <a class="m-link-item" href="https://discord.gg/7eduHPDz25" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon"><img src="img/discordserver.gif" alt="discord server"></div>
+          <div class="m-link-label">discord server</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+      </div>
+
+      <div class="m-discord-wrap">
+        <div class="m-discord-label">my discord:</div>
+
+        <button class="discord-badge" id="discordCardMobile" type="button" aria-label="Copy Discord username">
+          <div class="discord-pfp-ring">
+            <img class="discord-pfp" id="discordPfpMobile" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
+          </div>
+
+          <div class="discord-meta">
+            <div class="discord-name" id="discordNameMobile">frazyypaws</div>
+            <div class="discord-user" id="discordUserMobile">@frazyypaws</div>
+            <div class="discord-activity" id="discordActivityMobile">click to copy username</div>
+          </div>
+
+          <div class="discord-copied" id="discordCopiedMobile" aria-hidden="true">copied!</div>
+        </button>
+      </div>
+    </section>
+
+    <footer class="contact-mail">
+      my contact mail:
+      <a href="mailto:contact@frazyy.com">contact@frazyy.com</a>
+    </footer>
+  </main>
 
   <div id="imgModal" class="img-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="image preview">
     <div class="img-modal-backdrop" id="modalBackdrop"></div>
@@ -1154,15 +1815,17 @@
   </div>
 
   <script>
-    const DESIGN_W = 2048;
-    const DESIGN_H = 799;
-    const MARGIN_X = 110;
-    const MARGIN_Y = 70;
-    const MAX_UPSCALE = 1.28;
+    const DESIGN_W = 2200;
+    const DESIGN_H = 1000;
+    const MARGIN_X = 42;
+    const MARGIN_Y = 28;
+    const MAX_UPSCALE = 1.06;
 
-    const stage = document.getElementById('stage');
+    const stage = document.getElementById("stage");
 
     function layoutStage() {
+      if (!stage) return;
+
       const vw = window.innerWidth;
       const vh = window.innerHeight;
 
@@ -1178,38 +1841,54 @@
         scale = Math.min(1, scale);
       }
 
-      scale = Math.max(0.55, scale);
+      scale = Math.max(0.54, scale);
 
       const scaledW = DESIGN_W * scale;
       const scaledH = DESIGN_H * scale;
-      const x = (vw >= scaledW + MARGIN_X * 2) ? MARGIN_X : Math.floor((vw - scaledW) / 2);
-      const y = (vh >= scaledH + MARGIN_Y * 2) ? MARGIN_Y : Math.floor((vh - scaledH) / 2);
+      const x = Math.floor((vw - scaledW) / 2);
+      const y = Math.floor((vh - scaledH) / 2);
 
       stage.style.transform = `translate3d(${Math.round(x)}px,${Math.round(y)}px,0) scale(${scale})`;
     }
 
-    window.addEventListener('resize', layoutStage);
+    window.addEventListener("resize", layoutStage);
     layoutStage();
 
-    document.querySelectorAll('.window').forEach(win => {
-      const img = win.querySelector('img.skin');
-      const skinScale = parseFloat(win.dataset.skin || '0.90');
-      const fontScale = parseFloat(win.dataset.font || '1');
-      const stretchX = parseFloat(win.dataset.stretchX || '1');
-      const stretchY = parseFloat(win.dataset.stretchY || '1');
+    function applyWindowSizes() {
+      document.querySelectorAll(".window").forEach(win => {
+        const img = win.querySelector("img.skin");
+        const skinScale = parseFloat(win.dataset.skin || "1");
+        const fontScale = parseFloat(win.dataset.font || "1");
+        const stretchX = parseFloat(win.dataset.stretchX || "1");
+        const stretchY = parseFloat(win.dataset.stretchY || "1");
+        const fallbackW = parseFloat(win.dataset.w || "520");
+        const fallbackH = parseFloat(win.dataset.h || "380");
 
-      win.style.setProperty('--s', skinScale);
-      win.style.setProperty('--fs', fontScale);
+        win.style.setProperty("--s", skinScale);
+        win.style.setProperty("--fs", fontScale);
 
-      const applySize = () => {
-        win.style.width = (img.naturalWidth * skinScale * stretchX) + 'px';
-        win.style.height = (img.naturalHeight * skinScale * stretchY) + 'px';
-        win.classList.add('ready');
-      };
+        const applySize = () => {
+          const baseW = img && img.naturalWidth ? img.naturalWidth : fallbackW;
+          const baseH = img && img.naturalHeight ? img.naturalHeight : fallbackH;
+          win.style.width = (baseW * skinScale * stretchX) + "px";
+          win.style.height = (baseH * skinScale * stretchY) + "px";
+          win.classList.add("ready");
+        };
 
-      if (img.complete && img.naturalWidth) applySize();
-      else img.addEventListener('load', applySize, { once: true });
-    });
+        if (img && img.complete) applySize();
+        else if (img) {
+          img.addEventListener("load", applySize, { once: true });
+          img.addEventListener("error", () => {
+            img.style.display = "none";
+            applySize();
+          }, { once: true });
+        } else {
+          applySize();
+        }
+      });
+    }
+
+    applyWindowSizes();
 
     let topZ = 10;
     let rafActive = false;
@@ -1217,8 +1896,8 @@
 
     function ensureState(el) {
       if (!states.has(el)) {
-        const x = parseFloat(el.dataset.x || '0');
-        const y = parseFloat(el.dataset.y || '0');
+        const x = parseFloat(el.dataset.x || "0");
+        const y = parseFloat(el.dataset.y || "0");
         states.set(el, { x, y, tx: x, ty: y, dragging: false });
         el.style.transform = `translate3d(${x}px,${y}px,0)`;
       }
@@ -1253,8 +1932,8 @@
     }
 
     function bringToFront(win) {
-      document.querySelectorAll('.window.is-front').forEach(w => w.classList.remove('is-front'));
-      win.classList.add('is-front');
+      document.querySelectorAll(".window.is-front").forEach(w => w.classList.remove("is-front"));
+      win.classList.add("is-front");
       win.style.zIndex = (++topZ).toString();
     }
 
@@ -1265,21 +1944,23 @@
       const maxX = (window.innerWidth - stageRect.left) / stageScale;
       const minY = (0 - stageRect.top) / stageScale;
       const maxY = (window.innerHeight - stageRect.top) / stageScale;
-      const PAD = 40;
+      const pad = 46;
 
       return {
-        x: Math.max(minX - PAD, Math.min(maxX - w + PAD, nx)),
-        y: Math.max(minY - PAD, Math.min(maxY - h + PAD, ny))
+        x: Math.max(minX - pad, Math.min(maxX - w + pad, nx)),
+        y: Math.max(minY - pad, Math.min(maxY - h + pad, ny))
       };
     }
 
-    document.querySelectorAll('.window').forEach(win => {
-      const handle = win.querySelector('.handle');
+    document.querySelectorAll(".window").forEach(win => {
+      const handle = win.querySelector(".handle");
       const s = ensureState(win);
 
-      win.addEventListener('pointerdown', () => bringToFront(win), true);
+      win.addEventListener("pointerdown", () => bringToFront(win), true);
 
-      handle.addEventListener('pointerdown', e => {
+      if (!handle) return;
+
+      handle.addEventListener("pointerdown", e => {
         bringToFront(win);
         s.dragging = true;
 
@@ -1304,86 +1985,115 @@
         const onUp = () => {
           s.dragging = false;
           handle.releasePointerCapture(e.pointerId);
-          handle.removeEventListener('pointermove', onMove);
-          handle.removeEventListener('pointerup', onUp);
-          handle.removeEventListener('pointercancel', onUp);
+          handle.removeEventListener("pointermove", onMove);
+          handle.removeEventListener("pointerup", onUp);
+          handle.removeEventListener("pointercancel", onUp);
           startRAF();
         };
 
-        handle.addEventListener('pointermove', onMove);
-        handle.addEventListener('pointerup', onUp);
-        handle.addEventListener('pointercancel', onUp);
+        handle.addEventListener("pointermove", onMove);
+        handle.addEventListener("pointerup", onUp);
+        handle.addEventListener("pointercancel", onUp);
         e.preventDefault();
         startRAF();
       });
     });
 
-    const galleryWin = document.getElementById('win-gallery');
-    const openBtn = document.getElementById('openGalleryBtn');
-    const closeBtn = document.getElementById('closeGalleryBtn');
+    const galleryWin = document.getElementById("win-gallery");
+    const openBtn = document.getElementById("openGalleryBtn");
+    const closeBtn = document.getElementById("closeGalleryBtn");
 
     function openGallery() {
-      galleryWin.classList.remove('closed');
-      galleryWin.classList.add('open');
+      if (!galleryWin) return;
+      galleryWin.classList.remove("closed");
+      galleryWin.classList.add("open");
       bringToFront(galleryWin);
     }
 
     function closeGallery() {
-      galleryWin.classList.remove('open');
-      galleryWin.classList.add('closed');
+      if (!galleryWin) return;
+      galleryWin.classList.remove("open");
+      galleryWin.classList.add("closed");
     }
 
-    openBtn.addEventListener('click', openGallery);
-    closeBtn.addEventListener('click', e => {
+    openBtn?.addEventListener("click", openGallery);
+    closeBtn?.addEventListener("click", e => {
       e.stopPropagation();
       closeGallery();
     });
 
-    const imgModal = document.getElementById('imgModal');
-    const imgModalImg = document.getElementById('imgModalImg');
-    const imgModalClose = document.getElementById('imgModalClose');
-    const modalBackdrop = document.getElementById('modalBackdrop');
+    const imgModal = document.getElementById("imgModal");
+    const imgModalImg = document.getElementById("imgModalImg");
+    const imgModalClose = document.getElementById("imgModalClose");
+    const modalBackdrop = document.getElementById("modalBackdrop");
 
     function openImgModal(src, alt) {
       imgModalImg.src = src;
-      imgModalImg.alt = alt || 'image';
-      imgModal.classList.add('open');
-      imgModal.setAttribute('aria-hidden', 'false');
+      imgModalImg.alt = alt || "image";
+      imgModal.classList.add("open");
+      imgModal.setAttribute("aria-hidden", "false");
       imgModalClose.focus();
     }
 
     function closeImgModal() {
-      imgModal.classList.remove('open');
-      imgModal.setAttribute('aria-hidden', 'true');
-      imgModalImg.src = '';
-      imgModalImg.alt = '';
+      imgModal.classList.remove("open");
+      imgModal.setAttribute("aria-hidden", "true");
+      imgModalImg.src = "";
+      imgModalImg.alt = "";
     }
 
-    imgModalClose.addEventListener('click', closeImgModal);
-    modalBackdrop.addEventListener('click', closeImgModal);
+    imgModalClose?.addEventListener("click", closeImgModal);
+    modalBackdrop?.addEventListener("click", closeImgModal);
 
-    window.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && imgModal.classList.contains('open')) closeImgModal();
+    window.addEventListener("keydown", e => {
+      if (e.key === "Escape" && imgModal?.classList.contains("open")) closeImgModal();
     });
 
-    document.getElementById('galleryGrid').addEventListener('click', e => {
-      const card = e.target.closest('a.g-card');
+    document.getElementById("galleryGrid")?.addEventListener("click", e => {
+      const card = e.target.closest("a.g-card");
       if (!card) return;
 
       e.preventDefault();
 
-      const src = card.getAttribute('href');
-      const title = card.dataset.title || card.querySelector('.g-title')?.textContent || 'picture';
+      const src = card.getAttribute("href");
+      const title = card.dataset.title || card.querySelector(".g-title")?.textContent || "picture";
 
       if (src) openImgModal(src, title);
     });
 
-    document.getElementById('discordCard')?.addEventListener('click', () => {
-      navigator.clipboard?.writeText('frazyyfur').catch(() => {});
-      const card = document.getElementById('discordCard');
-      card?.classList.add('copied');
-      setTimeout(() => card?.classList.remove('copied'), 1600);
-    });
+    function wireDiscordCopy(buttonId, username) {
+      const card = document.getElementById(buttonId);
+      if (!card) return;
+
+      card.addEventListener("click", () => {
+        navigator.clipboard?.writeText(username).catch(() => {});
+        card.classList.add("copied");
+        setTimeout(() => card.classList.remove("copied"), 1600);
+      });
+    }
+
+    wireDiscordCopy("discordCard", "frazyypaws");
+    wireDiscordCopy("discordCardMobile", "frazyypaws");
+
+    (function introFailsafe() {
+      const intro = document.getElementById("intro");
+      const center = document.getElementById("introCenter");
+      if (!intro) return;
+
+      function hideIntro() {
+        intro.classList.add("is-hidden");
+        intro.setAttribute("aria-hidden", "true");
+        intro.style.display = "none";
+      }
+
+      center?.addEventListener("click", hideIntro);
+      center?.addEventListener("keydown", e => {
+        if (e.key === "Enter") hideIntro();
+      });
+      window.addEventListener("keydown", e => {
+        if (e.key === "Enter") hideIntro();
+      });
+    })();
   </script>
 
   <script src="js/particles.js" defer></script>
