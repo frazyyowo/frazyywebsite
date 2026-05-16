@@ -23,6 +23,7 @@
       --pink: #d75d86;
       --mint: #5aa684;
       --gold: #b8913b;
+      --purple: #7a67d8;
     }
 
     html, body {
@@ -45,25 +46,16 @@
       text-rendering: geometricPrecision;
     }
 
-    body::before {
-      display: none;
-    }
+    body::before { display: none; }
 
-    a, button, input {
-      font: inherit;
-    }
-
-    a {
-      color: inherit;
-    }
+    a, button, input { font: inherit; }
+    a { color: inherit; }
 
     button {
       -webkit-tap-highlight-color: transparent;
     }
 
-    img {
-      max-width: 100%;
-    }
+    img { max-width: 100%; }
 
     #bg,
     #tint,
@@ -193,6 +185,10 @@
       --label-x: 26;
       --label-y: 18;
       --label-fs: 13;
+      --close-x: 31;
+      --close-y: 16;
+      --close-w: 42;
+      --close-h: 22;
       transform: translate3d(0,0,0);
       will-change: transform;
       user-select: none;
@@ -212,7 +208,8 @@
       pointer-events: none;
     }
 
-    .window.open {
+    .window.open,
+    .window:not(.closed) {
       opacity: 1;
       pointer-events: auto;
     }
@@ -286,9 +283,7 @@
       touch-action: none;
     }
 
-    .handle:active {
-      cursor: default;
-    }
+    .handle:active { cursor: default; }
 
     .content {
       position: absolute;
@@ -361,6 +356,30 @@
       --label-fs: 14;
     }
 
+    .window .close-hit {
+      position: absolute;
+      top: calc(var(--close-y) * 1px * var(--s));
+      right: calc(var(--close-x) * 1px * var(--s));
+      z-index: 10;
+      width: calc(var(--close-w) * 1px * var(--s));
+      height: calc(var(--close-h) * 1px * var(--s));
+      border: 0;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      opacity: 0;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .window .close-hit:focus-visible {
+      opacity: 1;
+      outline: 2px solid rgba(15, 50, 90, 0.66);
+      outline-offset: 2px;
+      border-radius: 10px;
+    }
+
     .welcome-panel {
       height: 100%;
       display: grid;
@@ -424,9 +443,7 @@
       white-space: nowrap;
     }
 
-    .welcome-pronouns .they {
-      color: #c43a3a;
-    }
+    .welcome-pronouns .they { color: #c43a3a; }
 
     .welcome-sep {
       width: 100%;
@@ -489,16 +506,17 @@
       filter: brightness(1.04);
     }
 
-    .link-item:active {
-      transform: translateY(0);
-    }
+    .link-item:active { transform: translateY(0); }
 
     .link-item:focus-visible,
     .album-link:focus-visible,
     .g-card:focus-visible,
-    .about-morepics-btn:focus-visible,
+    .about-btn:focus-visible,
     .discord-badge:focus-visible,
-    .img-modal-close:focus-visible {
+    .img-modal-close:focus-visible,
+    .big-link:focus-visible,
+    .small-link:focus-visible,
+    .about-pic:focus-visible {
       outline: 2px solid rgba(15, 50, 90, 0.66);
       outline-offset: 4px;
       border-radius: 10px;
@@ -623,9 +641,7 @@
       text-overflow: ellipsis;
     }
 
-    .discord-activity {
-      color: rgba(222,238,255,0.84);
-    }
+    .discord-activity { color: rgba(222,238,255,0.84); }
 
     .discord-copied {
       position: absolute;
@@ -712,200 +728,292 @@
 
     .about-body {
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 10px;
       min-width: 0;
       min-height: 0;
       padding: 2px 8px 6px;
-      position: relative;
-      text-align: center;
+    }
+
+    .about-shell {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) calc(168px * var(--fs));
+      gap: 16px;
+      min-width: 0;
+      min-height: 0;
+      align-items: stretch;
     }
 
     .about-copy {
       width: 100%;
       min-width: 0;
       min-height: 0;
-      padding: 2px 4px 6px;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto auto;
+      gap: 10px;
       position: relative;
       z-index: 2;
-      overflow: auto;
-      scrollbar-width: none;
     }
 
-    .about-copy::-webkit-scrollbar { width: 0; height: 0; }
+    .about-page {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 13px;
+      padding: 4px 0;
+    }
 
     .about-kicker {
       color: #111;
-      font-size: calc(25px * var(--fs));
-      line-height: 1.02;
+      font-size: calc(38px * var(--fs));
+      line-height: 1;
       font-weight: 900;
-      margin-bottom: 8px;
+      text-transform: lowercase;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.58);
     }
 
-    .about-lede {
-      color: rgba(17,17,17,0.88);
-      font-size: calc(13px * var(--fs));
-      line-height: 1.34;
-      font-weight: 700;
-      max-width: 520px;
-      margin: 0 auto 12px;
+    .about-text {
+      color: rgba(17,17,17,0.9);
+      font-size: calc(21px * var(--fs));
+      line-height: 1.18;
+      font-weight: 850;
+      max-width: 620px;
     }
 
-    .about-facts {
+    .about-actions {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 7px;
-      margin-bottom: 14px;
+      gap: 8px;
+      align-items: center;
     }
 
-    .about-facts span,
-    .about-tag {
+    .about-btn,
+    .big-link,
+    .small-link {
+      min-height: 34px;
       display: inline-flex;
       align-items: center;
-      min-height: 27px;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-      color: rgba(17,17,17,0.84);
-      font-size: calc(11px * var(--fs));
-      line-height: 1;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .about-facts span:not(:last-child)::after,
-    .about-tag:not(:last-child)::after {
-      content: "/";
-      margin-left: 7px;
-      color: rgba(17,17,17,0.42);
-    }
-
-    .about-section {
-      padding: 8px 0;
-      border-top: 1px solid rgba(0,0,0,0.20);
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    .about-section:first-of-type {
-      padding-top: 0;
-      border-top: 0;
-    }
-
-    .about-section h3 {
-      color: #111;
-      font-size: calc(14px * var(--fs));
-      line-height: 1.1;
-      font-weight: 900;
-      margin-bottom: 6px;
-      text-transform: lowercase;
-    }
-
-    .about-section p,
-    .about-list {
-      color: rgba(17,17,17,0.82);
-      font-size: calc(12px * var(--fs));
-      line-height: 1.34;
-      font-weight: 700;
-    }
-
-    .about-list {
-      display: grid;
-      gap: 5px;
-      list-style: none;
-      text-align: left;
-    }
-
-    .about-list li {
-      position: relative;
-      padding-left: 15px;
-    }
-
-    .about-list li::before {
-      content: ">";
-      position: absolute;
-      left: 0;
-      top: 0;
-      color: var(--pink);
-      font-weight: 900;
-    }
-
-    .about-tags {
-      display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       gap: 7px;
-      margin-top: 8px;
-    }
-
-    .about-visual {
-      display: none;
-    }
-
-    .about-visual::before {
-      display: none;
-    }
-
-    .about-fursona-big {
-      width: min(100%, 385px);
-      max-height: 390px;
-      display: block;
-      object-fit: contain;
-      pointer-events: none;
-      user-select: none;
-      filter: drop-shadow(0 12px 14px rgba(22, 40, 58, 0.18));
-    }
-
-    .about-morepics-btn {
-      width: min(100%, 276px);
-      min-height: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 0;
-      margin: 4px auto 14px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
+      padding: 8px 12px;
       color: #111;
-      font-size: calc(14px * var(--fs));
-      line-height: 1.08;
-      font-weight: 900;
-      letter-spacing: 0.2px;
-      text-align: center;
-      cursor: pointer;
-      text-transform: lowercase;
-      text-shadow:
-        0 0 6px rgba(255,255,255,0.95),
-        0 0 16px rgba(255,255,255,0.85),
-        0 0 30px rgba(255,255,255,0.65);
-      transition: transform 140ms ease, filter 140ms ease;
-    }
-
-    .about-morepics-btn::after {
-      content: ">";
-      color: var(--pink);
-      font-size: calc(20px * var(--fs));
+      text-decoration: none;
+      border: 1px solid rgba(0,0,0,0.22);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.48);
+      box-shadow:
+        0 5px 0 rgba(0,0,0,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.62);
+      font-size: calc(13px * var(--fs));
       line-height: 1;
       font-weight: 900;
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: transform 130ms ease, filter 130ms ease;
     }
 
-    .about-morepics-btn:hover {
+    .about-btn:hover,
+    .big-link:hover,
+    .small-link:hover {
       transform: translateY(-2px);
       filter: brightness(1.04);
     }
 
-    .about-morepics-btn:active {
+    .about-btn:active,
+    .big-link:active,
+    .small-link:active {
       transform: translateY(0) scale(0.99);
+    }
+
+    .about-btn[disabled] {
+      opacity: 0.38;
+      pointer-events: none;
+    }
+
+    .about-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      min-height: 12px;
+    }
+
+    .about-dots span {
+      width: 24px;
+      height: 6px;
+      display: block;
+      border-radius: 999px;
+      background: rgba(17,17,17,0.24);
+    }
+
+    .about-dots span.active {
+      background: rgba(17,17,17,0.76);
+    }
+
+    .about-side-pics {
+      display: grid;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+      min-height: 0;
+    }
+
+    .about-pic {
+      position: relative;
+      width: 100%;
+      min-height: 0;
+      display: block;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.30);
+      border-radius: 7px;
+      background: rgba(255,255,255,0.50);
+      box-shadow:
+        0 7px 12px rgba(30, 55, 78, 0.14),
+        inset 0 1px 0 rgba(255,255,255,0.52);
+      cursor: pointer;
+      transition: transform 130ms ease, box-shadow 130ms ease;
+    }
+
+    .about-pic:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px rgba(30, 55, 78, 0.18);
+    }
+
+    .about-pic img {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: block;
+      object-fit: cover;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .panel-wrap {
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 2px;
+    }
+
+    .panel-kicker {
+      color: rgba(17,17,17,0.70);
+      font-size: calc(12px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      text-transform: lowercase;
+    }
+
+    .panel-title {
+      color: #111;
+      font-size: calc(24px * var(--fs));
+      line-height: 1.02;
+      font-weight: 900;
+      text-transform: lowercase;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.56);
+    }
+
+    .twitch-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .twitch-badge {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(122,103,216,0.18);
+      color: #35255f;
+      font-size: calc(10px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      text-transform: lowercase;
+      border: 1px solid rgba(70,54,140,0.24);
+    }
+
+    .twitch-frame {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 150px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.30);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(28,24,46,0.88), rgba(17,16,26,0.88));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    .twitch-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .panel-copy {
+      color: rgba(17,17,17,0.80);
+      font-size: calc(13px * var(--fs));
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .big-link {
+      min-height: 42px;
+      flex: 1 1 auto;
+      background: rgba(255,255,255,0.56);
+      font-size: calc(14px * var(--fs));
+    }
+
+    .big-link.twitch {
+      color: #241c55;
+      border-color: rgba(92,70,185,0.38);
+      background: rgba(157,133,255,0.22);
+    }
+
+    .big-link.donate {
+      color: #4c2d15;
+      border-color: rgba(184,145,59,0.42);
+      background: rgba(255,220,133,0.28);
+    }
+
+    .small-link {
+      min-height: 42px;
+      flex: 0 0 auto;
+      color: rgba(17,17,17,0.82);
+      background: rgba(255,255,255,0.34);
+    }
+
+    .donate-panel {
+      justify-content: center;
+    }
+
+    .donate-icon {
+      width: 72px;
+      height: 72px;
+      display: grid;
+      place-items: center;
+      margin: 4px auto 0;
+      border-radius: 22px;
+      border: 1px solid rgba(0,0,0,0.22);
+      background: rgba(255,255,255,0.42);
+      box-shadow:
+        0 10px 16px rgba(30, 55, 78, 0.13),
+        inset 0 1px 0 rgba(255,255,255,0.62);
+      color: var(--gold);
+      font-size: 42px;
+      line-height: 1;
+      font-weight: 900;
     }
 
     .gallery-wrap {
@@ -985,37 +1093,6 @@
     .g-card:hover .g-thumb {
       transform: translateY(-2px);
       box-shadow: 0 8px 12px rgba(30, 55, 78, 0.16);
-    }
-
-    #win-gallery {
-      --close-x: 31;
-      --close-y: 16;
-      --close-w: 42;
-      --close-h: 22;
-    }
-
-    #win-gallery .close-hit {
-      position: absolute;
-      top: calc(var(--close-y) * 1px * var(--s));
-      right: calc(var(--close-x) * 1px * var(--s));
-      z-index: 10;
-      width: calc(var(--close-w) * 1px * var(--s));
-      height: calc(var(--close-h) * 1px * var(--s));
-      border: 0;
-      padding: 0;
-      margin: 0;
-      background: transparent;
-      opacity: 0;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    #win-gallery .close-hit:focus-visible {
-      opacity: 1;
-      outline: 2px solid rgba(15, 50, 90, 0.66);
-      outline-offset: 2px;
-      border-radius: 10px;
     }
 
     .fa-player {
@@ -1194,14 +1271,10 @@
       100% { transform: scale(1) rotate(0); }
     }
 
-    #mobile-root {
-      display: none;
-    }
+    #mobile-root { display: none; }
 
     @media (max-width: 760px) {
-      html, body {
-        min-height: 100%;
-      }
+      html, body { min-height: 100%; }
 
       body {
         overflow-x: hidden;
@@ -1226,7 +1299,7 @@
         min-height: 100dvh;
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 14px;
         margin: 0 auto;
         padding: 18px 14px calc(28px + env(safe-area-inset-bottom));
       }
@@ -1322,9 +1395,7 @@
         font-weight: 900;
       }
 
-      .m-pronouns .they {
-        color: #c43a3a;
-      }
+      .m-pronouns .they { color: #c43a3a; }
 
       .m-sep {
         width: 100%;
@@ -1409,12 +1480,99 @@
         opacity: 0.45;
       }
 
-      .m-discord-wrap {
+      .m-discord-wrap { margin-top: 14px; }
+      .m-discord-wrap .discord-badge { min-height: 82px; }
+
+      .m-about-page {
+        display: grid;
+        gap: 12px;
+      }
+
+      .m-about-title {
+        color: #111;
+        font-size: 31px;
+        line-height: 1;
+        font-weight: 900;
+        text-transform: lowercase;
+      }
+
+      .m-about-text {
+        color: rgba(17,17,17,0.9);
+        font-size: 19px;
+        line-height: 1.2;
+        font-weight: 850;
+      }
+
+      .m-about-pics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .m-about-pics button {
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.28);
+        border-radius: 10px;
+        background: rgba(255,255,255,0.38);
+        padding: 0;
+      }
+
+      .m-about-pics img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .m-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
         margin-top: 14px;
       }
 
-      .m-discord-wrap .discord-badge {
-        min-height: 82px;
+      .m-actions .about-btn,
+      .m-actions .big-link,
+      .m-actions .small-link {
+        flex: 1 1 auto;
+        font-size: 13px;
+      }
+
+      .m-music-panel {
+        display: none;
+        margin-top: 12px;
+      }
+
+      .m-music-panel.open {
+        display: block;
+      }
+
+      .m-music-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .m-twitch-frame {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        margin: 12px 0;
+        border: 1px solid rgba(0,0,0,0.28);
+        border-radius: 12px;
+        background: rgba(20,18,32,0.78);
+      }
+
+      .m-twitch-frame iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        border: 0;
       }
 
       .contact-mail {
@@ -1581,13 +1739,112 @@
         </div>
       </div>
 
-      <div class="window win1" id="win-music"
-           data-label="music i like.exe"
-           data-x="285" data-y="498"
+      <div class="window win1 about-window" id="win-about"
+           data-label="about me.exe"
+           data-x="1120" data-y="118"
+           data-w="500" data-h="430"
+           data-skin="1.08" data-font="1.03"
+           data-stretch-x="1.44" data-stretch-y="1.28">
+        <img class="skin" src="img/Window2.png" data-fallback="img/window2.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="about-body">
+            <div class="about-shell">
+              <div class="about-copy">
+                <div class="about-page" aria-live="polite">
+                  <div class="about-kicker" id="aboutTitle">hii im frazyy.</div>
+                  <p class="about-text" id="aboutText">
+                    im from estonia. i use he/him and they/them. i speak estonian, english and russian.
+                  </p>
+                </div>
+
+                <div class="about-actions">
+                  <button class="about-btn" id="aboutPrevBtn" type="button">back</button>
+                  <button class="about-btn" id="aboutNextBtn" type="button">next</button>
+                  <button class="about-btn" id="openMusicBtn" type="button">music i like</button>
+                  <button class="about-btn" id="openGalleryBtn" type="button">more pics</button>
+                </div>
+
+                <div class="about-dots" id="aboutDots" aria-hidden="true"></div>
+              </div>
+
+              <div class="about-side-pics" aria-label="pictures">
+                <button class="about-pic" type="button" data-full="img/frazyy10.jpg" aria-label="open picture">
+                  <img src="img/frazyy10.jpg" alt="" draggable="false">
+                </button>
+                <button class="about-pic" type="button" data-full="img/frazyy6.jpg" aria-label="open picture">
+                  <img src="img/frazyy6.jpg" alt="" draggable="false">
+                </button>
+                <button class="about-pic" type="button" data-full="img/frazyy5.png" aria-label="open picture">
+                  <img src="img/frazyy5.png" alt="" draggable="false">
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="window win1" id="win-twitch"
+           data-label="twitch.exe"
+           data-x="1280" data-y="620"
            data-w="500" data-h="430"
            data-skin="0.96" data-font="1.02">
         <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
+        <div class="content">
+          <div class="panel-wrap">
+            <div class="twitch-head">
+              <div>
+                <div class="panel-kicker">frazyypaws</div>
+                <div class="panel-title">latest stream</div>
+              </div>
+              <div class="twitch-badge">twitch</div>
+            </div>
+
+            <div class="twitch-frame">
+              <iframe id="twitchEmbed" title="frazyypaws twitch stream" allowfullscreen></iframe>
+            </div>
+
+            <div class="panel-actions">
+              <a class="big-link twitch" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">go to twitch</a>
+              <a class="small-link" href="https://www.twitch.tv/frazyypaws/videos?filter=archives&sort=time" target="_blank" rel="noopener noreferrer">vods</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="window win1" id="win-donate"
+           data-label="donation.exe"
+           data-x="1280" data-y="1040"
+           data-w="500" data-h="430"
+           data-skin="0.96" data-font="1.02">
+        <img class="skin" src="img/window1.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="panel-wrap donate-panel">
+            <div class="donate-icon" aria-hidden="true">$</div>
+            <div>
+              <div class="panel-kicker">stream support</div>
+              <div class="panel-title">donations</div>
+            </div>
+            <p class="panel-copy">tips go through streamelements. no pressure, just leaving it here.</p>
+            <div class="panel-actions">
+              <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
+              <a class="small-link" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">watch</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="window win1 closed" id="win-music"
+           data-label="music i like.exe"
+           data-x="285" data-y="498"
+           data-w="500" data-h="430"
+           data-skin="0.96" data-font="1.02"
+           aria-hidden="true">
+        <img class="skin" src="img/window1.png" alt="">
+        <div class="handle"></div>
+        <button class="close-hit" id="closeMusicBtn" type="button" aria-label="close music"></button>
         <div class="content">
           <div class="music-title-row">songs i like rn</div>
           <div class="music-grid">
@@ -1603,73 +1860,13 @@
         </div>
       </div>
 
-      <div class="window win1 about-window" id="win-about"
-           data-label="about me.exe"
-           data-x="1120" data-y="118"
-           data-w="500" data-h="430"
-           data-skin="1.15" data-font="1.04"
-           data-stretch-x="1.08" data-stretch-y="1.18">
-        <img class="skin" src="img/Window2.png" data-fallback="img/window2.png" alt="">
-        <div class="handle"></div>
-        <div class="content">
-          <div class="about-body">
-            <div class="about-copy">
-              <div class="about-kicker">Haii im frazyy!!</div>
-              <p class="about-lede">
-                estonian roblox game developer, coding nerd, fashion enjoyer, and professional music-loop repeater.
-              </p>
-
-              <button class="about-morepics-btn" id="openGalleryBtn" type="button">more pictures :3</button>
-
-              <div class="about-facts" aria-label="quick facts">
-                <span>estonia</span>
-                <span>he/him + they/them</span>
-                <span>3 languages</span>
-                <span>roblox dev</span>
-              </div>
-
-              <section class="about-section">
-                <h3>quick intro</h3>
-                <p>
-                  i can speak english, russian, and estonian. i love making stuff in roblox studio, messing with code,
-                  learning engines, and somehow i even like school.
-                </p>
-              </section>
-
-              <section class="about-section">
-                <h3>also me</h3>
-                <ul class="about-list">
-                  <li>i have a fursuit, and the frazy folder has more pictures.</li>
-                  <li>i am into fashion and outfits that actually have personality.</li>
-                  <li>i like building weird little internet places like this one.</li>
-                </ul>
-              </section>
-
-              <section class="about-section">
-                <h3>things i like</h3>
-                <ul class="about-list">
-                  <li>games: counter strike 2, roblox, minecraft, terraria, vrchat, geometry dash, osu!, geoguessr</li>
-                  <li>coding: roblox studio, unreal engine, unity, lua, c++, html, java</li>
-                  <li>cats, listening to music, and making things look cooler than they need to be</li>
-                </ul>
-                <div class="about-tags" aria-label="favorite tags">
-                  <span class="about-tag">games</span>
-                  <span class="about-tag">coding</span>
-                  <span class="about-tag">music</span>
-                  <span class="about-tag">fashion</span>
-                </div>
-              </section>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="window std closed" id="win-gallery"
            data-label="frazy folder.exe"
            data-x="1180" data-y="205"
            data-w="740" data-h="560"
            data-skin="0.98" data-font="1.02"
-           data-stretch-x="1.12" data-stretch-y="1.16">
+           data-stretch-x="1.12" data-stretch-y="1.16"
+           aria-hidden="true">
         <img class="skin" src="img/window5.png" alt="">
         <div class="handle"></div>
         <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close gallery"></button>
@@ -1787,6 +1984,59 @@
       </div>
     </section>
 
+    <section class="m-card" aria-label="about me">
+      <div class="m-about-page" aria-live="polite">
+        <div class="m-about-title" id="mAboutTitle">hii im frazyy.</div>
+        <p class="m-about-text" id="mAboutText">
+          im from estonia. i use he/him and they/them. i speak estonian, english and russian.
+        </p>
+      </div>
+
+      <div class="m-about-pics">
+        <button type="button" data-full="img/frazyy10.jpg" aria-label="open picture"><img src="img/frazyy10.jpg" alt=""></button>
+        <button type="button" data-full="img/frazyy6.jpg" aria-label="open picture"><img src="img/frazyy6.jpg" alt=""></button>
+        <button type="button" data-full="img/frazyy5.png" aria-label="open picture"><img src="img/frazyy5.png" alt=""></button>
+      </div>
+
+      <div class="m-actions">
+        <button class="about-btn" id="mAboutPrevBtn" type="button">back</button>
+        <button class="about-btn" id="mAboutNextBtn" type="button">next</button>
+        <button class="about-btn" id="mOpenMusicBtn" type="button">music</button>
+      </div>
+
+      <div class="m-music-panel" id="mMusicPanel">
+        <div class="music-title-row">songs i like rn</div>
+        <div class="m-music-grid">
+          <a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che2.png" alt="serve da ba$$"></div><div class="album-name">serve da ba$$</div></a>
+          <a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che3.png" alt="get n*ked"></div><div class="album-name">get n*ked</div></a>
+          <a class="album-link" href="https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/slayr.png" alt="death by mp3"></div><div class="album-name">death by mp3</div></a>
+          <a class="album-link" href="https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/jaydes.png" alt="tylenol"></div><div class="album-name">tylenol</div></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="m-card" aria-label="twitch">
+      <div class="panel-kicker">frazyypaws</div>
+      <div class="panel-title">latest stream</div>
+      <div class="m-twitch-frame">
+        <iframe id="twitchEmbedMobile" title="frazyypaws twitch stream" allowfullscreen></iframe>
+      </div>
+      <div class="m-actions">
+        <a class="big-link twitch" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">go to twitch</a>
+        <a class="small-link" href="https://www.twitch.tv/frazyypaws/videos?filter=archives&sort=time" target="_blank" rel="noopener noreferrer">vods</a>
+      </div>
+    </section>
+
+    <section class="m-card" aria-label="donations">
+      <div class="panel-kicker">stream support</div>
+      <div class="panel-title">donations</div>
+      <p class="panel-copy">tips go through streamelements. no pressure, just leaving it here.</p>
+      <div class="m-actions">
+        <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
+        <a class="small-link" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">watch</a>
+      </div>
+    </section>
+
     <footer class="contact-mail">
       my contact mail:
       <a href="mailto:contact@frazyy.com">contact@frazyy.com</a>
@@ -1803,17 +2053,38 @@
 
   <script>
     const DESIGN_W = 2048;
-    const MARGIN_X = 110;
-    const MARGIN_Y = 70;
+    const MARGIN_X = 86;
+    const MARGIN_Y = 62;
     const MAX_UPSCALE = 1.24;
     const MIN_SCALE = 0.54;
-    const STACK_GAP = 74;
+    const STACK_GAP = 26;
 
     const stage = document.getElementById("stage");
     const desk = document.getElementById("desk");
     let topZ = 10;
     let stageScale = 1;
     let currentDesignHeight = 799;
+
+    const aboutPages = [
+      {
+        title: "hii im frazyy.",
+        text: "im from estonia. i use he/him and they/them. i speak estonian, english and russian."
+      },
+      {
+        title: "what i do",
+        text: "i make roblox stuff, mess with lua, html, java and c++, and try different engines when i feel like it."
+      },
+      {
+        title: "what i play",
+        text: "roblox, counter strike 2, minecraft, terraria, vrchat, geometry dash, osu! and geoguessr."
+      },
+      {
+        title: "other stuff",
+        text: "fashion, my fursuit, music, and making this site feel more like me instead of a template."
+      }
+    ];
+
+    let aboutIndex = 0;
 
     function setWindowPosition(el, x, y) {
       if (!el) return;
@@ -1825,6 +2096,18 @@
     function centeredX(el) {
       const w = el?.offsetWidth || parseFloat(el?.dataset.w || "0") || 0;
       return Math.round((DESIGN_W - w) / 2);
+    }
+
+    function winW(el) {
+      return el?.offsetWidth || parseFloat(el?.dataset.w || "0") || 0;
+    }
+
+    function winH(el) {
+      return el?.offsetHeight || parseFloat(el?.dataset.h || "0") || 0;
+    }
+
+    function isWindowOpen(el) {
+      return !!el && !el.classList.contains("closed");
     }
 
     function layoutStage(designHeight = currentDesignHeight) {
@@ -1857,6 +2140,8 @@
       const welcome = document.getElementById("win-welcome");
       const about = document.getElementById("win-about");
       const music = document.getElementById("win-music");
+      const twitch = document.getElementById("win-twitch");
+      const donate = document.getElementById("win-donate");
       const gallery = document.getElementById("win-gallery");
 
       if (title) {
@@ -1865,21 +2150,37 @@
         title.style.transform = "translateX(-50%)";
       }
 
-      let y = 190;
+      const gap = STACK_GAP;
+      const welcomeY = 176;
+      setWindowPosition(welcome, centeredX(welcome), welcomeY);
 
-      setWindowPosition(welcome, centeredX(welcome), y);
-      y += (welcome?.offsetHeight || 270) + STACK_GAP;
+      const rowY = welcomeY + winH(welcome) + gap;
+      const sideW = Math.max(winW(twitch), winW(donate));
+      const totalW = winW(about) + gap + sideW;
+      const rowX = Math.max(94, Math.round((DESIGN_W - totalW) / 2));
+      const sideX = rowX + winW(about) + gap;
 
-      setWindowPosition(about, centeredX(about), y);
-      y += (about?.offsetHeight || 440) + STACK_GAP;
+      setWindowPosition(about, rowX, rowY);
+      setWindowPosition(twitch, sideX, rowY);
+      setWindowPosition(donate, sideX, rowY + winH(twitch) + gap);
 
-      setWindowPosition(music, centeredX(music), y);
-      y += (music?.offsetHeight || 300) + STACK_GAP;
+      let leftColumnHeight = winH(about);
+      if (music) {
+        setWindowPosition(music, rowX, rowY + winH(about) + gap);
+        if (isWindowOpen(music)) {
+          leftColumnHeight += gap + winH(music);
+        }
+      }
 
-      setWindowPosition(gallery, centeredX(gallery), y);
-      y += gallery?.classList.contains("open") ? (gallery.offsetHeight || 430) + 120 : 120;
+      const sideColumnHeight = winH(twitch) + gap + winH(donate);
+      let pageBottom = rowY + Math.max(leftColumnHeight, sideColumnHeight);
 
-      layoutStage(y);
+      if (isWindowOpen(gallery)) {
+        setWindowPosition(gallery, centeredX(gallery), pageBottom + gap);
+        pageBottom += gap + winH(gallery);
+      }
+
+      layoutStage(pageBottom + 110);
     }
 
     function updateScrollBackdrop() {
@@ -1964,34 +2265,41 @@
       win.addEventListener("pointerdown", () => bringToFront(win), true);
     });
 
-    const galleryWin = document.getElementById("win-gallery");
-    const openBtn = document.getElementById("openGalleryBtn");
-    const closeBtn = document.getElementById("closeGalleryBtn");
-
-    function openGallery() {
-      if (!galleryWin) return;
-      galleryWin.classList.remove("closed");
-      galleryWin.classList.add("open");
+    function openWindow(win) {
+      if (!win) return;
+      win.classList.remove("closed");
+      win.classList.add("open");
+      win.setAttribute("aria-hidden", "false");
       layoutStack();
-      bringToFront(galleryWin);
+      bringToFront(win);
       requestAnimationFrame(() => {
-        const rect = galleryWin.getBoundingClientRect();
+        const rect = win.getBoundingClientRect();
         const top = window.scrollY + rect.top - 80;
         window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
       });
     }
 
-    function closeGallery() {
-      if (!galleryWin) return;
-      galleryWin.classList.remove("open");
-      galleryWin.classList.add("closed");
+    function closeWindow(win) {
+      if (!win) return;
+      win.classList.remove("open");
+      win.classList.add("closed");
+      win.setAttribute("aria-hidden", "true");
       layoutStack();
     }
 
-    openBtn?.addEventListener("click", openGallery);
-    closeBtn?.addEventListener("click", e => {
+    const galleryWin = document.getElementById("win-gallery");
+    const musicWin = document.getElementById("win-music");
+
+    document.getElementById("openGalleryBtn")?.addEventListener("click", () => openWindow(galleryWin));
+    document.getElementById("closeGalleryBtn")?.addEventListener("click", e => {
       e.stopPropagation();
-      closeGallery();
+      closeWindow(galleryWin);
+    });
+
+    document.getElementById("openMusicBtn")?.addEventListener("click", () => openWindow(musicWin));
+    document.getElementById("closeMusicBtn")?.addEventListener("click", e => {
+      e.stopPropagation();
+      closeWindow(musicWin);
     });
 
     const imgModal = document.getElementById("imgModal");
@@ -2033,6 +2341,69 @@
       if (src) openImgModal(src, title);
     });
 
+    document.querySelectorAll("[data-full]").forEach(button => {
+      button.addEventListener("click", () => {
+        const src = button.getAttribute("data-full");
+        if (src) openImgModal(src, "picture");
+      });
+    });
+
+    function renderAboutPage() {
+      const page = aboutPages[aboutIndex];
+      const title = document.getElementById("aboutTitle");
+      const text = document.getElementById("aboutText");
+      const prev = document.getElementById("aboutPrevBtn");
+      const next = document.getElementById("aboutNextBtn");
+      const mobileTitle = document.getElementById("mAboutTitle");
+      const mobileText = document.getElementById("mAboutText");
+      const mobilePrev = document.getElementById("mAboutPrevBtn");
+      const mobileNext = document.getElementById("mAboutNextBtn");
+      const dots = document.getElementById("aboutDots");
+
+      if (title) title.textContent = page.title;
+      if (text) text.textContent = page.text;
+      if (mobileTitle) mobileTitle.textContent = page.title;
+      if (mobileText) mobileText.textContent = page.text;
+
+      const atStart = aboutIndex === 0;
+      const atEnd = aboutIndex === aboutPages.length - 1;
+
+      if (prev) prev.disabled = atStart;
+      if (mobilePrev) mobilePrev.disabled = atStart;
+      if (next) next.textContent = atEnd ? "again" : "next";
+      if (mobileNext) mobileNext.textContent = atEnd ? "again" : "next";
+
+      if (dots) {
+        dots.innerHTML = "";
+        aboutPages.forEach((_, i) => {
+          const dot = document.createElement("span");
+          if (i === aboutIndex) dot.classList.add("active");
+          dots.append(dot);
+        });
+      }
+    }
+
+    function nextAboutPage() {
+      aboutIndex = (aboutIndex + 1) % aboutPages.length;
+      renderAboutPage();
+    }
+
+    function prevAboutPage() {
+      aboutIndex = Math.max(0, aboutIndex - 1);
+      renderAboutPage();
+    }
+
+    document.getElementById("aboutNextBtn")?.addEventListener("click", nextAboutPage);
+    document.getElementById("aboutPrevBtn")?.addEventListener("click", prevAboutPage);
+    document.getElementById("mAboutNextBtn")?.addEventListener("click", nextAboutPage);
+    document.getElementById("mAboutPrevBtn")?.addEventListener("click", prevAboutPage);
+    renderAboutPage();
+
+    document.getElementById("mOpenMusicBtn")?.addEventListener("click", () => {
+      const panel = document.getElementById("mMusicPanel");
+      panel?.classList.toggle("open");
+    });
+
     function wireDiscordCopy(buttonId, username) {
       const card = document.getElementById(buttonId);
       if (!card) return;
@@ -2046,6 +2417,26 @@
 
     wireDiscordCopy("discordCard", "frazyypaws");
     wireDiscordCopy("discordCardMobile", "frazyypaws");
+
+    function setupTwitchFrame(frameId) {
+      const frame = document.getElementById(frameId);
+      if (!frame) return;
+
+      const host = window.location.hostname || "frazyy.com";
+      const params = new URLSearchParams();
+      params.set("channel", "frazyypaws");
+      params.set("muted", "true");
+      params.set("autoplay", "false");
+      params.append("parent", host);
+      if (host !== "frazyy.com") params.append("parent", "frazyy.com");
+      if (host !== "www.frazyy.com") params.append("parent", "www.frazyy.com");
+      if (host !== "localhost") params.append("parent", "localhost");
+      if (host !== "127.0.0.1") params.append("parent", "127.0.0.1");
+      frame.src = `https://player.twitch.tv/?${params.toString()}`;
+    }
+
+    setupTwitchFrame("twitchEmbed");
+    setupTwitchFrame("twitchEmbedMobile");
 
     (function introFailsafe() {
       const intro = document.getElementById("intro");
