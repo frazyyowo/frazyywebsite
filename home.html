@@ -16,13 +16,10 @@
 
     :root {
       --ink: #141414;
-      --paper: rgba(255, 255, 255, 0.58);
-      --paper-soft: rgba(255, 255, 255, 0.32);
       --sky: #a8c8e8;
-      --blue-shadow: rgba(55, 92, 128, 0.20);
       --pink: #d75d86;
-      --mint: #5aa684;
-      --gold: #b8913b;
+      --heart: #ff6fa7;
+      --heart-dark: #8c2552;
       --purple: #7a67d8;
     }
 
@@ -39,23 +36,19 @@
       font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
                    Consolas, "Liberation Mono", "Courier New", monospace;
       color: var(--ink);
-      background: #a8c8e8;
+      background: var(--sky);
       position: relative;
       isolation: isolate;
       -webkit-font-smoothing: antialiased;
       text-rendering: geometricPrecision;
     }
 
-    body::before { display: none; }
-
     a, button, input { font: inherit; }
     a { color: inherit; }
-
-    button {
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    button { -webkit-tap-highlight-color: transparent; }
     img { max-width: 100%; }
+
+    [hidden] { display: none !important; }
 
     #bg,
     #tint,
@@ -94,9 +87,7 @@
         linear-gradient(180deg, rgba(168,200,232,0.94), rgba(125,164,202,0.94));
     }
 
-    .intro.is-hidden {
-      display: none !important;
-    }
+    .intro.is-hidden { display: none !important; }
 
     #introFx {
       position: absolute;
@@ -120,9 +111,7 @@
       text-shadow: 2px 2px 0 rgba(255,255,255,0.55);
     }
 
-    .intro-cursor {
-      animation: tw-blink 0.9s steps(1) infinite;
-    }
+    .intro-cursor { animation: tw-blink 0.9s steps(1) infinite; }
 
     #desk {
       position: relative;
@@ -279,11 +268,11 @@
     .handle {
       position: absolute;
       z-index: 5;
-      cursor: default;
+      cursor: grab;
       touch-action: none;
     }
 
-    .handle:active { cursor: default; }
+    .window.dragging .handle { cursor: grabbing; }
 
     .content {
       position: absolute;
@@ -298,16 +287,6 @@
     .content :where(p, div, span, a, button, strong) {
       max-width: 100%;
       overflow-wrap: anywhere;
-    }
-
-    .scroll-soft {
-      overflow: auto;
-      scrollbar-width: none;
-    }
-
-    .scroll-soft::-webkit-scrollbar {
-      width: 0;
-      height: 0;
     }
 
     .std .handle,
@@ -373,13 +352,6 @@
       -webkit-appearance: none;
     }
 
-    .window .close-hit:focus-visible {
-      opacity: 1;
-      outline: 2px solid rgba(15, 50, 90, 0.66);
-      outline-offset: 2px;
-      border-radius: 10px;
-    }
-
     .welcome-panel {
       height: 100%;
       display: grid;
@@ -394,6 +366,7 @@
       line-height: 1.06;
       font-weight: 900;
       white-space: nowrap;
+      text-align: center;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.52);
     }
 
@@ -506,22 +479,6 @@
       filter: brightness(1.04);
     }
 
-    .link-item:active { transform: translateY(0); }
-
-    .link-item:focus-visible,
-    .album-link:focus-visible,
-    .g-card:focus-visible,
-    .about-btn:focus-visible,
-    .discord-badge:focus-visible,
-    .img-modal-close:focus-visible,
-    .big-link:focus-visible,
-    .small-link:focus-visible,
-    .about-pic:focus-visible {
-      outline: 2px solid rgba(15, 50, 90, 0.66);
-      outline-offset: 4px;
-      border-radius: 10px;
-    }
-
     .link-icon {
       width: 68px;
       height: 68px;
@@ -588,10 +545,6 @@
       filter: brightness(1.04);
     }
 
-    .discord-badge:active {
-      transform: translateY(0) scale(0.99);
-    }
-
     .discord-pfp-ring {
       width: 52px;
       height: 52px;
@@ -641,8 +594,6 @@
       text-overflow: ellipsis;
     }
 
-    .discord-activity { color: rgba(222,238,255,0.84); }
-
     .discord-copied {
       position: absolute;
       top: 9px;
@@ -659,18 +610,207 @@
       transform: translateY(0);
     }
 
+    .about-body {
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+      padding: 2px 8px 6px;
+    }
+
+    .about-shell {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) calc(210px * var(--fs));
+      gap: 12px;
+      min-width: 0;
+      min-height: 0;
+      align-items: center;
+    }
+
+    .about-copy {
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto auto;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .about-page {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      padding: 4px 0;
+    }
+
+    .about-kicker {
+      color: #111;
+      font-size: calc(35px * var(--fs));
+      line-height: 1.02;
+      font-weight: 900;
+      text-transform: lowercase;
+      text-align: center;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.58);
+    }
+
+    .about-text {
+      color: rgba(17,17,17,0.9);
+      font-size: calc(18px * var(--fs));
+      line-height: 1.22;
+      font-weight: 850;
+      max-width: 520px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .about-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-btn,
+    .big-link,
+    .small-link {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 12px;
+      color: #111;
+      text-decoration: none;
+      border: 1px solid rgba(0,0,0,0.22);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.48);
+      box-shadow:
+        0 5px 0 rgba(0,0,0,0.10),
+        inset 0 1px 0 rgba(255,255,255,0.62);
+      font-size: calc(13px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: transform 130ms ease, filter 130ms ease;
+    }
+
+    .about-btn:hover,
+    .big-link:hover,
+    .small-link:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    .about-btn:active,
+    .big-link:active,
+    .small-link:active {
+      transform: translateY(0) scale(0.99);
+    }
+
+    .about-btn[disabled] {
+      opacity: 0.38;
+      pointer-events: none;
+    }
+
+    .about-btn.next-btn {
+      min-width: 210px;
+      min-height: 50px;
+      padding: 12px 18px;
+      color: #101010;
+      font-size: calc(20px * var(--fs));
+      border-radius: 10px;
+      background: rgba(255,255,255,0.64);
+      box-shadow:
+        0 8px 0 rgba(0,0,0,0.12),
+        0 0 22px rgba(255,255,255,0.34),
+        inset 0 1px 0 rgba(255,255,255,0.78);
+    }
+
+    .about-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      min-height: 12px;
+    }
+
+    .about-dots span {
+      width: 24px;
+      height: 6px;
+      display: block;
+      border-radius: 999px;
+      background: rgba(17,17,17,0.24);
+    }
+
+    .about-dots span.active { background: rgba(17,17,17,0.76); }
+
+    .about-side {
+      min-height: 0;
+      height: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .about-media {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.30);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.45);
+      box-shadow:
+        0 7px 12px rgba(30, 55, 78, 0.14),
+        inset 0 1px 0 rgba(255,255,255,0.52);
+      cursor: pointer;
+      transition: transform 130ms ease, box-shadow 130ms ease;
+    }
+
+    .about-media:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px rgba(30, 55, 78, 0.18);
+    }
+
+    .about-media img {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: block;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .about-music {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      overflow: auto;
+      padding: 2px;
+      scrollbar-width: none;
+    }
+
+    .about-music::-webkit-scrollbar { width: 0; height: 0; }
+
     .music-title-row {
       min-height: calc(18px * var(--fs));
       color: rgba(17,17,17,0.72);
       font-size: calc(13px * var(--fs));
       font-weight: 800;
       margin-bottom: 8px;
-    }
-
-    .music-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
+      text-align: center;
     }
 
     .album-item,
@@ -724,167 +864,6 @@
     .album-link:hover .album-cover {
       transform: translateY(-2px);
       box-shadow: 0 8px 12px rgba(30, 55, 78, 0.16);
-    }
-
-    .about-body {
-      height: 100%;
-      min-width: 0;
-      min-height: 0;
-      padding: 2px 8px 6px;
-    }
-
-    .about-shell {
-      height: 100%;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) calc(168px * var(--fs));
-      gap: 16px;
-      min-width: 0;
-      min-height: 0;
-      align-items: stretch;
-    }
-
-    .about-copy {
-      width: 100%;
-      min-width: 0;
-      min-height: 0;
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) auto auto;
-      gap: 10px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .about-page {
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 13px;
-      padding: 4px 0;
-    }
-
-    .about-kicker {
-      color: #111;
-      font-size: calc(38px * var(--fs));
-      line-height: 1;
-      font-weight: 900;
-      text-transform: lowercase;
-      text-shadow: 1px 1px 0 rgba(255,255,255,0.58);
-    }
-
-    .about-text {
-      color: rgba(17,17,17,0.9);
-      font-size: calc(21px * var(--fs));
-      line-height: 1.18;
-      font-weight: 850;
-      max-width: 620px;
-    }
-
-    .about-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .about-btn,
-    .big-link,
-    .small-link {
-      min-height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 8px 12px;
-      color: #111;
-      text-decoration: none;
-      border: 1px solid rgba(0,0,0,0.22);
-      border-radius: 8px;
-      background: rgba(255,255,255,0.48);
-      box-shadow:
-        0 5px 0 rgba(0,0,0,0.10),
-        inset 0 1px 0 rgba(255,255,255,0.62);
-      font-size: calc(13px * var(--fs));
-      line-height: 1;
-      font-weight: 900;
-      text-transform: lowercase;
-      cursor: pointer;
-      transition: transform 130ms ease, filter 130ms ease;
-    }
-
-    .about-btn:hover,
-    .big-link:hover,
-    .small-link:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.04);
-    }
-
-    .about-btn:active,
-    .big-link:active,
-    .small-link:active {
-      transform: translateY(0) scale(0.99);
-    }
-
-    .about-btn[disabled] {
-      opacity: 0.38;
-      pointer-events: none;
-    }
-
-    .about-dots {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      min-height: 12px;
-    }
-
-    .about-dots span {
-      width: 24px;
-      height: 6px;
-      display: block;
-      border-radius: 999px;
-      background: rgba(17,17,17,0.24);
-    }
-
-    .about-dots span.active {
-      background: rgba(17,17,17,0.76);
-    }
-
-    .about-side-pics {
-      display: grid;
-      grid-template-rows: repeat(3, minmax(0, 1fr));
-      gap: 9px;
-      min-height: 0;
-    }
-
-    .about-pic {
-      position: relative;
-      width: 100%;
-      min-height: 0;
-      display: block;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.30);
-      border-radius: 7px;
-      background: rgba(255,255,255,0.50);
-      box-shadow:
-        0 7px 12px rgba(30, 55, 78, 0.14),
-        inset 0 1px 0 rgba(255,255,255,0.52);
-      cursor: pointer;
-      transition: transform 130ms ease, box-shadow 130ms ease;
-    }
-
-    .about-pic:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 15px rgba(30, 55, 78, 0.18);
-    }
-
-    .about-pic img {
-      width: 100%;
-      height: 100%;
-      min-height: 0;
-      display: block;
-      object-fit: cover;
-      pointer-events: none;
-      user-select: none;
     }
 
     .panel-wrap {
@@ -981,12 +960,6 @@
       background: rgba(157,133,255,0.22);
     }
 
-    .big-link.donate {
-      color: #4c2d15;
-      border-color: rgba(184,145,59,0.42);
-      background: rgba(255,220,133,0.28);
-    }
-
     .small-link {
       min-height: 42px;
       flex: 0 0 auto;
@@ -995,25 +968,120 @@
     }
 
     .donate-panel {
+      height: 100%;
+      align-items: center;
       justify-content: center;
+      text-align: center;
+      gap: 18px;
+      padding: 10px 18px;
     }
 
     .donate-icon {
-      width: 72px;
-      height: 72px;
+      width: 108px;
+      height: 108px;
       display: grid;
       place-items: center;
-      margin: 4px auto 0;
-      border-radius: 22px;
-      border: 1px solid rgba(0,0,0,0.22);
-      background: rgba(255,255,255,0.42);
+      margin: 0 auto;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.92), rgba(255,255,255,0.22) 62%, rgba(255,111,167,0.18));
       box-shadow:
-        0 10px 16px rgba(30, 55, 78, 0.13),
-        inset 0 1px 0 rgba(255,255,255,0.62);
-      color: var(--gold);
-      font-size: 42px;
-      line-height: 1;
+        0 0 24px rgba(255,111,167,0.38),
+        0 14px 22px rgba(30, 55, 78, 0.13),
+        inset 0 1px 0 rgba(255,255,255,0.72);
+      animation: heartFloat 2.6s ease-in-out infinite;
+    }
+
+    .donate-icon img {
+      width: 84%;
+      height: 84%;
+      display: block;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255,111,167,0.52));
+    }
+
+    .donate-thanks {
+      max-width: 340px;
+      color: #111;
+      font-size: calc(25px * var(--fs));
+      line-height: 1.12;
       font-weight: 900;
+      text-align: center;
+      text-transform: lowercase;
+      text-shadow:
+        1px 1px 0 rgba(255,255,255,0.72),
+        0 0 18px rgba(255,111,167,0.30);
+    }
+
+    .donate-panel .panel-actions {
+      width: min(100%, 320px);
+      margin-top: 0;
+      justify-content: center;
+    }
+
+    .big-link.donate {
+      position: relative;
+      min-height: 70px;
+      width: 100%;
+      flex: 1 1 100%;
+      overflow: hidden;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, #ff5f9f, #ff8fbd 45%, #b67cff);
+      box-shadow:
+        0 0 16px rgba(255,111,167,0.72),
+        0 0 34px rgba(255,111,167,0.36),
+        0 12px 0 rgba(120,34,77,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.62);
+      font-size: calc(24px * var(--fs));
+      letter-spacing: 0;
+      text-shadow: 0 2px 0 rgba(92,20,60,0.28);
+      animation: donateGlow 1.9s ease-in-out infinite;
+    }
+
+    .big-link.donate::before {
+      content: "";
+      position: absolute;
+      inset: -35% auto -35% -45%;
+      width: 38%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.72), transparent);
+      animation: donateShine 2.4s ease-in-out infinite;
+    }
+
+    .big-link.donate:hover {
+      transform: translateY(-3px) scale(1.02);
+      filter: brightness(1.05) saturate(1.08);
+    }
+
+    @keyframes heartFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    @keyframes donateGlow {
+      0%, 100% {
+        box-shadow:
+          0 0 16px rgba(255,111,167,0.72),
+          0 0 34px rgba(255,111,167,0.36),
+          0 12px 0 rgba(120,34,77,0.20),
+          inset 0 1px 0 rgba(255,255,255,0.62);
+      }
+      50% {
+        box-shadow:
+          0 0 26px rgba(255,111,167,0.92),
+          0 0 54px rgba(182,124,255,0.42),
+          0 12px 0 rgba(120,34,77,0.20),
+          inset 0 1px 0 rgba(255,255,255,0.72);
+      }
+    }
+
+    @keyframes donateShine {
+      0% { left: -45%; opacity: 0; }
+      18% { opacity: 1; }
+      54%, 100% { left: 118%; opacity: 0; }
     }
 
     .gallery-wrap {
@@ -1041,10 +1109,7 @@
       scrollbar-width: none;
     }
 
-    .gallery-grid::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-    }
+    .gallery-grid::-webkit-scrollbar { width: 0; height: 0; }
 
     .g-card {
       min-width: 0;
@@ -1271,6 +1336,20 @@
       100% { transform: scale(1) rotate(0); }
     }
 
+    .link-item:focus-visible,
+    .album-link:focus-visible,
+    .g-card:focus-visible,
+    .about-btn:focus-visible,
+    .discord-badge:focus-visible,
+    .img-modal-close:focus-visible,
+    .big-link:focus-visible,
+    .small-link:focus-visible,
+    .about-media:focus-visible {
+      outline: 2px solid rgba(15, 50, 90, 0.66);
+      outline-offset: 4px;
+      border-radius: 10px;
+    }
+
     #mobile-root { display: none; }
 
     @media (max-width: 760px) {
@@ -1284,13 +1363,7 @@
       }
 
       #desk,
-      .fa-player {
-        display: none;
-      }
-
-      #intro.is-hidden {
-        display: none !important;
-      }
+      .fa-player { display: none; }
 
       #mobile-root {
         position: relative;
@@ -1435,11 +1508,6 @@
         box-shadow:
           0 7px 14px rgba(30, 55, 78, 0.10),
           inset 0 1px 0 rgba(255,255,255,0.52);
-        transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
-      }
-
-      .m-link-item:active {
-        transform: scale(0.985);
       }
 
       .m-link-icon,
@@ -1486,6 +1554,7 @@
       .m-about-page {
         display: grid;
         gap: 12px;
+        text-align: center;
       }
 
       .m-about-title {
@@ -1494,6 +1563,7 @@
         line-height: 1;
         font-weight: 900;
         text-transform: lowercase;
+        text-align: center;
       }
 
       .m-about-text {
@@ -1501,34 +1571,40 @@
         font-size: 19px;
         line-height: 1.2;
         font-weight: 850;
+        text-align: center;
       }
 
-      .m-about-pics {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        margin-top: 12px;
+      .m-about-media {
+        margin-top: 14px;
       }
 
-      .m-about-pics button {
+      .m-about-media-btn {
+        width: 100%;
         aspect-ratio: 1 / 1;
         overflow: hidden;
         border: 1px solid rgba(0,0,0,0.28);
-        border-radius: 10px;
+        border-radius: 14px;
         background: rgba(255,255,255,0.38);
         padding: 0;
       }
 
-      .m-about-pics img {
+      .m-about-media-btn img {
         width: 100%;
         height: 100%;
         display: block;
-        object-fit: cover;
+        object-fit: contain;
+      }
+
+      .m-about-music {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
       }
 
       .m-actions {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
         gap: 8px;
         margin-top: 14px;
       }
@@ -1540,19 +1616,9 @@
         font-size: 13px;
       }
 
-      .m-music-panel {
-        display: none;
-        margin-top: 12px;
-      }
-
-      .m-music-panel.open {
-        display: block;
-      }
-
-      .m-music-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
+      .m-actions .next-btn {
+        flex-basis: 100%;
+        font-size: 22px;
       }
 
       .m-twitch-frame {
@@ -1573,6 +1639,28 @@
         height: 100%;
         display: block;
         border: 0;
+      }
+
+      .m-donate {
+        display: grid;
+        justify-items: center;
+        text-align: center;
+        gap: 16px;
+      }
+
+      .m-donate .donate-icon {
+        width: 96px;
+        height: 96px;
+      }
+
+      .m-donate .donate-thanks {
+        font-size: 24px;
+      }
+
+      .m-donate .big-link.donate {
+        width: 100%;
+        min-height: 68px;
+        font-size: 24px;
       }
 
       .contact-mail {
@@ -1603,9 +1691,7 @@
         padding-right: 12px;
       }
 
-      #mobile-root .site-title {
-        letter-spacing: 2px;
-      }
+      #mobile-root .site-title { letter-spacing: 2px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1742,9 +1828,9 @@
       <div class="window win1 about-window" id="win-about"
            data-label="about me.exe"
            data-x="1120" data-y="118"
-           data-w="500" data-h="430"
+           data-w="560" data-h="430"
            data-skin="1.08" data-font="1.03"
-           data-stretch-x="1.44" data-stretch-y="1.28">
+           data-stretch-x="1.52" data-stretch-y="1.28">
         <img class="skin" src="img/Window2.png" data-fallback="img/window2.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -1752,32 +1838,26 @@
             <div class="about-shell">
               <div class="about-copy">
                 <div class="about-page" aria-live="polite">
-                  <div class="about-kicker" id="aboutTitle">hii im frazyy.</div>
+                  <div class="about-kicker" id="aboutTitle">haiii im frazyy!!</div>
                   <p class="about-text" id="aboutText">
-                    im from estonia. i use he/him and they/them. i speak estonian, english and russian.
+                    welcome to my website!!! here are all my links and where i put stuff about me too!! :3
                   </p>
                 </div>
 
                 <div class="about-actions">
-                  <button class="about-btn" id="aboutPrevBtn" type="button">back</button>
-                  <button class="about-btn" id="aboutNextBtn" type="button">next</button>
-                  <button class="about-btn" id="openMusicBtn" type="button">music i like</button>
-                  <button class="about-btn" id="openGalleryBtn" type="button">more pics</button>
+                  <button class="about-btn" id="aboutPrevBtn" type="button">&lt;&lt;&lt; Back</button>
+                  <button class="about-btn next-btn" id="aboutNextBtn" type="button">Next &gt;&gt;&gt;</button>
                 </div>
 
                 <div class="about-dots" id="aboutDots" aria-hidden="true"></div>
               </div>
 
-              <div class="about-side-pics" aria-label="pictures">
-                <button class="about-pic" type="button" data-full="img/frazyy10.jpg" aria-label="open picture">
-                  <img src="img/frazyy10.jpg" alt="" draggable="false">
+              <div class="about-side" aria-label="about image and music">
+                <button class="about-media" id="aboutMediaButton" type="button" data-full="img/frazyy5.png" aria-label="open picture">
+                  <img id="aboutMediaImg" src="img/frazyy5.png" alt="" draggable="false">
                 </button>
-                <button class="about-pic" type="button" data-full="img/frazyy6.jpg" aria-label="open picture">
-                  <img src="img/frazyy6.jpg" alt="" draggable="false">
-                </button>
-                <button class="about-pic" type="button" data-full="img/frazyy5.png" aria-label="open picture">
-                  <img src="img/frazyy5.png" alt="" draggable="false">
-                </button>
+
+                <div class="about-music" id="aboutMusicGrid" hidden aria-label="songs i like"></div>
               </div>
             </div>
           </div>
@@ -1822,40 +1902,13 @@
         <div class="handle"></div>
         <div class="content">
           <div class="panel-wrap donate-panel">
-            <div class="donate-icon" aria-hidden="true">$</div>
-            <div>
-              <div class="panel-kicker">stream support</div>
-              <div class="panel-title">donations</div>
+            <div class="donate-icon" aria-hidden="true">
+              <img src="img/frazyyheart.png" alt="">
             </div>
-            <p class="panel-copy">tips go through streamelements. no pressure, just leaving it here.</p>
+            <div class="donate-thanks">thank you so much for donating! &lt;333</div>
             <div class="panel-actions">
               <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
-              <a class="small-link" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">watch</a>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="window win1 closed" id="win-music"
-           data-label="music i like.exe"
-           data-x="285" data-y="498"
-           data-w="500" data-h="430"
-           data-skin="0.96" data-font="1.02"
-           aria-hidden="true">
-        <img class="skin" src="img/window1.png" alt="">
-        <div class="handle"></div>
-        <button class="close-hit" id="closeMusicBtn" type="button" aria-label="close music"></button>
-        <div class="content">
-          <div class="music-title-row">songs i like rn</div>
-          <div class="music-grid">
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che2.png" alt="serve da ba$$"></div><div class="album-name">serve da ba$$</div></a></div>
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che3.png" alt="get n*ked"></div><div class="album-name">get n*ked</div></a></div>
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/slayr.png" alt="death by mp3"></div><div class="album-name">death by mp3</div></a></div>
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/jaydes.png" alt="tylenol"></div><div class="album-name">tylenol</div></a></div>
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/4pTeMPZunwlT9ZVaE9NvvO?si=1a3090b1d9fa4174" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/bladee.png" alt="king nothingg"></div><div class="album-name">king nothingg</div></a></div>
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/5abyhbZPOfEii6LTduwpx6?si=7dd6597e42d7485d" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/bunii.png" alt="medicine"></div><div class="album-name">medicine</div></a></div>
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/02ul0OpdRoGyBRxwzoxjp5?si=3f8e123c3a724d7c" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che1.png" alt="sos"></div><div class="album-name">sos</div></a></div>
-            <div class="album-item"><a class="album-link" href="https://open.spotify.com/track/7bO7a1KrtmGNDIOy2u3siZ?si=cc1ada00b8434ec3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/carti.png" alt="fomdj"></div><div class="album-name">fomdj</div></a></div>
           </div>
         </div>
       </div>
@@ -1874,35 +1927,7 @@
         <div class="content">
           <div class="gallery-wrap">
             <div class="gallery-title">frazy folder</div>
-            <div class="gallery-grid" id="galleryGrid">
-              <a class="g-card" href="img/frazyy.png" data-title="pic 1"><div class="g-thumb"><img src="img/frazyy.png" alt="pic 1" draggable="false"></div><div class="g-title">pic 1</div></a>
-              <a class="g-card" href="img/frazyy1.jpg" data-title="pic 2"><div class="g-thumb"><img src="img/frazyy1.jpg" alt="pic 2" draggable="false"></div><div class="g-title">pic 2</div></a>
-              <a class="g-card" href="img/frazyy2.png" data-title="pic 3"><div class="g-thumb"><img src="img/frazyy2.png" alt="pic 3" draggable="false"></div><div class="g-title">pic 3</div></a>
-              <a class="g-card" href="img/frazyy3.jpg" data-title="pic 4"><div class="g-thumb"><img src="img/frazyy3.jpg" alt="pic 4" draggable="false"></div><div class="g-title">pic 4</div></a>
-              <a class="g-card" href="img/frazyy4.jpg" data-title="pic 5"><div class="g-thumb"><img src="img/frazyy4.jpg" alt="pic 5" draggable="false"></div><div class="g-title">pic 5</div></a>
-              <a class="g-card" href="img/frazyy5.png" data-title="pic 6"><div class="g-thumb"><img src="img/frazyy5.png" alt="pic 6" draggable="false"></div><div class="g-title">pic 6</div></a>
-              <a class="g-card" href="img/frazyy6.jpg" data-title="pic 7"><div class="g-thumb"><img src="img/frazyy6.jpg" alt="pic 7" draggable="false"></div><div class="g-title">pic 7</div></a>
-              <a class="g-card" href="img/frazyy7.png" data-title="pic 8"><div class="g-thumb"><img src="img/frazyy7.png" alt="pic 8" draggable="false"></div><div class="g-title">pic 8</div></a>
-              <a class="g-card" href="img/frazyy8.png" data-title="pic 9"><div class="g-thumb"><img src="img/frazyy8.png" alt="pic 9" draggable="false"></div><div class="g-title">pic 9</div></a>
-              <a class="g-card" href="img/frazyy9.png" data-title="pic 10"><div class="g-thumb"><img src="img/frazyy9.png" alt="pic 10" draggable="false"></div><div class="g-title">pic 10</div></a>
-              <a class="g-card" href="img/frazyy10.jpg" data-title="pic 11"><div class="g-thumb"><img src="img/frazyy10.jpg" alt="pic 11" draggable="false"></div><div class="g-title">pic 11</div></a>
-              <a class="g-card" href="img/frazyy11.jpg" data-title="pic 12"><div class="g-thumb"><img src="img/frazyy11.jpg" alt="pic 12" draggable="false"></div><div class="g-title">pic 12</div></a>
-              <a class="g-card" href="img/frazyy12.png" data-title="pic 13"><div class="g-thumb"><img src="img/frazyy12.png" alt="pic 13" draggable="false"></div><div class="g-title">pic 13</div></a>
-              <a class="g-card" href="img/frazyy13.JPG" data-title="pic 14"><div class="g-thumb"><img src="img/frazyy13.JPG" alt="pic 14" draggable="false"></div><div class="g-title">pic 14</div></a>
-              <a class="g-card" href="img/frazyy14.JPG" data-title="pic 15"><div class="g-thumb"><img src="img/frazyy14.JPG" alt="pic 15" draggable="false"></div><div class="g-title">pic 15</div></a>
-              <a class="g-card" href="img/frazyy15.jpg" data-title="pic 16"><div class="g-thumb"><img src="img/frazyy15.jpg" alt="pic 16" draggable="false"></div><div class="g-title">pic 16</div></a>
-              <a class="g-card" href="img/frazyy16.jpg" data-title="pic 17"><div class="g-thumb"><img src="img/frazyy16.jpg" alt="pic 17" draggable="false"></div><div class="g-title">pic 17</div></a>
-              <a class="g-card" href="img/frazyy17.jpg" data-title="pic 18"><div class="g-thumb"><img src="img/frazyy17.jpg" alt="pic 18" draggable="false"></div><div class="g-title">pic 18</div></a>
-              <a class="g-card" href="img/frazyy18.png" data-title="pic 19"><div class="g-thumb"><img src="img/frazyy18.png" alt="pic 19" draggable="false"></div><div class="g-title">pic 19</div></a>
-              <a class="g-card" href="img/frazyy19.png" data-title="pic 20"><div class="g-thumb"><img src="img/frazyy19.png" alt="pic 20" draggable="false"></div><div class="g-title">pic 20</div></a>
-              <a class="g-card" href="img/frazyy20.png" data-title="pic 21"><div class="g-thumb"><img src="img/frazyy20.png" alt="pic 21" draggable="false"></div><div class="g-title">pic 21</div></a>
-              <a class="g-card" href="img/frazyy21.png" data-title="pic 22"><div class="g-thumb"><img src="img/frazyy21.png" alt="pic 22" draggable="false"></div><div class="g-title">pic 22</div></a>
-              <a class="g-card" href="img/frazyy22.png" data-title="pic 23"><div class="g-thumb"><img src="img/frazyy22.png" alt="pic 23" draggable="false"></div><div class="g-title">pic 23</div></a>
-              <a class="g-card" href="img/frazyy23.jpg" data-title="pic 24"><div class="g-thumb"><img src="img/frazyy23.jpg" alt="pic 24" draggable="false"></div><div class="g-title">pic 24</div></a>
-              <a class="g-card" href="img/frazyy24.png" data-title="pic 25"><div class="g-thumb"><img src="img/frazyy24.png" alt="pic 25" draggable="false"></div><div class="g-title">pic 25</div></a>
-              <a class="g-card" href="img/frazyy25.jpg" data-title="pic 26"><div class="g-thumb"><img src="img/frazyy25.jpg" alt="pic 26" draggable="false"></div><div class="g-title">pic 26</div></a>
-              <a class="g-card" href="img/frazyy26.jpg" data-title="pic 27"><div class="g-thumb"><img src="img/frazyy26.jpg" alt="pic 27" draggable="false"></div><div class="g-title">pic 27</div></a>
-            </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
           </div>
         </div>
       </div>
@@ -1986,32 +2011,23 @@
 
     <section class="m-card" aria-label="about me">
       <div class="m-about-page" aria-live="polite">
-        <div class="m-about-title" id="mAboutTitle">hii im frazyy.</div>
+        <div class="m-about-title" id="mAboutTitle">haiii im frazyy!!</div>
         <p class="m-about-text" id="mAboutText">
-          im from estonia. i use he/him and they/them. i speak estonian, english and russian.
+          welcome to my website!!! here are all my links and where i put stuff about me too!! :3
         </p>
       </div>
 
-      <div class="m-about-pics">
-        <button type="button" data-full="img/frazyy10.jpg" aria-label="open picture"><img src="img/frazyy10.jpg" alt=""></button>
-        <button type="button" data-full="img/frazyy6.jpg" aria-label="open picture"><img src="img/frazyy6.jpg" alt=""></button>
-        <button type="button" data-full="img/frazyy5.png" aria-label="open picture"><img src="img/frazyy5.png" alt=""></button>
+      <div class="m-about-media">
+        <button class="m-about-media-btn" id="mAboutMediaButton" type="button" data-full="img/frazyy5.png" aria-label="open picture">
+          <img id="mAboutMediaImg" src="img/frazyy5.png" alt="">
+        </button>
+
+        <div class="m-about-music" id="mAboutMusicGrid" hidden aria-label="songs i like"></div>
       </div>
 
       <div class="m-actions">
-        <button class="about-btn" id="mAboutPrevBtn" type="button">back</button>
-        <button class="about-btn" id="mAboutNextBtn" type="button">next</button>
-        <button class="about-btn" id="mOpenMusicBtn" type="button">music</button>
-      </div>
-
-      <div class="m-music-panel" id="mMusicPanel">
-        <div class="music-title-row">songs i like rn</div>
-        <div class="m-music-grid">
-          <a class="album-link" href="https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che2.png" alt="serve da ba$$"></div><div class="album-name">serve da ba$$</div></a>
-          <a class="album-link" href="https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/che3.png" alt="get n*ked"></div><div class="album-name">get n*ked</div></a>
-          <a class="album-link" href="https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/slayr.png" alt="death by mp3"></div><div class="album-name">death by mp3</div></a>
-          <a class="album-link" href="https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0" target="_blank" rel="noopener noreferrer"><div class="album-cover"><img src="img/jaydes.png" alt="tylenol"></div><div class="album-name">tylenol</div></a>
-        </div>
+        <button class="about-btn" id="mAboutPrevBtn" type="button">&lt;&lt;&lt; Back</button>
+        <button class="about-btn next-btn" id="mAboutNextBtn" type="button">Next &gt;&gt;&gt;</button>
       </div>
     </section>
 
@@ -2027,14 +2043,12 @@
       </div>
     </section>
 
-    <section class="m-card" aria-label="donations">
-      <div class="panel-kicker">stream support</div>
-      <div class="panel-title">donations</div>
-      <p class="panel-copy">tips go through streamelements. no pressure, just leaving it here.</p>
-      <div class="m-actions">
-        <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
-        <a class="small-link" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">watch</a>
+    <section class="m-card m-donate" aria-label="donations">
+      <div class="donate-icon" aria-hidden="true">
+        <img src="img/frazyyheart.png" alt="">
       </div>
+      <div class="donate-thanks">thank you so much for donating! &lt;333</div>
+      <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
     </section>
 
     <footer class="contact-mail">
@@ -2065,32 +2079,121 @@
     let stageScale = 1;
     let currentDesignHeight = 799;
 
+    const songs = [
+      {
+        name: "serve da ba$$",
+        img: "img/che2.png",
+        url: "https://open.spotify.com/track/3MrGQZXMe8gcWMHXJW2X0Q?si=cdc3f1a7d20a4c88"
+      },
+      {
+        name: "get n*ked",
+        img: "img/che3.png",
+        url: "https://open.spotify.com/track/0MpX5XdebuePxim7XJBp8d?si=1f986f1b3f6340f3"
+      },
+      {
+        name: "death by mp3",
+        img: "img/slayr.png",
+        url: "https://open.spotify.com/track/3cH7jydr4eVYEP6WgXHvqq?si=8934284d82404dca"
+      },
+      {
+        name: "tylenol",
+        img: "img/jaydes.png",
+        url: "https://open.spotify.com/track/0o4SjakP2s5Cm0MInwPHP0?si=0cfc1dd80ee542f0"
+      },
+      {
+        name: "king nothingg",
+        img: "img/bladee.png",
+        url: "https://open.spotify.com/track/4pTeMPZunwlT9ZVaE9NvvO?si=1a3090b1d9fa4174"
+      },
+      {
+        name: "medicine",
+        img: "img/bunii.png",
+        url: "https://open.spotify.com/track/5abyhbZPOfEii6LTduwpx6?si=7dd6597e42d7485d"
+      },
+      {
+        name: "sos",
+        img: "img/che1.png",
+        url: "https://open.spotify.com/track/02ul0OpdRoGyBRxwzoxjp5?si=3f8e123c3a724d7c"
+      },
+      {
+        name: "fomdj",
+        img: "img/carti.png",
+        url: "https://open.spotify.com/track/7bO7a1KrtmGNDIOy2u3siZ?si=cc1ada00b8434ec3"
+      }
+    ];
+
+    const galleryImages = [
+      "img/frazyy.png",
+      "img/frazyy1.jpg",
+      "img/frazyy2.png",
+      "img/frazyy3.jpg",
+      "img/frazyy4.jpg",
+      "img/frazyy5.png",
+      "img/frazyy6.jpg",
+      "img/frazyy7.png",
+      "img/frazyy8.png",
+      "img/frazyy9.png",
+      "img/frazyy10.jpg",
+      "img/frazyy11.jpg",
+      "img/frazyy12.png",
+      "img/frazyy13.JPG",
+      "img/frazyy14.JPG",
+      "img/frazyy15.jpg",
+      "img/frazyy16.jpg",
+      "img/frazyy17.jpg",
+      "img/frazyy18.png",
+      "img/frazyy19.png",
+      "img/frazyy20.png",
+      "img/frazyy21.png",
+      "img/frazyy22.png",
+      "img/frazyy23.jpg",
+      "img/frazyy24.png",
+      "img/frazyy25.jpg",
+      "img/frazyy26.jpg"
+    ];
+
     const aboutPages = [
       {
-        title: "hii im frazyy.",
-        text: "im from estonia. i use he/him and they/them. i speak estonian, english and russian."
+        title: "haiii im frazyy!!",
+        text: "welcome to my website!!! here are all my links and where i put stuff about me too!! :3",
+        image: "img/frazyy5.png",
+        alt: "frazyy picture"
       },
       {
-        title: "what i do",
-        text: "i make roblox stuff, mess with lua, html, java and c++, and try different engines when i feel like it."
+        title: "i make stuff!!",
+        text: "im a content creator and a game developer!! i make games on roblox and i know how to code websites and other stuffies :p",
+        image: "img/frazyy6.jpg",
+        alt: "frazyy picture"
       },
       {
-        title: "what i play",
-        text: "roblox, counter strike 2, minecraft, terraria, vrchat, geometry dash, osu! and geoguessr."
+        title: "heres my fursona lumi!!",
+        text: "this is Lumi!! my sona :3",
+        image: "img/frazyy10.jpg",
+        alt: "Lumi fursona"
       },
       {
-        title: "other stuff",
-        text: "fashion, my fursuit, music, and making this site feel more like me instead of a template."
+        title: "music i like!!",
+        text: "some songs i like rn :p",
+        music: true
       }
     ];
 
     let aboutIndex = 0;
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
 
     function setWindowPosition(el, x, y) {
       if (!el) return;
       el.dataset.x = String(Math.round(x));
       el.dataset.y = String(Math.round(y));
       el.style.transform = `translate3d(${Math.round(x)}px,${Math.round(y)}px,0)`;
+    }
+
+    function placeWindow(el, x, y) {
+      if (!el || el.dataset.userMoved === "1") return;
+      setWindowPosition(el, x, y);
     }
 
     function centeredX(el) {
@@ -2139,7 +2242,6 @@
       const title = document.querySelector("#stage > .site-title");
       const welcome = document.getElementById("win-welcome");
       const about = document.getElementById("win-about");
-      const music = document.getElementById("win-music");
       const twitch = document.getElementById("win-twitch");
       const donate = document.getElementById("win-donate");
       const gallery = document.getElementById("win-gallery");
@@ -2152,7 +2254,7 @@
 
       const gap = STACK_GAP;
       const welcomeY = 176;
-      setWindowPosition(welcome, centeredX(welcome), welcomeY);
+      placeWindow(welcome, centeredX(welcome), welcomeY);
 
       const rowY = welcomeY + winH(welcome) + gap;
       const sideW = Math.max(winW(twitch), winW(donate));
@@ -2160,23 +2262,15 @@
       const rowX = Math.max(94, Math.round((DESIGN_W - totalW) / 2));
       const sideX = rowX + winW(about) + gap;
 
-      setWindowPosition(about, rowX, rowY);
-      setWindowPosition(twitch, sideX, rowY);
-      setWindowPosition(donate, sideX, rowY + winH(twitch) + gap);
-
-      let leftColumnHeight = winH(about);
-      if (music) {
-        setWindowPosition(music, rowX, rowY + winH(about) + gap);
-        if (isWindowOpen(music)) {
-          leftColumnHeight += gap + winH(music);
-        }
-      }
+      placeWindow(about, rowX, rowY);
+      placeWindow(twitch, sideX, rowY);
+      placeWindow(donate, sideX, rowY + winH(twitch) + gap);
 
       const sideColumnHeight = winH(twitch) + gap + winH(donate);
-      let pageBottom = rowY + Math.max(leftColumnHeight, sideColumnHeight);
+      let pageBottom = rowY + Math.max(winH(about), sideColumnHeight);
 
       if (isWindowOpen(gallery)) {
-        setWindowPosition(gallery, centeredX(gallery), pageBottom + gap);
+        placeWindow(gallery, centeredX(gallery), pageBottom + gap);
         pageBottom += gap + winH(gallery);
       }
 
@@ -2231,8 +2325,9 @@
           layoutStack();
         };
 
-        if (img && img.complete && img.naturalWidth) applySize();
-        else if (img) {
+        if (img && img.complete && img.naturalWidth) {
+          applySize();
+        } else if (img) {
           const onImageError = () => {
             const fallback = img.dataset.fallback;
             if (fallback && !img.dataset.triedFallback) {
@@ -2256,6 +2351,7 @@
     applyWindowSizes();
 
     function bringToFront(win) {
+      if (!win) return;
       document.querySelectorAll(".window.is-front").forEach(w => w.classList.remove("is-front"));
       win.classList.add("is-front");
       win.style.zIndex = (++topZ).toString();
@@ -2264,6 +2360,72 @@
     document.querySelectorAll(".window").forEach(win => {
       win.addEventListener("pointerdown", () => bringToFront(win), true);
     });
+
+    function setupWindowDragging() {
+      let drag = null;
+
+      function startDrag(e, handle) {
+          const win = handle.closest(".window");
+          if (!win || win.classList.contains("closed")) return;
+          if (drag) return;
+
+          bringToFront(win);
+          win.dataset.userMoved = "1";
+          win.classList.add("dragging");
+
+          drag = {
+            pointerId: e.pointerId ?? null,
+            win,
+            startClientX: e.clientX,
+            startClientY: e.clientY,
+            startX: parseFloat(win.dataset.x || "0"),
+            startY: parseFloat(win.dataset.y || "0")
+          };
+
+          if (typeof e.pointerId === "number" && handle.setPointerCapture) {
+            handle.setPointerCapture(e.pointerId);
+          }
+
+          e.preventDefault();
+        }
+
+      function moveDrag(e) {
+          if (!drag) return;
+          if (drag.pointerId !== null && typeof e.pointerId === "number" && e.pointerId !== drag.pointerId) return;
+
+          const dx = (e.clientX - drag.startClientX) / stageScale;
+          const dy = (e.clientY - drag.startClientY) / stageScale;
+          const maxX = Math.max(0, DESIGN_W - winW(drag.win) - 24);
+          const maxY = Math.max(0, currentDesignHeight - winH(drag.win) - 24);
+          const x = clamp(drag.startX + dx, -20, maxX);
+          const y = clamp(drag.startY + dy, -20, maxY);
+
+          setWindowPosition(drag.win, x, y);
+        }
+
+      function endDrag(e) {
+          if (!drag) return;
+          if (drag.pointerId !== null && typeof e.pointerId === "number" && e.pointerId !== drag.pointerId) return;
+          drag.win.classList.remove("dragging");
+          drag = null;
+        }
+
+      document.querySelectorAll(".window .handle").forEach(handle => {
+        handle.addEventListener("pointerdown", e => startDrag(e, handle));
+        handle.addEventListener("mousedown", e => {
+          if (e.button !== 0) return;
+          startDrag(e, handle);
+        });
+      });
+
+      window.addEventListener("pointermove", moveDrag);
+      window.addEventListener("mousemove", moveDrag);
+      window.addEventListener("pointerup", endDrag);
+      window.addEventListener("mouseup", endDrag);
+      window.addEventListener("pointercancel", endDrag);
+    }
+
+    setupWindowDragging();
 
     function openWindow(win) {
       if (!win) return;
@@ -2288,18 +2450,10 @@
     }
 
     const galleryWin = document.getElementById("win-gallery");
-    const musicWin = document.getElementById("win-music");
 
-    document.getElementById("openGalleryBtn")?.addEventListener("click", () => openWindow(galleryWin));
     document.getElementById("closeGalleryBtn")?.addEventListener("click", e => {
       e.stopPropagation();
       closeWindow(galleryWin);
-    });
-
-    document.getElementById("openMusicBtn")?.addEventListener("click", () => openWindow(musicWin));
-    document.getElementById("closeMusicBtn")?.addEventListener("click", e => {
-      e.stopPropagation();
-      closeWindow(musicWin);
     });
 
     const imgModal = document.getElementById("imgModal");
@@ -2308,6 +2462,7 @@
     const modalBackdrop = document.getElementById("modalBackdrop");
 
     function openImgModal(src, alt) {
+      if (!src) return;
       imgModalImg.src = src;
       imgModalImg.alt = alt || "image";
       imgModal.classList.add("open");
@@ -2329,6 +2484,51 @@
       if (e.key === "Escape" && imgModal?.classList.contains("open")) closeImgModal();
     });
 
+    function albumCard(song) {
+      const item = document.createElement("div");
+      item.className = "album-item";
+      item.innerHTML = `
+        <a class="album-link" href="${song.url}" target="_blank" rel="noopener noreferrer">
+          <div class="album-cover"><img src="${song.img}" alt="${song.name}"></div>
+          <div class="album-name">${song.name}</div>
+        </a>
+      `;
+      return item;
+    }
+
+    function renderSongs() {
+      const desktopGrid = document.getElementById("aboutMusicGrid");
+      const mobileGrid = document.getElementById("mAboutMusicGrid");
+
+      [desktopGrid, mobileGrid].forEach(grid => {
+        if (!grid) return;
+        grid.innerHTML = "";
+        songs.forEach(song => grid.append(albumCard(song)));
+      });
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById("galleryGrid");
+      if (!grid) return;
+
+      grid.innerHTML = "";
+      galleryImages.forEach((src, i) => {
+        const card = document.createElement("a");
+        const title = `pic ${i + 1}`;
+        card.className = "g-card";
+        card.href = src;
+        card.dataset.title = title;
+        card.innerHTML = `
+          <div class="g-thumb"><img src="${src}" alt="${title}" draggable="false"></div>
+          <div class="g-title">${title}</div>
+        `;
+        grid.append(card);
+      });
+    }
+
+    renderSongs();
+    renderGallery();
+
     document.getElementById("galleryGrid")?.addEventListener("click", e => {
       const card = e.target.closest("a.g-card");
       if (!card) return;
@@ -2337,16 +2537,28 @@
 
       const src = card.getAttribute("href");
       const title = card.dataset.title || card.querySelector(".g-title")?.textContent || "picture";
-
-      if (src) openImgModal(src, title);
+      openImgModal(src, title);
     });
 
-    document.querySelectorAll("[data-full]").forEach(button => {
-      button.addEventListener("click", () => {
-        const src = button.getAttribute("data-full");
-        if (src) openImgModal(src, "picture");
-      });
-    });
+    function updateMedia(button, img, grid, page) {
+      if (!button || !grid) return;
+
+      if (page.music) {
+        button.hidden = true;
+        grid.hidden = false;
+        return;
+      }
+
+      grid.hidden = true;
+      button.hidden = false;
+
+      if (img && page.image) {
+        img.src = page.image;
+        img.alt = page.alt || "picture";
+      }
+
+      button.dataset.full = page.image || "";
+    }
 
     function renderAboutPage() {
       const page = aboutPages[aboutIndex];
@@ -2365,13 +2577,27 @@
       if (mobileTitle) mobileTitle.textContent = page.title;
       if (mobileText) mobileText.textContent = page.text;
 
+      updateMedia(
+        document.getElementById("aboutMediaButton"),
+        document.getElementById("aboutMediaImg"),
+        document.getElementById("aboutMusicGrid"),
+        page
+      );
+
+      updateMedia(
+        document.getElementById("mAboutMediaButton"),
+        document.getElementById("mAboutMediaImg"),
+        document.getElementById("mAboutMusicGrid"),
+        page
+      );
+
       const atStart = aboutIndex === 0;
       const atEnd = aboutIndex === aboutPages.length - 1;
 
       if (prev) prev.disabled = atStart;
       if (mobilePrev) mobilePrev.disabled = atStart;
-      if (next) next.textContent = atEnd ? "again" : "next";
-      if (mobileNext) mobileNext.textContent = atEnd ? "again" : "next";
+      if (next) next.textContent = atEnd ? "Again <<<" : "Next >>>";
+      if (mobileNext) mobileNext.textContent = atEnd ? "Again <<<" : "Next >>>";
 
       if (dots) {
         dots.innerHTML = "";
@@ -2399,9 +2625,11 @@
     document.getElementById("mAboutPrevBtn")?.addEventListener("click", prevAboutPage);
     renderAboutPage();
 
-    document.getElementById("mOpenMusicBtn")?.addEventListener("click", () => {
-      const panel = document.getElementById("mMusicPanel");
-      panel?.classList.toggle("open");
+    document.querySelectorAll("[data-full]").forEach(button => {
+      button.addEventListener("click", () => {
+        const src = button.getAttribute("data-full");
+        openImgModal(src, "picture");
+      });
     });
 
     function wireDiscordCopy(buttonId, username) {
