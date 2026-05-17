@@ -620,11 +620,15 @@
     .about-shell {
       height: 100%;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) calc(210px * var(--fs));
-      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) calc(245px * var(--fs));
+      gap: 4px;
       min-width: 0;
       min-height: 0;
       align-items: center;
+    }
+
+    .about-shell.music-mode {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .about-copy {
@@ -632,7 +636,7 @@
       min-width: 0;
       min-height: 0;
       display: grid;
-      grid-template-rows: minmax(0, 1fr) auto auto;
+      grid-template-rows: minmax(0, 1fr) auto auto auto;
       gap: 12px;
       position: relative;
       z-index: 2;
@@ -757,27 +761,28 @@
       height: 100%;
       display: grid;
       place-items: center;
+      transform: translateX(calc(-28px * var(--fs)));
     }
 
     .about-media {
       position: relative;
       width: 100%;
-      height: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
       min-height: 0;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.30);
-      border-radius: 8px;
-      background: rgba(255,255,255,0.45);
-      box-shadow:
-        0 7px 12px rgba(30, 55, 78, 0.14),
-        inset 0 1px 0 rgba(255,255,255,0.52);
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
       cursor: pointer;
-      transition: transform 130ms ease, box-shadow 130ms ease;
+      padding: 0;
+      transition: transform 130ms ease, filter 130ms ease;
     }
 
     .about-media:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 15px rgba(30, 55, 78, 0.18);
+      filter: brightness(1.04);
     }
 
     .about-media img {
@@ -786,18 +791,63 @@
       min-height: 0;
       display: block;
       object-fit: contain;
+      filter:
+        drop-shadow(0 10px 10px rgba(30,55,78,0.16))
+        drop-shadow(0 0 10px rgba(255,255,255,0.32));
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .about-sona-grid {
+      width: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      align-items: center;
+    }
+
+    .sona-pic {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      transition: transform 130ms ease, filter 130ms ease;
+    }
+
+    .sona-pic:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    .sona-pic img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 7px 8px rgba(30,55,78,0.16))
+        drop-shadow(0 0 8px rgba(255,255,255,0.32));
       pointer-events: none;
       user-select: none;
     }
 
     .about-music {
       width: 100%;
-      height: 100%;
+      max-width: 620px;
       min-height: 0;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
-      overflow: auto;
+      align-self: end;
+      justify-self: center;
+      overflow: visible;
       padding: 2px;
       scrollbar-width: none;
     }
@@ -866,6 +916,18 @@
       box-shadow: 0 8px 12px rgba(30, 55, 78, 0.16);
     }
 
+    .about-music .album-link {
+      align-items: center;
+    }
+
+    .about-music .album-cover {
+      width: min(100%, 86px);
+    }
+
+    .about-music .album-name {
+      font-size: calc(9px * var(--fs));
+    }
+
     .panel-wrap {
       height: 100%;
       min-height: 0;
@@ -900,16 +962,7 @@
     }
 
     .twitch-badge {
-      flex: 0 0 auto;
-      padding: 6px 9px;
-      border-radius: 999px;
-      background: rgba(122,103,216,0.18);
-      color: #35255f;
-      font-size: calc(10px * var(--fs));
-      line-height: 1;
-      font-weight: 900;
-      text-transform: lowercase;
-      border: 1px solid rgba(70,54,140,0.24);
+      display: none;
     }
 
     .twitch-frame {
@@ -972,32 +1025,31 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 18px;
+      gap: 14px;
       padding: 10px 18px;
     }
 
     .donate-icon {
-      width: 108px;
-      height: 108px;
+      width: 116px;
+      height: 116px;
       display: grid;
       place-items: center;
       margin: 0 auto;
-      border-radius: 28px;
-      background:
-        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.92), rgba(255,255,255,0.22) 62%, rgba(255,111,167,0.18));
-      box-shadow:
-        0 0 24px rgba(255,111,167,0.38),
-        0 14px 22px rgba(30, 55, 78, 0.13),
-        inset 0 1px 0 rgba(255,255,255,0.72);
-      animation: heartFloat 2.6s ease-in-out infinite;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .donate-icon img {
-      width: 84%;
-      height: 84%;
+      width: 100%;
+      height: 100%;
       display: block;
       object-fit: contain;
-      filter: drop-shadow(0 0 10px rgba(255,111,167,0.52));
+      filter:
+        drop-shadow(0 0 10px rgba(255,111,167,0.74))
+        drop-shadow(0 0 24px rgba(255,111,167,0.42))
+        drop-shadow(0 8px 10px rgba(90,30,70,0.16));
     }
 
     .donate-thanks {
@@ -1011,6 +1063,16 @@
       text-shadow:
         1px 1px 0 rgba(255,255,255,0.72),
         0 0 18px rgba(255,111,167,0.30);
+    }
+
+    .donate-small {
+      max-width: 330px;
+      color: rgba(17,17,17,0.78);
+      font-size: calc(13px * var(--fs));
+      line-height: 1.25;
+      font-weight: 900;
+      text-align: center;
+      text-transform: lowercase;
     }
 
     .donate-panel .panel-actions {
@@ -1054,11 +1116,6 @@
     .big-link.donate:hover {
       transform: translateY(-3px) scale(1.02);
       filter: brightness(1.05) saturate(1.08);
-    }
-
-    @keyframes heartFloat {
-      0%, 100% { transform: translateY(0) rotate(-2deg); }
-      50% { transform: translateY(-8px) rotate(2deg); }
     }
 
     @keyframes donateGlow {
@@ -1581,10 +1638,10 @@
       .m-about-media-btn {
         width: 100%;
         aspect-ratio: 1 / 1;
-        overflow: hidden;
-        border: 1px solid rgba(0,0,0,0.28);
-        border-radius: 14px;
-        background: rgba(255,255,255,0.38);
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
         padding: 0;
       }
 
@@ -1593,9 +1650,19 @@
         height: 100%;
         display: block;
         object-fit: contain;
+        filter:
+          drop-shadow(0 10px 10px rgba(30,55,78,0.16))
+          drop-shadow(0 0 10px rgba(255,255,255,0.32));
       }
 
       .m-about-music {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .m-about-sona-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
@@ -1649,12 +1716,16 @@
       }
 
       .m-donate .donate-icon {
-        width: 96px;
-        height: 96px;
+        width: 108px;
+        height: 108px;
       }
 
       .m-donate .donate-thanks {
         font-size: 24px;
+      }
+
+      .m-donate .donate-small {
+        font-size: 13px;
       }
 
       .m-donate .big-link.donate {
@@ -1807,7 +1878,7 @@
               </div>
 
               <div class="discord-col">
-                <div class="discord-label">my discord:</div>
+                <div class="discord-label">frazyypaws</div>
                 <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
                   <div class="discord-pfp-ring">
                     <img class="discord-pfp" id="discordPfp" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
@@ -1844,6 +1915,8 @@
                   </p>
                 </div>
 
+                <div class="about-music" id="aboutMusicGrid" hidden aria-label="songs i like"></div>
+
                 <div class="about-actions">
                   <button class="about-btn" id="aboutPrevBtn" type="button">&lt;&lt;&lt; Back</button>
                   <button class="about-btn next-btn" id="aboutNextBtn" type="button">Next &gt;&gt;&gt;</button>
@@ -1857,7 +1930,7 @@
                   <img id="aboutMediaImg" src="img/frazyy5.png" alt="" draggable="false">
                 </button>
 
-                <div class="about-music" id="aboutMusicGrid" hidden aria-label="songs i like"></div>
+                <div class="about-sona-grid" id="aboutSonaGrid" hidden aria-label="Lumi pictures"></div>
               </div>
             </div>
           </div>
@@ -1878,7 +1951,6 @@
                 <div class="panel-kicker">frazyypaws</div>
                 <div class="panel-title">latest stream</div>
               </div>
-              <div class="twitch-badge">twitch</div>
             </div>
 
             <div class="twitch-frame">
@@ -1905,7 +1977,8 @@
             <div class="donate-icon" aria-hidden="true">
               <img src="img/frazyyheart.png" alt="">
             </div>
-            <div class="donate-thanks">thank you so much for donating! &lt;333</div>
+            <div class="donate-thanks">here u can donate to me :3</div>
+            <div class="donate-small">thank you so much for donating! &lt;333</div>
             <div class="panel-actions">
               <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
             </div>
@@ -1991,7 +2064,7 @@
       </div>
 
       <div class="m-discord-wrap">
-        <div class="m-discord-label">my discord:</div>
+        <div class="m-discord-label">frazyypaws</div>
 
         <button class="discord-badge" id="discordCardMobile" type="button" aria-label="Copy Discord username">
           <div class="discord-pfp-ring">
@@ -2022,6 +2095,7 @@
           <img id="mAboutMediaImg" src="img/frazyy5.png" alt="">
         </button>
 
+        <div class="m-about-sona-grid" id="mAboutSonaGrid" hidden aria-label="Lumi pictures"></div>
         <div class="m-about-music" id="mAboutMusicGrid" hidden aria-label="songs i like"></div>
       </div>
 
@@ -2047,7 +2121,8 @@
       <div class="donate-icon" aria-hidden="true">
         <img src="img/frazyyheart.png" alt="">
       </div>
-      <div class="donate-thanks">thank you so much for donating! &lt;333</div>
+      <div class="donate-thanks">here u can donate to me :3</div>
+      <div class="donate-small">thank you so much for donating! &lt;333</div>
       <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
     </section>
 
@@ -2167,8 +2242,13 @@
       },
       {
         title: "heres my fursona lumi!!",
-        text: "this is Lumi!! my sona :3",
-        image: "img/frazyy10.jpg",
+        text: "heres my fursona Lumi!! :3",
+        images: [
+          "img/frazyy10.jpg",
+          "img/frazyy6.jpg",
+          "img/frazyy5.png",
+          "img/frazyy7.png"
+        ],
         alt: "Lumi fursona"
       },
       {
@@ -2496,6 +2576,23 @@
       return item;
     }
 
+    function sonaButton(src, alt) {
+      const button = document.createElement("button");
+      button.className = "sona-pic";
+      button.type = "button";
+      button.dataset.full = src;
+      button.setAttribute("aria-label", "open picture");
+      button.innerHTML = `<img src="${src}" alt="${alt || "Lumi picture"}" draggable="false">`;
+      button.addEventListener("click", () => openImgModal(src, alt || "picture"));
+      return button;
+    }
+
+    function renderSonaGrid(grid, images, alt) {
+      if (!grid) return;
+      grid.innerHTML = "";
+      (images || []).forEach(src => grid.append(sonaButton(src, alt)));
+    }
+
     function renderSongs() {
       const desktopGrid = document.getElementById("aboutMusicGrid");
       const mobileGrid = document.getElementById("mAboutMusicGrid");
@@ -2540,16 +2637,33 @@
       openImgModal(src, title);
     });
 
-    function updateMedia(button, img, grid, page) {
-      if (!button || !grid) return;
+    function updateMedia(parts, page) {
+      const { shell, side, button, img, musicGrid, sonaGrid } = parts;
+      if (!button || !musicGrid) return;
+
+      shell?.classList.toggle("music-mode", !!page.music);
 
       if (page.music) {
         button.hidden = true;
-        grid.hidden = false;
+        if (side) side.hidden = true;
+        if (sonaGrid) sonaGrid.hidden = true;
+        musicGrid.hidden = false;
         return;
       }
 
-      grid.hidden = true;
+      musicGrid.hidden = true;
+      if (side) side.hidden = false;
+
+      if (page.images) {
+        button.hidden = true;
+        if (sonaGrid) {
+          sonaGrid.hidden = false;
+          renderSonaGrid(sonaGrid, page.images, page.alt);
+        }
+        return;
+      }
+
+      if (sonaGrid) sonaGrid.hidden = true;
       button.hidden = false;
 
       if (img && page.image) {
@@ -2577,19 +2691,21 @@
       if (mobileTitle) mobileTitle.textContent = page.title;
       if (mobileText) mobileText.textContent = page.text;
 
-      updateMedia(
-        document.getElementById("aboutMediaButton"),
-        document.getElementById("aboutMediaImg"),
-        document.getElementById("aboutMusicGrid"),
-        page
-      );
+      updateMedia({
+        shell: document.querySelector("#win-about .about-shell"),
+        side: document.querySelector("#win-about .about-side"),
+        button: document.getElementById("aboutMediaButton"),
+        img: document.getElementById("aboutMediaImg"),
+        musicGrid: document.getElementById("aboutMusicGrid"),
+        sonaGrid: document.getElementById("aboutSonaGrid")
+      }, page);
 
-      updateMedia(
-        document.getElementById("mAboutMediaButton"),
-        document.getElementById("mAboutMediaImg"),
-        document.getElementById("mAboutMusicGrid"),
-        page
-      );
+      updateMedia({
+        button: document.getElementById("mAboutMediaButton"),
+        img: document.getElementById("mAboutMediaImg"),
+        musicGrid: document.getElementById("mAboutMusicGrid"),
+        sonaGrid: document.getElementById("mAboutSonaGrid")
+      }, page);
 
       const atStart = aboutIndex === 0;
       const atEnd = aboutIndex === aboutPages.length - 1;
