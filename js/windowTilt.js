@@ -26,11 +26,21 @@
     surface.className = "window-tilt-surface";
     surface.dataset.label = win.dataset.label || "";
 
-    while (win.firstChild) {
-      surface.appendChild(win.firstChild);
-    }
+    const stableDragParts = [];
+    Array.from(win.childNodes).forEach(node => {
+      const staysStill =
+        node.nodeType === Node.ELEMENT_NODE &&
+        (node.classList.contains("handle") || node.classList.contains("close-hit"));
+
+      if (staysStill) {
+        stableDragParts.push(node);
+      } else {
+        surface.appendChild(node);
+      }
+    });
 
     win.appendChild(surface);
+    stableDragParts.forEach(node => win.appendChild(node));
     return surface;
   }
 
@@ -100,6 +110,7 @@
 
     function enter(e) {
       if (e.pointerType === "touch") return;
+      if (win.classList.contains("dragging")) return;
       rect = win.getBoundingClientRect();
       active = true;
       win.classList.add("is-tilting");
@@ -122,6 +133,7 @@
     });
     win.addEventListener("pointermove", e => {
       if (e.pointerType === "touch") return;
+      if (win.classList.contains("dragging")) return;
       if (!rect) rect = win.getBoundingClientRect();
       updateTarget(e);
     });
