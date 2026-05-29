@@ -680,6 +680,92 @@
       padding: 4px 10px 8px;
     }
 
+    .about-launcher-window {
+      --label-x: 0;
+      --label-y: 0;
+    }
+
+    .about-launcher-window::after {
+      display: none;
+    }
+
+    .about-launcher-window .content {
+      top: calc(30px * var(--s));
+      left: calc(42px * var(--s));
+      right: calc(42px * var(--s));
+      bottom: calc(24px * var(--s));
+      padding: 0;
+    }
+
+    .about-launcher-panel {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 calc(34px * var(--fs));
+    }
+
+    .about-launcher-title {
+      color: #111;
+      font-size: calc(42px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow:
+        1px 1px 0 rgba(255,255,255,0.74),
+        0 0 13px rgba(255,255,255,0.36);
+      white-space: nowrap;
+    }
+
+    .about-open-btn {
+      min-width: calc(170px * var(--fs));
+      min-height: calc(46px * var(--fs));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border: 1px solid rgba(0,0,0,0.24);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.62);
+      box-shadow:
+        0 7px 0 rgba(0,0,0,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.76);
+      color: #111;
+      font-size: calc(18px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: transform 130ms ease, filter 130ms ease;
+    }
+
+    .about-open-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    .about-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2050;
+      background: rgba(42, 63, 84, 0.20);
+      backdrop-filter: blur(13px) saturate(1.12);
+      -webkit-backdrop-filter: blur(13px) saturate(1.12);
+    }
+
+    .about-window.modal-open {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 2060 !important;
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate3d(-50%, -50%, 0) !important;
+    }
+
     .about-shell {
       height: 100%;
       display: grid;
@@ -1488,6 +1574,7 @@
     .album-link:focus-visible,
     .g-card:focus-visible,
     .about-btn:focus-visible,
+    .about-open-btn:focus-visible,
     .discord-badge:focus-visible,
     .img-modal-close:focus-visible,
     .big-link:focus-visible,
@@ -2014,14 +2101,31 @@
         </div>
       </div>
 
-      <div class="window win1 about-window" id="win-about"
+      <div class="window wide about-launcher-window" id="win-about-launcher"
+           data-x="130" data-y="590"
+           data-w="1160" data-h="129"
+           data-skin="0.96" data-font="1.02"
+           data-stretch-x="1.14" data-stretch-y="1">
+        <img class="skin" src="img/window6.png" alt="">
+        <div class="handle"></div>
+        <div class="content">
+          <div class="about-launcher-panel">
+            <div class="about-launcher-title">ABOUT ME</div>
+            <button class="about-open-btn" id="aboutOpenBtn" type="button">open</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="window win1 about-window closed" id="win-about"
            data-label="about me.exe"
            data-x="1120" data-y="118"
            data-w="500" data-h="430"
            data-skin="0.96" data-font="1.01"
-           data-stretch-x="1.22" data-stretch-y="1.08">
+           data-stretch-x="1.22" data-stretch-y="1.08"
+           aria-hidden="true">
         <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
+        <button class="close-hit" id="closeAboutBtn" type="button" aria-label="close about me"></button>
         <div class="content">
           <div class="about-body">
             <div class="about-shell">
@@ -2124,6 +2228,8 @@
       </div>
     </div>
   </div>
+
+  <div id="aboutBackdrop" class="about-backdrop" hidden></div>
 
   <main id="mobile-root">
     <h1 class="site-title" data-type="frazyy.com" aria-label="frazyy.com">
@@ -2454,7 +2560,7 @@
     function layoutStack() {
       const title = document.querySelector("#stage > .site-title");
       const welcome = document.getElementById("win-welcome");
-      const about = document.getElementById("win-about");
+      const aboutLauncher = document.getElementById("win-about-launcher");
       const twitch = document.getElementById("win-twitch");
       const donate = document.getElementById("win-donate");
       const gallery = document.getElementById("win-gallery");
@@ -2469,18 +2575,17 @@
       const welcomeY = 176;
       placeWindow(welcome, centeredX(welcome), welcomeY);
 
-      const rowY = welcomeY + winH(welcome) + gap;
-      const sideW = Math.max(winW(twitch), winW(donate));
-      const totalW = winW(about) + gap + sideW;
+      const launcherY = welcomeY + winH(welcome) + gap;
+      placeWindow(aboutLauncher, centeredX(aboutLauncher), launcherY);
+
+      const rowY = launcherY + winH(aboutLauncher) + gap;
+      const totalW = winW(twitch) + gap + winW(donate);
       const rowX = Math.max(94, Math.round((DESIGN_W - totalW) / 2));
-      const sideX = rowX + winW(about) + gap;
 
-      placeWindow(about, rowX, rowY);
-      placeWindow(twitch, sideX, rowY);
-      placeWindow(donate, sideX, rowY + winH(twitch) + gap);
+      placeWindow(twitch, rowX, rowY);
+      placeWindow(donate, rowX + winW(twitch) + gap, rowY);
 
-      const sideColumnHeight = winH(twitch) + gap + winH(donate);
-      let pageBottom = rowY + Math.max(winH(about), sideColumnHeight);
+      let pageBottom = rowY + Math.max(winH(twitch), winH(donate));
 
       if (isWindowOpen(gallery)) {
         placeWindow(gallery, centeredX(gallery), pageBottom + gap);
@@ -2563,6 +2668,13 @@
 
     applyWindowSizes();
 
+    const aboutWin = document.getElementById("win-about");
+    const aboutBackdrop = document.getElementById("aboutBackdrop");
+
+    if (aboutWin && aboutWin.parentElement !== document.body) {
+      document.body.appendChild(aboutWin);
+    }
+
     function bringToFront(win) {
       if (!win) return;
       document.querySelectorAll(".window.is-front").forEach(w => w.classList.remove("is-front"));
@@ -2580,6 +2692,7 @@
       function startDrag(e, handle) {
         const win = handle.closest(".window");
         if (!win || win.classList.contains("closed")) return;
+        if (win.classList.contains("modal-open")) return;
         if (drag) return;
 
         bringToFront(win);
@@ -2670,6 +2783,34 @@
       closeWindow(galleryWin);
     });
 
+    function openAboutModal() {
+      if (!aboutWin) return;
+      aboutWin.classList.remove("closed");
+      aboutWin.classList.add("open", "modal-open");
+      aboutWin.setAttribute("aria-hidden", "false");
+      if (aboutBackdrop) aboutBackdrop.hidden = false;
+      bringToFront(aboutWin);
+      requestAnimationFrame(() => {
+        document.getElementById("aboutNextBtn")?.focus({ preventScroll: true });
+      });
+    }
+
+    function closeAboutModal() {
+      if (!aboutWin) return;
+      aboutWin.classList.remove("open", "modal-open");
+      aboutWin.classList.add("closed");
+      aboutWin.setAttribute("aria-hidden", "true");
+      if (aboutBackdrop) aboutBackdrop.hidden = true;
+      document.getElementById("aboutOpenBtn")?.focus({ preventScroll: true });
+    }
+
+    document.getElementById("aboutOpenBtn")?.addEventListener("click", openAboutModal);
+    document.getElementById("closeAboutBtn")?.addEventListener("click", e => {
+      e.stopPropagation();
+      closeAboutModal();
+    });
+    aboutBackdrop?.addEventListener("click", closeAboutModal);
+
     const imgModal = document.getElementById("imgModal");
     const imgModalImg = document.getElementById("imgModalImg");
     const imgModalClose = document.getElementById("imgModalClose");
@@ -2695,7 +2836,12 @@
     modalBackdrop?.addEventListener("click", closeImgModal);
 
     window.addEventListener("keydown", e => {
-      if (e.key === "Escape" && imgModal?.classList.contains("open")) closeImgModal();
+      if (e.key !== "Escape") return;
+      if (imgModal?.classList.contains("open")) {
+        closeImgModal();
+        return;
+      }
+      if (aboutWin?.classList.contains("modal-open")) closeAboutModal();
     });
 
     function albumCard(song) {
