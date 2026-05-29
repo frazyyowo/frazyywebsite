@@ -553,6 +553,7 @@
       align-items: stretch;
       min-height: 0;
       padding-top: 0;
+      overflow: visible;
     }
 
     .w-links {
@@ -561,10 +562,10 @@
       height: 100%;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
-      gap: 6px;
+      gap: 5px;
       align-content: start;
       align-self: stretch;
-      transform: translateY(-7px);
+      transform: translateY(-8px);
     }
 
     .w-links-label,
@@ -643,26 +644,28 @@
     .discord-col {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
-      gap: 7px;
+      gap: 2px;
       min-width: 0;
       min-height: 136px;
       height: 100%;
       align-self: stretch;
+      transform: translateY(-10px);
     }
 
     .discord-badge {
       width: 100%;
-      min-height: 116px;
+      min-height: 112px;
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
       grid-template-rows: auto auto;
       grid-template-areas:
         "avatar copy"
         "meta copy";
-      align-items: center;
+      align-items: start;
+      align-content: start;
       justify-content: space-between;
-      gap: 5px 14px;
-      padding: 6px 4px;
+      gap: 2px 14px;
+      padding: 3px 4px 0;
       color: #111;
       text-align: left;
       border: 0;
@@ -671,7 +674,7 @@
       box-shadow: none;
       cursor: default;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       appearance: none;
       -webkit-appearance: none;
       backdrop-filter: none;
@@ -686,8 +689,8 @@
 
     .discord-pfp-ring {
       grid-area: avatar;
-      width: 86px;
-      height: 86px;
+      width: 80px;
+      height: 80px;
       padding: 2px;
       border-radius: 999px;
       background: rgba(255,255,255,0.94);
@@ -708,18 +711,18 @@
 
     .discord-meta {
       grid-area: meta;
-      width: 86px;
+      width: 80px;
       min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
+      gap: 0;
     }
 
     .discord-name {
       color: #111;
-      font-size: 12px;
-      line-height: 1.06;
+      font-size: 11px;
+      line-height: 1;
       font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
@@ -730,8 +733,8 @@
 
     .discord-user {
       color: rgba(17,17,17,0.72);
-      font-size: 10px;
-      line-height: 1.15;
+      font-size: 9px;
+      line-height: 1;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
@@ -743,6 +746,7 @@
       grid-area: copy;
       min-width: 78px;
       min-height: 38px;
+      align-self: center;
       display: inline-flex;
       align-items: center;
       justify-content: center;
