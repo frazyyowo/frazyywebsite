@@ -224,7 +224,7 @@
 
     .window.is-tilting,
     .window:hover {
-      filter: drop-shadow(0 21px 22px rgba(12, 28, 44, 0.28));
+      filter: drop-shadow(0 19px 21px rgba(12, 28, 44, 0.25));
     }
 
     .window.dragging {
@@ -258,20 +258,17 @@
       pointer-events: none;
       opacity: 0.28;
       background-image:
-        radial-gradient(circle at var(--shine-x) var(--shine-y), rgba(255,255,255,0.44), rgba(255,255,255,0.10) 28%, transparent 56%),
         url("img/paw.png"),
         url("img/paw.png"),
         url("img/paw.png"),
         url("img/paw.png");
       background-repeat: no-repeat;
       background-size:
-        100% 100%,
         calc(52px * var(--s)) calc(52px * var(--s)),
         calc(44px * var(--s)) calc(44px * var(--s)),
         calc(42px * var(--s)) calc(42px * var(--s)),
         calc(58px * var(--s)) calc(58px * var(--s));
       background-position:
-        0 0,
         calc(15px * var(--s)) calc(34px * var(--s)),
         calc(100% - 62px * var(--s)) calc(32px * var(--s)),
         calc(20px * var(--s)) calc(100% - 60px * var(--s)),
