@@ -10,11 +10,9 @@
     return Math.min(Math.max(value, min), max);
   }
 
-  function setTiltVars(win, tiltX, tiltY, shineX = 50, shineY = 35) {
+  function setTiltVars(win, tiltX, tiltY) {
     win.style.setProperty("--tilt-x", `${tiltX.toFixed(3)}deg`);
     win.style.setProperty("--tilt-y", `${tiltY.toFixed(3)}deg`);
-    win.style.setProperty("--shine-x", `${Math.round(shineX)}%`);
-    win.style.setProperty("--shine-y", `${Math.round(shineY)}%`);
   }
 
   function wrapWindow(win) {
@@ -58,8 +56,6 @@
     let currentY = 0;
     let targetX = 0;
     let targetY = 0;
-    let shineX = 50;
-    let shineY = 35;
 
     function queue() {
       if (!frame) frame = requestAnimationFrame(tick);
@@ -72,13 +68,11 @@
         active = false;
         targetX = 0;
         targetY = 0;
-        shineX = 50;
-        shineY = 35;
       }
 
       currentX += (targetX - currentX) * LERP;
       currentY += (targetY - currentY) * LERP;
-      setTiltVars(win, currentX, currentY, shineX, shineY);
+      setTiltVars(win, currentX, currentY);
 
       const stillMoving =
         Math.abs(targetX - currentX) > STOP_AT ||
@@ -103,8 +97,6 @@
 
       targetY = (px - 0.5) * MAX_TILT * 2;
       targetX = (0.5 - py) * MAX_TILT * 2;
-      shineX = px * 100;
-      shineY = py * 100;
       queue();
     }
 
@@ -122,8 +114,6 @@
       rect = null;
       targetX = 0;
       targetY = 0;
-      shineX = 50;
-      shineY = 35;
       queue();
     }
 
