@@ -128,7 +128,7 @@
       width: 2048px;
       min-height: 799px;
       transform-origin: top left;
-      transform-style: preserve-3d;
+      perspective: 1100px;
       perspective: 1500px;
       will-change: transform;
     }
@@ -184,7 +184,7 @@
       --close-h: 22;
       transform: translate3d(0,0,0);
       transform-origin: center center;
-      transform-style: preserve-3d;
+      transform-style: flat;
       will-change: transform;
       user-select: none;
       visibility: hidden;
@@ -204,8 +204,7 @@
     .window.ready.is-tilting {
       transition:
         opacity 180ms ease,
-        filter 160ms ease,
-        transform 70ms ease-out;
+        filter 160ms ease;
     }
 
     .window.closed {
@@ -225,16 +224,33 @@
 
     .window.is-tilting,
     .window:hover {
-      filter:
-        drop-shadow(0 24px 25px rgba(12, 28, 44, 0.30))
-        drop-shadow(0 0 14px rgba(255,255,255,0.18));
+      filter: drop-shadow(0 21px 22px rgba(12, 28, 44, 0.28));
     }
 
     .window.dragging {
       transition: none !important;
     }
 
-    .window::before {
+    .window-tilt-surface {
+      position: absolute;
+      inset: 0;
+      transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+      transform-origin: center center;
+      transform-style: preserve-3d;
+      transition: transform 180ms cubic-bezier(.16,.84,.3,1);
+      will-change: transform;
+    }
+
+    .window.is-tilting .window-tilt-surface {
+      transition-duration: 110ms;
+    }
+
+    .window.dragging .window-tilt-surface {
+      transition: none !important;
+      transform: rotateX(0deg) rotateY(0deg);
+    }
+
+    .window-tilt-surface::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -266,7 +282,7 @@
       transform: translateZ(14px);
     }
 
-    .window::after {
+    .window-tilt-surface::after {
       content: attr(data-label);
       position: absolute;
       top: calc(var(--label-y) * 1px * var(--s));
@@ -1819,8 +1835,9 @@
       }
 
       .window,
-      .window::before,
-      .window::after,
+      .window-tilt-surface,
+      .window-tilt-surface::before,
+      .window-tilt-surface::after,
       .window .skin,
       .window .handle,
       .window .content {
@@ -2319,26 +2336,14 @@
 
       const x = Math.round(parseFloat(el.dataset.x || "0"));
       const y = Math.round(parseFloat(el.dataset.y || "0"));
-      const floatX = parseFloat(el.dataset.floatX || "0");
-      const floatY = parseFloat(el.dataset.floatY || "0");
-      const tiltX = parseFloat(el.dataset.tiltX || "0");
-      const tiltY = parseFloat(el.dataset.tiltY || "0");
-      const lift = parseFloat(el.dataset.lift || "0");
 
-      el.style.transform =
-        `translate3d(${Math.round(x + floatX)}px,${Math.round(y + floatY)}px,0) ` +
-        `rotateX(${tiltX.toFixed(2)}deg) ` +
-        `rotateY(${tiltY.toFixed(2)}deg) ` +
-        `translateZ(${lift.toFixed(1)}px)`;
+      el.style.transform = `translate3d(${x}px,${y}px,0)`;
     }
 
     function resetWindowTilt(el) {
       if (!el) return;
-      el.dataset.floatX = "0";
-      el.dataset.floatY = "0";
-      el.dataset.tiltX = "0";
-      el.dataset.tiltY = "0";
-      el.dataset.lift = "0";
+      el.style.setProperty("--tilt-x", "0deg");
+      el.style.setProperty("--tilt-y", "0deg");
       el.style.setProperty("--shine-x", "50%");
       el.style.setProperty("--shine-y", "35%");
       el.classList.remove("is-tilting");
@@ -2588,63 +2593,6 @@
     }
 
     setupWindowDragging();
-
-    function setupWindowTilt() {
-      const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-      if (reduceMotion?.matches) return;
-
-      const maxTilt = 8;
-      const maxFloat = 9;
-      const maxLift = 12;
-
-      document.querySelectorAll(".window").forEach(win => {
-        let frame = 0;
-        let lastEvent = null;
-
-        function updateTilt(e) {
-          if (!e || win.classList.contains("closed") || win.classList.contains("dragging")) return;
-          if (e.pointerType === "touch") return;
-
-          const rect = win.getBoundingClientRect();
-          if (!rect.width || !rect.height) return;
-
-          const px = clamp((e.clientX - rect.left) / rect.width, 0, 1);
-          const py = clamp((e.clientY - rect.top) / rect.height, 0, 1);
-          const tiltY = (px - 0.5) * maxTilt * 2;
-          const tiltX = (0.5 - py) * maxTilt * 2;
-          const floatX = (px - 0.5) * maxFloat;
-          const floatY = (py - 0.5) * maxFloat;
-          const edgePull = Math.max(Math.abs(px - 0.5), Math.abs(py - 0.5)) * 2;
-
-          win.dataset.floatX = String(floatX);
-          win.dataset.floatY = String(floatY);
-          win.dataset.tiltX = String(tiltX);
-          win.dataset.tiltY = String(tiltY);
-          win.dataset.lift = String(6 + edgePull * maxLift);
-          win.style.setProperty("--shine-x", `${Math.round(px * 100)}%`);
-          win.style.setProperty("--shine-y", `${Math.round(py * 100)}%`);
-          win.classList.add("is-tilting");
-          applyWindowTransform(win);
-        }
-
-        win.addEventListener("pointermove", e => {
-          lastEvent = e;
-          if (frame) return;
-          frame = requestAnimationFrame(() => {
-            frame = 0;
-            updateTilt(lastEvent);
-          });
-        });
-
-        win.addEventListener("pointerleave", () => {
-          if (frame) cancelAnimationFrame(frame);
-          frame = 0;
-          resetWindowTilt(win);
-        });
-      });
-    }
-
-    setupWindowTilt();
 
     function openWindow(win) {
       if (!win) return;
@@ -2960,6 +2908,7 @@
   </script>
 
   <script src="js/particles.js" defer></script>
+  <script src="js/windowTilt.js" defer></script>
   <script src="js/sfx.js" defer></script>
   <script src="js/typewriter.js" defer></script>
   <script src="js/player.js" defer></script>
