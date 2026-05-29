@@ -497,6 +497,10 @@
       text-transform: lowercase;
     }
 
+    .discord-label {
+      text-align: center;
+    }
+
     .w-links-row {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -565,19 +569,22 @@
 
     .discord-badge {
       width: 100%;
-      min-height: 96px;
+      min-height: 138px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 12px;
-      padding: 12px;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 16px 13px;
       color: #f7fbff;
-      text-align: left;
+      text-align: center;
       border: 1px solid rgba(255,255,255,0.42);
       border-radius: 14px;
-      background: linear-gradient(180deg, rgba(54,70,86,0.90), rgba(31,43,58,0.88));
+      background:
+        linear-gradient(180deg, rgba(61,75,90,0.88), rgba(35,47,62,0.88));
       box-shadow:
-        0 14px 24px rgba(0,0,0,0.24),
-        inset 0 1px 0 rgba(255,255,255,0.24);
+        0 14px 24px rgba(0,0,0,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.28);
       cursor: pointer;
       position: relative;
       overflow: hidden;
@@ -594,14 +601,15 @@
     }
 
     .discord-pfp-ring {
-      width: 52px;
-      height: 52px;
-      padding: 3px;
+      width: 78px;
+      height: 78px;
+      padding: 4px;
       flex: 0 0 auto;
       border-radius: 999px;
-      background:
-        conic-gradient(from 20deg, rgba(120,200,255,0.95), rgba(255,255,255,0.88), rgba(215,93,134,0.72), rgba(90,166,132,0.78), rgba(120,200,255,0.95));
-      box-shadow: 0 7px 12px rgba(0,0,0,0.16);
+      background: rgba(255,255,255,0.94);
+      box-shadow:
+        0 8px 15px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.78);
     }
 
     .discord-pfp {
@@ -610,36 +618,43 @@
       display: block;
       object-fit: cover;
       border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.18);
-      background: rgba(255,255,255,0.35);
+      border: 0;
+      background: rgba(255,255,255,0.55);
     }
 
     .discord-meta {
+      width: 100%;
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      align-items: center;
+      gap: 2px;
     }
 
     .discord-name {
       color: #fff;
-      font-size: 15px;
+      font-size: 13px;
       line-height: 1.06;
       font-weight: 900;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: center;
     }
 
-    .discord-user,
-    .discord-activity {
+    .discord-user {
       color: rgba(235,245,255,0.90);
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.15;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    .discord-activity {
+      display: none !important;
     }
 
     .discord-copied {
@@ -1660,7 +1675,20 @@
       }
 
       .m-discord-wrap { margin-top: 14px; }
-      .m-discord-wrap .discord-badge { min-height: 82px; }
+
+      .m-discord-label {
+        text-align: center;
+      }
+
+      .m-discord-wrap .discord-badge {
+        min-height: 142px;
+        gap: 8px;
+      }
+
+      .m-discord-wrap .discord-pfp-ring {
+        width: 82px;
+        height: 82px;
+      }
 
       .m-about-page {
         display: grid;
@@ -1946,7 +1974,7 @@
               </div>
 
               <div class="discord-col">
-                <div class="discord-label">frazyypaws</div>
+                <div class="discord-label">my discord:</div>
                 <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
                   <div class="discord-pfp-ring">
                     <img class="discord-pfp" id="discordPfp" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
@@ -1954,7 +1982,7 @@
                   <div class="discord-meta">
                     <div class="discord-name" id="discordName">frazyypaws</div>
                     <div class="discord-user" id="discordUser">@frazyypaws</div>
-                    <div class="discord-activity" id="discordActivity">click to copy username</div>
+                    <div class="discord-activity" id="discordActivity" hidden></div>
                   </div>
                   <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
                 </button>
@@ -2132,7 +2160,7 @@
       </div>
 
       <div class="m-discord-wrap">
-        <div class="m-discord-label">frazyypaws</div>
+        <div class="m-discord-label">my discord:</div>
 
         <button class="discord-badge" id="discordCardMobile" type="button" aria-label="Copy Discord username">
           <div class="discord-pfp-ring">
@@ -2142,7 +2170,7 @@
           <div class="discord-meta">
             <div class="discord-name" id="discordNameMobile">frazyypaws</div>
             <div class="discord-user" id="discordUserMobile">@frazyypaws</div>
-            <div class="discord-activity" id="discordActivityMobile">click to copy username</div>
+            <div class="discord-activity" id="discordActivityMobile" hidden></div>
           </div>
 
           <div class="discord-copied" id="discordCopiedMobile" aria-hidden="true">copied!</div>
