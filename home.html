@@ -701,18 +701,18 @@
       height: 100%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 24px;
+      justify-content: center;
+      gap: 18px;
       padding: 0 calc(34px * var(--fs));
     }
 
     .about-launcher-title {
       color: #111;
-      font-size: calc(42px * var(--fs));
+      font-size: calc(22px * var(--fs));
       line-height: 1;
       font-weight: 900;
       letter-spacing: 0;
-      text-transform: uppercase;
+      text-transform: lowercase;
       text-shadow:
         1px 1px 0 rgba(255,255,255,0.74),
         0 0 13px rgba(255,255,255,0.36);
@@ -720,12 +720,12 @@
     }
 
     .about-open-btn {
-      min-width: calc(170px * var(--fs));
-      min-height: calc(46px * var(--fs));
+      min-width: calc(48px * var(--fs));
+      min-height: calc(38px * var(--fs));
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 10px 18px;
+      padding: 8px 12px;
       border: 1px solid rgba(0,0,0,0.24);
       border-radius: 10px;
       background: rgba(255,255,255,0.62);
@@ -733,7 +733,7 @@
         0 7px 0 rgba(0,0,0,0.12),
         inset 0 1px 0 rgba(255,255,255,0.76);
       color: #111;
-      font-size: calc(18px * var(--fs));
+      font-size: calc(22px * var(--fs));
       line-height: 1;
       font-weight: 900;
       text-transform: lowercase;
@@ -2110,8 +2110,8 @@
         <div class="handle"></div>
         <div class="content">
           <div class="about-launcher-panel">
-            <div class="about-launcher-title">ABOUT ME</div>
-            <button class="about-open-btn" id="aboutOpenBtn" type="button">open</button>
+            <div class="about-launcher-title">about me</div>
+            <button class="about-open-btn" id="aboutOpenBtn" type="button" aria-label="open about me">&gt;</button>
           </div>
         </div>
       </div>
@@ -2160,10 +2160,10 @@
       </div>
 
       <div class="window win1" id="win-twitch"
-           data-label="twitch.exe"
+           data-label=""
            data-x="1280" data-y="620"
            data-w="500" data-h="430"
-           data-skin="0.96" data-font="1.02">
+           data-skin="0.90" data-font="0.96">
         <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -2188,10 +2188,10 @@
       </div>
 
       <div class="window win1" id="win-donate"
-           data-label="donation.exe"
+           data-label=""
            data-x="1280" data-y="1040"
            data-w="500" data-h="430"
-           data-skin="0.96" data-font="1.02">
+           data-skin="0.90" data-font="0.96">
         <img class="skin" src="img/window1.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -2370,7 +2370,7 @@
     const MARGIN_Y = 62;
     const MAX_UPSCALE = 1.24;
     const MIN_SCALE = 0.54;
-    const STACK_GAP = 26;
+    const STACK_GAP = 14;
 
     const stage = document.getElementById("stage");
     const desk = document.getElementById("desk");
@@ -2572,7 +2572,7 @@
       }
 
       const gap = STACK_GAP;
-      const welcomeY = 176;
+      const welcomeY = 150;
       placeWindow(welcome, centeredX(welcome), welcomeY);
 
       const launcherY = welcomeY + winH(welcome) + gap;
@@ -2592,7 +2592,7 @@
         pageBottom += gap + winH(gallery);
       }
 
-      layoutStage(pageBottom + 110);
+      layoutStage(pageBottom + 56);
     }
 
     function updateScrollBackdrop() {
@@ -3102,6 +3102,7 @@
 
   <script src="js/particles.js" defer></script>
   <script src="js/windowTilt.js" defer></script>
+  <script src="js/windowSpray.js" defer></script>
   <script src="js/titleMarquee.js" defer></script>
   <script src="js/sfx.js" defer></script>
   <script src="js/typewriter.js" defer></script>
