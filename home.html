@@ -403,8 +403,8 @@
     .welcome-panel {
       height: 100%;
       display: grid;
-      grid-template-rows: minmax(150px, 0.95fr) 2px minmax(0, 1fr);
-      gap: 10px;
+      grid-template-rows: minmax(190px, 1.08fr) 2px minmax(0, 0.86fr);
+      gap: 8px;
       min-width: 0;
     }
 
@@ -416,7 +416,7 @@
       display: grid;
       grid-template-rows: minmax(0, 1fr) auto;
       align-items: end;
-      padding: 18px 24px 13px;
+      padding: 20px 24px 13px;
       border-radius: 10px;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05)),
@@ -432,22 +432,24 @@
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(circle at 50% 34%, rgba(255,255,255,0.22), transparent 34%),
+        radial-gradient(circle at 50% 38%, rgba(255,255,255,0.28), transparent 36%),
         linear-gradient(90deg, rgba(168,200,232,0.12), transparent 20%, transparent 80%, rgba(215,93,134,0.10));
     }
 
     .welcome-pfp-wrap {
       position: absolute;
       left: 50%;
-      top: 15px;
+      top: 25px;
       z-index: 1;
-      width: calc(92px * var(--fs));
-      height: calc(92px * var(--fs));
+      width: calc(112px * var(--fs));
+      height: calc(112px * var(--fs));
       padding: 3px;
       border-radius: 999px;
       background: rgba(255,255,255,0.88);
       box-shadow:
-        0 10px 18px rgba(30,55,78,0.18),
+        0 12px 20px rgba(30,55,78,0.20),
+        0 0 18px rgba(190,226,255,0.58),
+        0 0 32px rgba(205,160,255,0.28),
         0 0 0 1px rgba(0,0,0,0.14),
         inset 0 1px 0 rgba(255,255,255,0.82);
       transform: translateX(-50%);
@@ -459,6 +461,24 @@
       display: block;
       object-fit: cover;
       border-radius: 999px;
+    }
+
+    .welcome-name {
+      position: absolute;
+      left: 50%;
+      top: calc(140px * var(--fs));
+      z-index: 1;
+      color: #111;
+      font-size: calc(20px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      text-transform: lowercase;
+      text-shadow:
+        1px 1px 0 rgba(255,255,255,0.72),
+        0 0 8px rgba(255,255,255,0.55),
+        0 0 16px rgba(190,226,255,0.42);
+      transform: translateX(-50%);
+      white-space: nowrap;
     }
 
     .welcome-identity-row {
@@ -488,7 +508,11 @@
       border: 1px solid rgba(0,0,0,0.35);
       border-radius: 5px;
       background: rgba(255,255,255,0.46);
-      box-shadow: 0 3px 0 rgba(0,0,0,0.13), inset 0 1px 0 rgba(255,255,255,0.60);
+      box-shadow:
+        0 3px 0 rgba(0,0,0,0.13),
+        0 0 12px rgba(190,226,255,0.48),
+        0 0 20px rgba(205,160,255,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.60);
     }
 
     .flag-img img {
@@ -508,7 +532,9 @@
       white-space: nowrap;
       text-shadow:
         1px 1px 0 rgba(255,255,255,0.62),
-        0 0 11px rgba(255,255,255,0.30);
+        0 0 9px rgba(255,255,255,0.64),
+        0 0 18px rgba(190,226,255,0.50),
+        0 0 28px rgba(205,160,255,0.30);
     }
 
     .welcome-pronouns .they { color: #c43a3a; }
@@ -523,10 +549,10 @@
     .welcome-bottom {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 286px;
-      gap: 20px;
-      align-items: stretch;
+      gap: 18px;
+      align-items: center;
       min-height: 0;
-      padding-top: 8px;
+      padding-top: 6px;
     }
 
     .w-links {
@@ -534,6 +560,7 @@
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
       gap: 8px;
+      align-content: center;
     }
 
     .w-links-label,
@@ -554,6 +581,7 @@
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 9px;
       min-width: 0;
+      align-items: center;
     }
 
     .link-item {
@@ -613,24 +641,29 @@
       grid-template-rows: auto minmax(0, 1fr);
       gap: 7px;
       min-width: 0;
+      align-self: center;
     }
 
     .discord-badge {
       width: 100%;
-      min-height: 100px;
-      display: flex;
-      flex-direction: row;
+      min-height: 116px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-rows: auto auto;
+      grid-template-areas:
+        "avatar copy"
+        "meta copy";
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 10px 4px;
+      gap: 5px 14px;
+      padding: 6px 4px;
       color: #111;
       text-align: left;
       border: 0;
       border-radius: 0;
       background: transparent;
       box-shadow: none;
-      cursor: pointer;
+      cursor: default;
       position: relative;
       overflow: hidden;
       appearance: none;
@@ -641,15 +674,15 @@
     }
 
     .discord-badge:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.04);
+      transform: none;
+      filter: none;
     }
 
     .discord-pfp-ring {
-      width: 64px;
-      height: 64px;
+      grid-area: avatar;
+      width: 86px;
+      height: 86px;
       padding: 2px;
-      flex: 0 0 auto;
       border-radius: 999px;
       background: rgba(255,255,255,0.94);
       box-shadow:
@@ -668,11 +701,12 @@
     }
 
     .discord-meta {
-      width: 100%;
+      grid-area: meta;
+      width: 86px;
       min-width: 0;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 2px;
     }
 
@@ -684,7 +718,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: left;
+      text-align: center;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.58);
     }
 
@@ -696,10 +730,11 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-align: left;
+      text-align: center;
     }
 
     .discord-copy-btn {
+      grid-area: copy;
       min-width: 78px;
       min-height: 38px;
       display: inline-flex;
@@ -716,6 +751,7 @@
       font-size: calc(12px * var(--fs));
       font-weight: 900;
       text-transform: lowercase;
+      cursor: pointer;
     }
 
     .discord-activity {
@@ -1855,13 +1891,17 @@
       }
 
       .m-discord-wrap .discord-badge {
-        min-height: 124px;
-        gap: 5px;
+        min-height: 132px;
+        gap: 5px 14px;
       }
 
       .m-discord-wrap .discord-pfp-ring {
-        width: 70px;
-        height: 70px;
+        width: 92px;
+        height: 92px;
+      }
+
+      .m-discord-wrap .discord-meta {
+        width: 92px;
       }
 
       .m-about-page {
@@ -2104,6 +2144,7 @@
               <div class="welcome-pfp-wrap">
                 <img class="welcome-pfp" src="img/frazyypfp.jpg" alt="frazyypaws profile picture">
               </div>
+              <div class="welcome-name">frazyy</div>
 
               <div class="welcome-identity-row">
                 <div class="flags-pair">
@@ -2153,7 +2194,7 @@
 
               <div class="discord-col">
                 <div class="discord-label">my discord:</div>
-                <button class="discord-badge" id="discordCard" type="button" aria-label="Copy Discord username">
+                <div class="discord-badge" id="discordCard" aria-label="Discord profile">
                   <div class="discord-pfp-ring">
                     <img class="discord-pfp" id="discordPfp" src="img/frazyypfp.jpg" alt="">
                   </div>
@@ -2162,9 +2203,9 @@
                     <div class="discord-user" id="discordUser">@frazyypaws</div>
                     <div class="discord-activity" id="discordActivity" hidden></div>
                   </div>
-                  <span class="discord-copy-btn" aria-hidden="true">copy</span>
+                  <button class="discord-copy-btn" id="discordCopyBtn" type="button" aria-label="copy Discord username">copy</button>
                   <div class="discord-copied" id="discordCopied" aria-hidden="true">copied!</div>
-                </button>
+                </div>
               </div>
             </div>
           </div>
@@ -2360,7 +2401,7 @@
       <div class="m-discord-wrap">
         <div class="m-discord-label">my discord:</div>
 
-        <button class="discord-badge" id="discordCardMobile" type="button" aria-label="Copy Discord username">
+        <div class="discord-badge" id="discordCardMobile" aria-label="Discord profile">
           <div class="discord-pfp-ring">
             <img class="discord-pfp" id="discordPfpMobile" src="img/frazyypfp.jpg" alt="">
           </div>
@@ -2371,9 +2412,9 @@
             <div class="discord-activity" id="discordActivityMobile" hidden></div>
           </div>
 
-          <span class="discord-copy-btn" aria-hidden="true">copy</span>
+          <button class="discord-copy-btn" id="discordCopyBtnMobile" type="button" aria-label="copy Discord username">copy</button>
           <div class="discord-copied" id="discordCopiedMobile" aria-hidden="true">copied!</div>
-        </button>
+        </div>
       </div>
     </section>
 
@@ -2441,7 +2482,7 @@
     const MARGIN_Y = 62;
     const MAX_UPSCALE = 1.24;
     const MIN_SCALE = 0.54;
-    const STACK_GAP = 14;
+    const STACK_GAP = 8;
 
     const stage = document.getElementById("stage");
     const desk = document.getElementById("desk");
@@ -3117,18 +3158,20 @@
     });
 
     function wireDiscordCopy(buttonId, username) {
-      const card = document.getElementById(buttonId);
-      if (!card) return;
+      const button = document.getElementById(buttonId);
+      if (!button) return;
 
-      card.addEventListener("click", () => {
+      button.addEventListener("click", e => {
+        e.stopPropagation();
         navigator.clipboard?.writeText(username).catch(() => {});
+        const card = button.closest(".discord-badge") || button;
         card.classList.add("copied");
         setTimeout(() => card.classList.remove("copied"), 1600);
       });
     }
 
-    wireDiscordCopy("discordCard", "frazyypaws");
-    wireDiscordCopy("discordCardMobile", "frazyypaws");
+    wireDiscordCopy("discordCopyBtn", "frazyypaws");
+    wireDiscordCopy("discordCopyBtnMobile", "frazyypaws");
 
     function setupTwitchFrame(frameId) {
       const frame = document.getElementById(frameId);
