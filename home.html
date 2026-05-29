@@ -550,17 +550,21 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) 286px;
       gap: 18px;
-      align-items: center;
+      align-items: stretch;
       min-height: 0;
-      padding-top: 6px;
+      padding-top: 0;
     }
 
     .w-links {
       min-width: 0;
+      min-height: 136px;
+      height: 100%;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
-      gap: 8px;
-      align-content: center;
+      gap: 6px;
+      align-content: start;
+      align-self: stretch;
+      transform: translateY(-7px);
     }
 
     .w-links-label,
@@ -581,7 +585,7 @@
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 9px;
       min-width: 0;
-      align-items: center;
+      align-items: start;
     }
 
     .link-item {
@@ -641,7 +645,9 @@
       grid-template-rows: auto minmax(0, 1fr);
       gap: 7px;
       min-width: 0;
-      align-self: center;
+      min-height: 136px;
+      height: 100%;
+      align-self: stretch;
     }
 
     .discord-badge {
