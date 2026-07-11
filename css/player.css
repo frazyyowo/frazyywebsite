@@ -9,23 +9,25 @@
 
 .fa-player {
   position: fixed !important;
-  top: 16px;
-  right: 16px;
-  left: auto;
-  bottom: auto;
+  left: 0;
+  bottom: 0;
+  top: auto;
+  right: auto;
   z-index: 9999;
-  display: grid;
-  grid-template-columns: minmax(116px, 176px) 76px;
-  align-items: center;
-  gap: 10px;
-  max-width: calc(100vw - 32px);
+  width: min(460px, 100vw);
+  height: 330px;
   color: var(--fa-ink);
   user-select: none;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .fa-now {
+  position: absolute;
+  left: 170px;
+  bottom: 28px;
+  z-index: 3;
   min-width: 0;
+  width: min(236px, calc(100vw - 188px));
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -41,6 +43,7 @@
     0 0 18px rgba(255, 255, 255, 0.38);
   backdrop-filter: blur(14px) saturate(1.12);
   -webkit-backdrop-filter: blur(14px) saturate(1.12);
+  pointer-events: auto;
 }
 
 .fa-title {
@@ -90,8 +93,12 @@
 
 .fa-vinyl {
   --beat: 0;
-  width: 76px;
-  height: 76px;
+  position: absolute;
+  left: -270px;
+  bottom: -270px;
+  z-index: 2;
+  width: 540px;
+  height: 540px;
   display: grid;
   place-items: center;
   padding: 0;
@@ -101,12 +108,13 @@
   cursor: pointer;
   animation: faOrbit 18s linear infinite;
   transform-origin: 50% 50%;
+  pointer-events: auto;
 }
 
 .fa-vinyl-disc {
   position: relative;
-  width: 66px;
-  height: 66px;
+  width: 520px;
+  height: 520px;
   display: block;
   border-radius: 999px;
   overflow: hidden;
@@ -114,21 +122,21 @@
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.96) 0 8%, rgba(20,20,20,0.96) 9% 14%, transparent 15%),
     repeating-radial-gradient(circle at 50% 50%, #151515 0 5px, #262626 6px 8px);
   box-shadow:
-    0 14px 24px rgba(18, 38, 58, 0.34),
-    0 0 0 1px rgba(255, 255, 255, 0.34),
-    0 0 18px rgba(255, 255, 255, 0.30),
-    inset 0 0 0 8px rgba(0, 0, 0, 0.26);
+    0 18px 32px rgba(18, 38, 58, 0.38),
+    0 0 0 2px rgba(255, 255, 255, 0.34),
+    0 0 26px rgba(255, 255, 255, 0.34),
+    inset 0 0 0 38px rgba(0, 0, 0, 0.22);
   animation:
     faSpin 9s linear infinite,
     faBeat 180ms ease-out infinite;
-  transform: translateY(calc(var(--beat) * -10px)) scale(calc(1 + var(--beat) * 0.045));
+  transform: translateY(calc(var(--beat) * -24px)) scale(calc(1 + var(--beat) * 0.06));
   will-change: transform;
 }
 
 .fa-vinyl-disc::before {
   content: "";
   position: absolute;
-  inset: 7px;
+  inset: 48px;
   z-index: 1;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.38);
@@ -144,12 +152,12 @@
   left: 50%;
   top: 50%;
   z-index: 3;
-  width: 13px;
-  height: 13px;
+  width: 46px;
+  height: 46px;
   border-radius: 999px;
   background: rgba(245, 250, 255, 0.96);
   box-shadow:
-    0 0 0 4px rgba(0, 0, 0, 0.76),
+    0 0 0 16px rgba(0, 0, 0, 0.76),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -175,9 +183,9 @@
 
 @keyframes faOrbit {
   0% { translate: 0 0; }
-  25% { translate: -4px 3px; }
-  50% { translate: 0 6px; }
-  75% { translate: 4px 3px; }
+  25% { translate: -7px 4px; }
+  50% { translate: 0 9px; }
+  75% { translate: 7px 4px; }
   100% { translate: 0 0; }
 }
 
