@@ -2,7 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@200;300;400;500;600;700;800&display=swap');
 
-/* fade real site while intro is active (FAST + NO SCALE = less “jump”) */
+/* blur the real site while intro is active, but keep it visible behind the overlay */
 #bg, #tint, #fx, #vhs, #desk, #faPlayer{
   transition: opacity 180ms ease, filter 180ms ease;
   will-change: opacity, filter;
@@ -14,8 +14,8 @@ body.intro-active #fx,
 body.intro-active #vhs,
 body.intro-active #desk,
 body.intro-active #faPlayer{
-  opacity: 0;
-  filter: blur(1.4px) saturate(0.95) contrast(0.98);
+  opacity: 0.88;
+  filter: blur(5px) saturate(1.08) contrast(0.96) brightness(0.88);
   pointer-events: none;
 }
 
@@ -24,7 +24,10 @@ body.intro-active #faPlayer{
   position: fixed;
   inset: 0;
   z-index: 4000;
-  background: #000 !important;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,0.10), rgba(8,12,18,0.34) 42%, rgba(0,0,0,0.46) 100%) !important;
+  backdrop-filter: blur(7px) saturate(1.16);
+  -webkit-backdrop-filter: blur(7px) saturate(1.16);
   display: grid;
   place-items: center;
   overflow: hidden;

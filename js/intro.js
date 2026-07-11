@@ -8,7 +8,7 @@
   if (!intro || !typedEl || !fx) return;
 
   // show instantly (NO typing)
-  typedEl.textContent = "Press enter";
+  typedEl.textContent = "<3";
 
   // start intro mode
   document.body.classList.add("intro-active");
