@@ -92,15 +92,13 @@
 }
 
 .fa-vinyl {
-  --beat: 0;
   position: absolute;
   left: -220px;
   bottom: -220px;
   z-index: 2;
   width: 540px;
   height: 540px;
-  display: grid;
-  place-items: center;
+  display: block;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -111,9 +109,10 @@
 }
 
 .fa-vinyl-disc {
-  position: relative;
-  width: 520px;
-  height: 520px;
+  position: absolute;
+  inset: 10px;
+  width: auto;
+  height: auto;
   display: block;
   border-radius: 999px;
   overflow: hidden;
@@ -125,10 +124,9 @@
     0 0 0 1px rgba(255, 255, 255, 0.30),
     0 0 12px rgba(255, 255, 255, 0.22),
     inset 0 0 0 8px rgba(0, 0, 0, 0.12);
-  animation:
-    faSpin 9s linear infinite,
-    faBeat 160ms ease-out infinite;
-  transform: translateY(calc(var(--beat) * -26px)) scale(calc(1 + var(--beat) * 0.045));
+  animation: faSpin 9s linear infinite;
+  transform: translate3d(0, 0, 0) rotate(0deg);
+  transform-origin: center center;
   will-change: transform;
 }
 
@@ -181,12 +179,8 @@
 }
 
 @keyframes faSpin {
-  to { rotate: 360deg; }
-}
-
-@keyframes faBeat {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.06); }
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(0, 0, 0) rotate(360deg); }
 }
 
 @media (max-width: 760px) {
