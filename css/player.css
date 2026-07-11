@@ -14,7 +14,7 @@
   top: auto;
   right: auto;
   z-index: 9999;
-  width: min(460px, 100vw);
+  width: min(650px, 100vw);
   height: 330px;
   color: var(--fa-ink);
   user-select: none;
@@ -23,45 +23,44 @@
 
 .fa-now {
   position: absolute;
-  left: 205px;
-  bottom: 44px;
+  left: 330px;
+  bottom: 20px;
   z-index: 3;
   min-width: 0;
-  width: min(236px, calc(100vw - 223px));
+  width: min(270px, calc(100vw - 350px));
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
-  padding: 8px 9px 8px 11px;
-  border: 1px solid rgba(0, 0, 0, 0.22);
-  border-radius: 999px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(224, 240, 255, 0.66));
-  box-shadow:
-    0 14px 24px rgba(18, 38, 58, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 0 18px rgba(255, 255, 255, 0.38);
-  backdrop-filter: blur(14px) saturate(1.12);
-  -webkit-backdrop-filter: blur(14px) saturate(1.12);
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   pointer-events: auto;
 }
 
 .fa-title {
   min-width: 0;
   color: rgba(17, 17, 17, 0.92);
-  font-size: 12px;
-  line-height: 1;
+  font-size: 17px;
+  line-height: 1.05;
   font-weight: 900;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: lowercase;
-  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.55);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.88),
+    1px 1px 0 rgba(255, 255, 255, 0.58),
+    0 2px 6px rgba(255, 255, 255, 0.42);
 }
 
 .fa-btn {
-  width: 42px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   display: inline-grid;
   place-items: center;
   border: 1px solid rgba(0, 0, 0, 0.18);
@@ -70,15 +69,35 @@
     linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.42));
   color: rgba(17, 17, 17, 0.88);
   font: inherit;
-  font-size: 10px;
+  font-size: 0;
   line-height: 1;
   font-weight: 900;
-  text-transform: lowercase;
   cursor: pointer;
   box-shadow:
     0 4px 0 rgba(0, 0, 0, 0.10),
     inset 0 1px 0 rgba(255, 255, 255, 0.70);
   transition: transform 120ms ease, filter 120ms ease;
+}
+
+.fa-btn::before {
+  content: "";
+  display: block;
+}
+
+.fa-player.is-paused .fa-play::before {
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 12px solid rgba(17, 17, 17, 0.84);
+}
+
+.fa-player:not(.is-paused) .fa-play::before {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: rgba(17, 17, 17, 0.84);
 }
 
 .fa-btn:hover {

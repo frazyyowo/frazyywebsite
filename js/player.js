@@ -38,7 +38,7 @@
   function setButton() {
     const playing = isPlaying();
     player.classList.toggle("is-paused", !playing);
-    toggle.textContent = playing ? "off" : "play";
+    toggle.textContent = "";
     toggle.setAttribute("aria-label", playing ? "stop music" : "play music");
   }
 
