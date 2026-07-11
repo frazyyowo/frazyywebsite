@@ -91,7 +91,7 @@
     beatRaf = 0;
 
     if (!analyser || !data || !isPlaying()) {
-      beatLevel *= 0.54;
+      beatLevel *= 0.76;
       nextBtn.style.setProperty("--beat", beatLevel.toFixed(3));
       if (beatLevel > 0.02) beatRaf = requestAnimationFrame(updateBeat);
       return;
@@ -104,8 +104,10 @@
     for (let i = 0; i < bins; i += 1) bass += data[i];
     bass = bass / (bins * 255);
 
-    const target = clamp((bass - 0.16) * 2.9, 0, 1);
-    beatLevel = target > beatLevel ? target : beatLevel * 0.56;
+    const target = clamp((bass - 0.18) * 2.15, 0, 0.82);
+    beatLevel = target > beatLevel
+      ? beatLevel * 0.35 + target * 0.65
+      : beatLevel * 0.82 + target * 0.18;
     nextBtn.style.setProperty("--beat", beatLevel.toFixed(3));
     beatRaf = requestAnimationFrame(updateBeat);
   }
