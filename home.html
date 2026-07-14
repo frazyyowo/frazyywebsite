@@ -139,7 +139,7 @@
     .site-title {
       position: absolute;
       left: 74px;
-      top: 150px;
+      top: 220px;
       display: inline-flex;
       align-items: baseline;
       justify-content: center;
@@ -1556,7 +1556,7 @@
 
     .site-title {
       left: 74px !important;
-      top: 150px !important;
+      top: 220px !important;
       max-width: none;
       font-size: 96px;
       letter-spacing: 4px;
@@ -1584,10 +1584,10 @@
 
     .welcome-bottom {
       height: 100%;
-      grid-template-columns: minmax(0, 1fr) 190px;
-      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) 205px;
+      gap: 14px;
       align-items: center;
-      padding: 8px 7px 2px;
+      padding: 5px 7px 1px;
     }
 
     .w-links,
@@ -1608,15 +1608,15 @@
     .link-icon,
     .link-icon img,
     .link-icon svg {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
     }
 
     .link-icon-text {
       display: grid;
       place-items: center;
       color: rgba(17,17,17,0.86);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 900;
       letter-spacing: -1px;
       border: 2px solid rgba(17,17,17,0.72);
@@ -1628,7 +1628,7 @@
     }
 
     .link-label {
-      font-size: calc(11px * var(--fs));
+      font-size: calc(12px * var(--fs));
     }
 
     .discord-col {
@@ -1650,8 +1650,8 @@
     }
 
     .discord-pfp-ring {
-      width: 54px;
-      height: 54px;
+      width: 60px;
+      height: 60px;
     }
 
     .discord-meta {
@@ -1660,8 +1660,8 @@
     }
 
     .discord-copy-btn {
-      min-width: 82px;
-      min-height: 26px;
+      min-width: 90px;
+      min-height: 28px;
       justify-self: start;
     }
 
@@ -1713,9 +1713,9 @@
       </h1>
 
       <div class="window wide" id="win-welcome"
-           data-x="74" data-y="280"
+           data-x="74" data-y="270"
            data-w="735" data-h="158"
-           data-skin="0.90" data-font="0.92"
+           data-skin="0.90" data-font="0.98"
            data-stretch-x="1.03" data-stretch-y="1.35">
         <img class="skin" src="img/window6.png" alt="">
         <div class="handle"></div>
@@ -1996,13 +1996,13 @@
       const donate = document.getElementById("win-donate");
       if (title) {
         title.style.left = "74px";
-        title.style.top = "150px";
+        title.style.top = "220px";
         title.style.transform = "translateY(-50%)";
       }
 
       const gap = STACK_GAP;
       const welcomeX = 74;
-      const welcomeY = 280;
+      const welcomeY = 270;
       placeWindow(welcome, welcomeX, welcomeY);
 
       const rowY = 438;
