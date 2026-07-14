@@ -138,8 +138,8 @@
 
     .site-title {
       position: absolute;
-      left: 170px;
-      top: 46%;
+      left: 74px;
+      top: 150px;
       display: inline-flex;
       align-items: baseline;
       justify-content: center;
@@ -1555,8 +1555,8 @@
     }
 
     .site-title {
-      left: 170px !important;
-      top: 46% !important;
+      left: 74px !important;
+      top: 150px !important;
       max-width: none;
       font-size: 96px;
       letter-spacing: 4px;
@@ -1584,10 +1584,10 @@
 
     .welcome-bottom {
       height: 100%;
-      grid-template-columns: minmax(0, 1fr) 145px;
-      gap: 8px;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      gap: 12px;
       align-items: center;
-      padding: 5px 4px 1px;
+      padding: 8px 7px 2px;
     }
 
     .w-links,
@@ -1608,15 +1608,15 @@
     .link-icon,
     .link-icon img,
     .link-icon svg {
-      width: 34px;
-      height: 34px;
+      width: 40px;
+      height: 40px;
     }
 
     .link-icon-text {
       display: grid;
       place-items: center;
       color: rgba(17,17,17,0.86);
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 900;
       letter-spacing: -1px;
       border: 2px solid rgba(17,17,17,0.72);
@@ -1628,7 +1628,7 @@
     }
 
     .link-label {
-      font-size: calc(8.5px * var(--fs));
+      font-size: calc(11px * var(--fs));
     }
 
     .discord-col {
@@ -1650,8 +1650,8 @@
     }
 
     .discord-pfp-ring {
-      width: 46px;
-      height: 46px;
+      width: 54px;
+      height: 54px;
     }
 
     .discord-meta {
@@ -1660,8 +1660,8 @@
     }
 
     .discord-copy-btn {
-      min-width: 72px;
-      min-height: 24px;
+      min-width: 82px;
+      min-height: 26px;
       justify-self: start;
     }
 
@@ -1713,10 +1713,10 @@
       </h1>
 
       <div class="window wide" id="win-welcome"
-           data-x="40" data-y="520"
-           data-w="500" data-h="150"
-           data-skin="0.62" data-font="0.78"
-           data-stretch-x="1.02" data-stretch-y="1.80">
+           data-x="74" data-y="280"
+           data-w="735" data-h="158"
+           data-skin="0.90" data-font="0.92"
+           data-stretch-x="1.03" data-stretch-y="1.35">
         <img class="skin" src="img/window6.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -1995,14 +1995,14 @@
       const twitch = document.getElementById("win-twitch");
       const donate = document.getElementById("win-donate");
       if (title) {
-        title.style.left = "170px";
-        title.style.top = "46%";
+        title.style.left = "74px";
+        title.style.top = "150px";
         title.style.transform = "translateY(-50%)";
       }
 
       const gap = STACK_GAP;
-      const welcomeX = 40;
-      const welcomeY = 520;
+      const welcomeX = 74;
+      const welcomeY = 280;
       placeWindow(welcome, welcomeX, welcomeY);
 
       const rowY = 438;
