@@ -17,7 +17,7 @@ body.intro-active #fx,
 body.intro-active #vhs,
 body.intro-active #desk {
   opacity: 0.76;
-  filter: blur(10px) saturate(1.14) contrast(0.94) brightness(0.82);
+  filter: blur(4px) saturate(1.08) contrast(0.98) brightness(0.88);
   pointer-events: none;
 }
 

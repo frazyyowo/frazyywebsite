@@ -1,13 +1,13 @@
-/* Background: blurred GIF */
+/* Background: crisp GIF with a light color wash */
 #bg {
   position: fixed;
-  inset: -36px;
+  inset: -8px;
   z-index: -3;
   background:
     url("../img/backround.gif") center / cover no-repeat fixed,
     url("../img/background.gif") center / cover no-repeat fixed;
-  filter: blur(14px) saturate(1.08) contrast(1.02);
-  transform: scale(1.08);
+  filter: saturate(1.02) contrast(1.02);
+  transform: scale(1.01);
 }
 
 #tint {
@@ -31,12 +31,12 @@
 
 /* VHS + paper texture */
 :root {
-  --vhsOpacity: 0.62;
-  --siteBlur: 1.15px;
-  --dotOpacity: 0.28;
-  --grainOpacity: 0.55;
-  --scanOpacity: 0.50;
-  --vignetteOpacity: 0.28;
+  --vhsOpacity: 0.16;
+  --siteBlur: 0px;
+  --dotOpacity: 0.10;
+  --grainOpacity: 0.18;
+  --scanOpacity: 0.12;
+  --vignetteOpacity: 0.12;
   --pixelSize: 6px;
   --pixelOpacity: 0.06;
   --buttonGlow: rgba(170, 214, 255, 0.42);
@@ -50,9 +50,9 @@
   pointer-events: none;
   opacity: var(--vhsOpacity);
   mix-blend-mode: overlay;
-  -webkit-backdrop-filter: blur(var(--siteBlur)) saturate(1.05) contrast(1.02);
-  backdrop-filter: blur(var(--siteBlur)) saturate(1.05) contrast(1.02);
-  filter: contrast(1.03) saturate(1.03);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  filter: contrast(1.01) saturate(1.01);
 }
 
 #vhs::before {
@@ -74,7 +74,7 @@
     radial-gradient(circle at 50% 50%,
       rgba(255,255,255,0.00) 0%,
       rgba(0,0,0,var(--vignetteOpacity)) 100%);
-  opacity: 1;
+  opacity: 0.70;
   animation: vhs-scan 5.2s linear infinite;
 }
 
@@ -96,7 +96,7 @@
       rgba(0,200,255,0.12),
       rgba(0,255,170,0.09)
     );
-  opacity: 0.9;
+  opacity: 0.28;
   animation: vhs-noise 0.16s steps(2) infinite, vhs-flicker 3.8s infinite, vhs-jitter 1.6s infinite;
 }
 
@@ -131,10 +131,7 @@
   text-shadow: 2px 2px 0 rgba(255,255,255,0.45) !important;
   --glowA: currentColor;
   --glowB: currentColor;
-  filter:
-    drop-shadow(0 0 4px var(--glowA))
-    drop-shadow(0 0 10px var(--glowA))
-    drop-shadow(0 0 20px var(--glowB));
+  filter: none;
 }
 
 .welcome-title,
@@ -200,9 +197,7 @@
 .fa-cover,
 .img-modal-close,
 button.close-hit {
-  filter:
-    drop-shadow(0 0 5px var(--buttonGlow))
-    drop-shadow(0 0 12px var(--buttonGlow2));
+  filter: none;
 }
 
 .about-btn:hover,

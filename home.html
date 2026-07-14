@@ -24,14 +24,17 @@
 
     html, body {
       width: 100%;
-      min-height: 100%;
-      scroll-behavior: smooth;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      scroll-behavior: auto;
     }
 
     body {
-      min-height: 100dvh;
+      height: 100dvh;
+      min-height: 0;
       overflow-x: hidden;
-      overflow-y: auto;
+      overflow-y: hidden;
       font-family: "Azeret Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
                    Consolas, "Liberation Mono", "Courier New", monospace;
       color: var(--ink);
@@ -112,10 +115,12 @@
     .intro-cursor { animation: tw-blink 0.9s steps(1) infinite; }
 
     #desk {
-      position: relative;
+      position: fixed;
+      inset: 0;
       width: 100%;
-      min-height: 100dvh;
-      overflow: visible;
+      height: 100dvh;
+      min-height: 0;
+      overflow: hidden;
       z-index: 10;
     }
 
@@ -123,34 +128,35 @@
       position: absolute;
       left: 0;
       top: 0;
-      width: 2048px;
-      min-height: 799px;
+      width: 1600px;
+      height: 820px;
+      min-height: 820px;
       transform-origin: top left;
-      perspective: 1100px;
       perspective: 1500px;
       will-change: transform;
     }
 
     .site-title {
       position: absolute;
-      left: 50%;
-      top: 38px;
+      left: 74px;
+      top: 46%;
       display: inline-flex;
       align-items: baseline;
       justify-content: center;
-      max-width: 1160px;
+      max-width: none;
       white-space: nowrap;
       user-select: none;
       pointer-events: none;
       color: var(--ink);
-      font-size: 112px;
+      font-size: 96px;
       line-height: 0.9;
       font-weight: 800;
-      letter-spacing: 8px;
+      letter-spacing: 4px;
       text-shadow:
         3px 3px 0 rgba(255,255,255,0.55),
         5px 6px 0 rgba(66, 103, 140, 0.08);
-      transform: translateX(-50%);
+      transform: translateY(-50%);
+      filter: none;
     }
 
     .site-title .tw-text { white-space: nowrap; }
@@ -186,7 +192,7 @@
       will-change: transform;
       user-select: none;
       visibility: hidden;
-      filter: drop-shadow(0 18px 20px rgba(12, 28, 44, 0.23));
+      filter: drop-shadow(0 10px 14px rgba(12, 28, 44, 0.18));
       border-radius: 0;
       background: transparent;
     }
@@ -1524,6 +1530,165 @@
         transform-style: flat !important;
       }
     }
+
+    /* Clean, fixed single-screen composition. */
+    html,
+    body {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #desk {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #stage {
+      width: 1600px;
+      height: 820px;
+      min-height: 820px;
+    }
+
+    .site-title {
+      left: 74px !important;
+      top: 46% !important;
+      max-width: none;
+      font-size: 96px;
+      letter-spacing: 4px;
+      text-align: left;
+      justify-content: flex-start;
+      transform: translateY(-50%) !important;
+      filter: none !important;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.45) !important;
+    }
+
+    .window {
+      filter: drop-shadow(0 9px 12px rgba(12, 28, 44, 0.16));
+    }
+
+    .window:hover,
+    .window.is-front,
+    .window.is-tilting {
+      filter: drop-shadow(0 11px 14px rgba(12, 28, 44, 0.20));
+    }
+
+    .welcome-panel {
+      display: block;
+      height: 100%;
+    }
+
+    .welcome-bottom {
+      height: 100%;
+      grid-template-columns: minmax(0, 1fr) 242px;
+      gap: 16px;
+      align-items: center;
+      padding: 10px 8px 2px;
+    }
+
+    .w-links,
+    .discord-col {
+      min-height: 0;
+      height: auto;
+      transform: none;
+    }
+
+    .w-links {
+      gap: 4px;
+    }
+
+    .w-links-row {
+      gap: 5px;
+    }
+
+    .link-icon,
+    .link-icon img,
+    .link-icon svg {
+      width: 46px;
+      height: 46px;
+    }
+
+    .link-icon-text {
+      display: grid;
+      place-items: center;
+      color: rgba(17,17,17,0.86);
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      border: 2px solid rgba(17,17,17,0.72);
+      border-radius: 10px;
+    }
+
+    .link-item {
+      gap: 3px;
+    }
+
+    .link-label {
+      font-size: calc(10px * var(--fs));
+    }
+
+    .discord-col {
+      grid-template-rows: auto auto;
+      gap: 4px;
+    }
+
+    .discord-label {
+      text-align: left;
+    }
+
+    .discord-badge {
+      min-height: 0;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-areas: "avatar meta" "avatar copy";
+      align-items: center;
+      gap: 4px 10px;
+      padding: 2px 0;
+    }
+
+    .discord-pfp-ring {
+      width: 64px;
+      height: 64px;
+    }
+
+    .discord-meta {
+      width: auto;
+      align-items: flex-start;
+    }
+
+    .discord-copy-btn {
+      min-width: 92px;
+      min-height: 30px;
+      justify-self: start;
+    }
+
+    .panel-title {
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.48);
+    }
+
+    @media (min-width: 761px) {
+      #mobile-root { display: none !important; }
+    }
+
+    @media (max-width: 760px) {
+      #desk { display: none !important; }
+
+      #mobile-root {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: flex !important;
+        width: 100%;
+        height: 100dvh;
+        min-height: 0;
+        padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+        gap: 8px;
+        overflow: hidden;
+      }
+    }
   </style>
 </head>
 
@@ -1539,7 +1704,6 @@
 
   <div id="bg"></div>
   <div id="tint"></div>
-  <canvas id="fx"></canvas>
   <div id="vhs"></div>
 
   <div id="desk">
@@ -1549,35 +1713,14 @@
       </h1>
 
       <div class="window wide" id="win-welcome"
-           data-x="130" data-y="190"
-           data-w="1160" data-h="395"
-           data-skin="0.96" data-font="1.02"
-           data-stretch-x="1.14" data-stretch-y="1.08">
-        <img class="skin" src="img/window7.png" alt="">
+           data-x="560" data-y="78"
+           data-w="830" data-h="300"
+           data-skin="0.98" data-font="0.98"
+           data-stretch-x="1.06" data-stretch-y="2.34">
+        <img class="skin" src="img/window6.png" alt="">
         <div class="handle"></div>
         <div class="content">
           <div class="welcome-panel">
-            <div class="welcome-hero" aria-label="frazyy profile banner">
-              <div class="welcome-pfp-wrap">
-                <img class="welcome-pfp" src="img/frazyypfp.jpg" alt="frazyypaws profile picture">
-              </div>
-              <div class="welcome-name">frazyy</div>
-
-              <div class="welcome-identity-row">
-                <div class="flags-pair">
-                  <div class="flag-img" title="mlm flag">
-                    <img src="img/mlm.png" alt="mlm flag">
-                  </div>
-                  <div class="flag-img" title="demiboy flag">
-                    <img src="img/Demiboyflag.webp" alt="demiboy flag">
-                  </div>
-                </div>
-                <div class="welcome-pronouns">he/him <span class="they">they/them</span></div>
-              </div>
-            </div>
-
-            <div class="welcome-sep"></div>
-
             <div class="welcome-bottom">
               <div class="w-links">
                 <div class="w-links-label">my links:</div>
@@ -1603,7 +1746,7 @@
                     <div class="link-label">roblox</div>
                   </a>
                   <a class="link-item" href="https://toyhou.se/frazyy" target="_blank" rel="noopener noreferrer" title="toyhouse">
-                    <div class="link-icon"><img src="img/toyhouse.gif" alt="toyhouse"></div>
+                    <div class="link-icon link-icon-text" aria-hidden="true">th</div>
                     <div class="link-label">toyhouse</div>
                   </a>
                 </div>
@@ -1631,7 +1774,7 @@
 
       <div class="window win1" id="win-twitch"
            data-label=""
-           data-x="1280" data-y="620"
+           data-x="560" data-y="438"
            data-w="500" data-h="430"
            data-skin="0.90" data-font="0.96">
         <img class="skin" src="img/window1.png" alt="">
@@ -1659,7 +1802,7 @@
 
       <div class="window win1" id="win-donate"
            data-label=""
-           data-x="1280" data-y="1040"
+           data-x="1060" data-y="438"
            data-w="500" data-h="430"
            data-skin="0.90" data-font="0.96">
         <img class="skin" src="img/window1.png" alt="">
@@ -1678,24 +1821,6 @@
         </div>
       </div>
 
-      <div class="window std closed" id="win-gallery"
-           data-label="frazy folder.exe"
-           data-x="1180" data-y="205"
-           data-w="740" data-h="560"
-           data-skin="0.98" data-font="1.02"
-           data-stretch-x="1.12" data-stretch-y="1.16"
-           aria-hidden="true">
-        <img class="skin" src="img/window5.png" alt="">
-        <div class="handle"></div>
-        <button class="close-hit" id="closeGalleryBtn" type="button" aria-label="close gallery"></button>
-
-        <div class="content">
-          <div class="gallery-wrap">
-            <div class="gallery-title">frazy folder</div>
-            <div class="gallery-grid" id="galleryGrid"></div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1706,12 +1831,6 @@
 
     <section class="m-card" aria-label="welcome">
       <div class="m-welcome-title">welcome to my website!</div>
-
-      <div class="m-badges-row">
-        <div class="m-flag"><img src="img/mlm.png" alt="mlm flag"></div>
-        <div class="m-flag"><img src="img/Demiboyflag.webp" alt="demiboy flag"></div>
-        <span class="m-pronouns">he/him <span class="they">they/them</span></span>
-      </div>
 
       <div class="m-sep"></div>
 
@@ -1749,7 +1868,7 @@
         </a>
 
         <a class="m-link-item" href="https://toyhou.se/frazyy" target="_blank" rel="noopener noreferrer">
-          <div class="m-link-icon"><img src="img/toyhouse.gif" alt="toyhouse"></div>
+          <div class="m-link-icon m-link-icon-text" aria-hidden="true">th</div>
           <div class="m-link-label">toyhouse</div>
           <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
         </a>
@@ -1776,58 +1895,22 @@
       </div>
     </section>
 
-    <section class="m-card" aria-label="twitch">
-      <div class="panel-kicker">frazyypaws</div>
-      <div class="panel-title">latest stream</div>
-      <div class="m-twitch-frame">
-        <iframe id="twitchEmbedMobile" title="frazyypaws twitch stream" allowfullscreen></iframe>
-      </div>
-      <div class="m-actions">
-        <a class="big-link twitch" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">go to twitch</a>
-        <a class="small-link" href="https://www.twitch.tv/frazyypaws/videos?filter=archives&amp;sort=time" target="_blank" rel="noopener noreferrer">vods</a>
-      </div>
-    </section>
-
-    <section class="m-card m-donate" aria-label="donations">
-      <div class="donate-icon" aria-hidden="true">
-        <img src="img/frazyyheart.png" alt="">
-      </div>
-      <div class="donate-thanks">here u can donate to me :3</div>
-      <div class="donate-small">thank you so much for donating! &lt;333</div>
-      <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
-    </section>
-
-    <footer class="contact-mail">
-      my contact mail:
-      <a href="mailto:contact@frazyy.com">contact@frazyy.com</a>
-    </footer>
   </main>
 
-  <div id="imgModal" class="img-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="image preview">
-    <div class="img-modal-backdrop" id="modalBackdrop"></div>
-    <div class="img-modal-card">
-      <img id="imgModalImg" class="img-modal-img" src="" alt="">
-      <button class="img-modal-close" id="imgModalClose" type="button">close</button>
-    </div>
-  </div>
-
   <script>
-    const DESIGN_W = 2048;
-    const MARGIN_X = 86;
-    const MARGIN_Y = 62;
-    const MAX_UPSCALE = 1.24;
-    const MIN_SCALE = 0.54;
-    const STACK_GAP = 8;
+    const DESIGN_W = 1600;
+    const DESIGN_H = 820;
+    const MARGIN_X = 24;
+    const MARGIN_Y = 18;
+    const MAX_UPSCALE = 1.15;
+    const MIN_SCALE = 0.42;
+    const STACK_GAP = 28;
 
     const stage = document.getElementById("stage");
     const desk = document.getElementById("desk");
     let topZ = 10;
     let stageScale = 1;
-    let currentDesignHeight = 799;
-
-    const galleryImages = [
-      "img/frazyy.png"
-    ];
+    let currentDesignHeight = DESIGN_H;
 
     function clamp(value, min, max) {
       return Math.min(Math.max(value, min), max);
@@ -1881,29 +1964,29 @@
       return !!el && !el.classList.contains("closed");
     }
 
-    function layoutStage(designHeight = currentDesignHeight) {
+    function layoutStage(designHeight = DESIGN_H) {
       if (!stage) return;
-      currentDesignHeight = Math.max(799, designHeight);
+      currentDesignHeight = Math.max(DESIGN_H, designHeight);
 
-      const vw = window.innerWidth;
-      let scale = (vw - MARGIN_X * 2) / DESIGN_W;
-
-      if (scale > 1) {
-        scale = Math.min(MAX_UPSCALE, scale);
-      } else {
-        scale = Math.min(1, scale);
-      }
-
-      scale = Math.max(MIN_SCALE, scale);
+      const vw = Math.max(1, window.innerWidth);
+      const vh = Math.max(1, window.innerHeight);
+      const widthScale = (vw - MARGIN_X * 2) / DESIGN_W;
+      const heightScale = (vh - MARGIN_Y * 2) / currentDesignHeight;
+      const scale = clamp(Math.min(widthScale, heightScale), MIN_SCALE, MAX_UPSCALE);
       stageScale = scale;
 
       const scaledW = DESIGN_W * scale;
-      const x = (vw >= scaledW + MARGIN_X * 2) ? MARGIN_X : Math.floor((vw - scaledW) / 2);
-      const y = MARGIN_Y;
+      const scaledH = currentDesignHeight * scale;
+      const x = Math.round((vw - scaledW) / 2);
+      const y = Math.round((vh - scaledH) / 2);
 
       stage.style.transform = `translate3d(${Math.round(x)}px,${Math.round(y)}px,0) scale(${scale})`;
       stage.style.height = `${Math.round(currentDesignHeight)}px`;
-      if (desk) desk.style.minHeight = `${Math.ceil(currentDesignHeight * scale + MARGIN_Y * 2)}px`;
+      if (desk) {
+        desk.style.width = "100%";
+        desk.style.height = "100dvh";
+        desk.style.minHeight = "0";
+      }
     }
 
     function layoutStack() {
@@ -1911,57 +1994,26 @@
       const welcome = document.getElementById("win-welcome");
       const twitch = document.getElementById("win-twitch");
       const donate = document.getElementById("win-donate");
-      const gallery = document.getElementById("win-gallery");
-
       if (title) {
-        title.style.left = "50%";
-        title.style.top = "42px";
-        title.style.transform = "translateX(-50%)";
+        title.style.left = "74px";
+        title.style.top = "46%";
+        title.style.transform = "translateY(-50%)";
       }
 
       const gap = STACK_GAP;
-      const welcomeY = 150;
-      placeWindow(welcome, centeredX(welcome), welcomeY);
+      const welcomeX = 560;
+      const welcomeY = 78;
+      placeWindow(welcome, welcomeX, welcomeY);
 
-      const rowY = welcomeY + winH(welcome) + gap;
+      const rowY = 438;
       const totalW = winW(twitch) + gap + winW(donate);
-      const rowX = Math.max(94, Math.round((DESIGN_W - totalW) / 2));
+      const rowX = Math.max(500, Math.round(welcomeX + (winW(welcome) - totalW) / 2));
 
       placeWindow(twitch, rowX, rowY);
       placeWindow(donate, rowX + winW(twitch) + gap, rowY);
 
-      let pageBottom = rowY + Math.max(winH(twitch), winH(donate));
-
-      if (isWindowOpen(gallery)) {
-        placeWindow(gallery, centeredX(gallery), pageBottom + gap);
-        pageBottom += gap + winH(gallery);
-      }
-
-      layoutStage(pageBottom + 56);
+      layoutStage(DESIGN_H);
     }
-
-    function updateScrollBackdrop() {
-      const scrollY = window.scrollY || 0;
-      const drift = Math.round(scrollY * -0.08);
-      document.body.style.backgroundPosition = `center ${drift}px`;
-
-      const bg = document.getElementById("bg");
-      const tint = document.getElementById("tint");
-      const fx = document.getElementById("fx");
-
-      if (bg) bg.style.transform = `translate3d(0, ${Math.round(scrollY * -0.08)}px, 0)`;
-      if (tint) tint.style.transform = `translate3d(0, ${Math.round(scrollY * -0.045)}px, 0)`;
-      if (fx) fx.style.transform = `translate3d(0, ${Math.round(scrollY * -0.03)}px, 0)`;
-    }
-
-    let scrollRAF = 0;
-    window.addEventListener("scroll", () => {
-      if (scrollRAF) return;
-      scrollRAF = requestAnimationFrame(() => {
-        scrollRAF = 0;
-        updateScrollBackdrop();
-      });
-    }, { passive: true });
 
     window.addEventListener("resize", layoutStack);
     layoutStack();
@@ -2092,105 +2144,6 @@
 
     setupWindowDragging();
 
-    function openWindow(win) {
-      if (!win) return;
-      win.classList.remove("closed");
-      win.classList.add("open");
-      win.setAttribute("aria-hidden", "false");
-      layoutStack();
-      bringToFront(win);
-      requestAnimationFrame(() => {
-        const rect = win.getBoundingClientRect();
-        const top = window.scrollY + rect.top - 80;
-        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-      });
-    }
-
-    function closeWindow(win) {
-      if (!win) return;
-      win.classList.remove("open");
-      win.classList.add("closed");
-      win.setAttribute("aria-hidden", "true");
-      layoutStack();
-    }
-
-    const galleryWin = document.getElementById("win-gallery");
-
-    document.getElementById("closeGalleryBtn")?.addEventListener("click", e => {
-      e.stopPropagation();
-      closeWindow(galleryWin);
-    });
-
-    const imgModal = document.getElementById("imgModal");
-    const imgModalImg = document.getElementById("imgModalImg");
-    const imgModalClose = document.getElementById("imgModalClose");
-    const modalBackdrop = document.getElementById("modalBackdrop");
-
-    function openImgModal(src, alt) {
-      if (!src) return;
-      imgModalImg.src = src;
-      imgModalImg.alt = alt || "image";
-      imgModal.classList.add("open");
-      imgModal.setAttribute("aria-hidden", "false");
-      imgModalClose.focus();
-    }
-
-    function closeImgModal() {
-      imgModal.classList.remove("open");
-      imgModal.setAttribute("aria-hidden", "true");
-      imgModalImg.src = "";
-      imgModalImg.alt = "";
-    }
-
-    imgModalClose?.addEventListener("click", closeImgModal);
-    modalBackdrop?.addEventListener("click", closeImgModal);
-
-    window.addEventListener("keydown", e => {
-      if (e.key !== "Escape") return;
-      if (imgModal?.classList.contains("open")) {
-        closeImgModal();
-        return;
-      }
-    });
-
-    function renderGallery() {
-      const grid = document.getElementById("galleryGrid");
-      if (!grid) return;
-
-      grid.innerHTML = "";
-      galleryImages.forEach((src, i) => {
-        const card = document.createElement("a");
-        const title = `pic ${i + 1}`;
-        card.className = "g-card";
-        card.href = src;
-        card.dataset.title = title;
-        card.innerHTML = `
-          <div class="g-thumb"><img src="${src}" alt="${title}" draggable="false"></div>
-          <div class="g-title">${title}</div>
-        `;
-        grid.append(card);
-      });
-    }
-    renderGallery();
-
-    document.getElementById("galleryGrid")?.addEventListener("click", e => {
-      const card = e.target.closest("a.g-card");
-      if (!card) return;
-
-      e.preventDefault();
-
-      const src = card.getAttribute("href");
-      const title = card.dataset.title || card.querySelector(".g-title")?.textContent || "picture";
-      openImgModal(src, title);
-    });
-
-    document.querySelectorAll("[data-full]").forEach(button => {
-      button.addEventListener("click", () => {
-        const src = button.getAttribute("data-full");
-        openImgModal(src, "picture");
-      });
-    });
-
     function wireDiscordCopy(buttonId, username) {
       const button = document.getElementById(buttonId);
       if (!button) return;
@@ -2225,7 +2178,6 @@
     }
 
     setupTwitchFrame("twitchEmbed");
-    setupTwitchFrame("twitchEmbedMobile");
 
     (function introFailsafe() {
       const intro = document.getElementById("intro");
@@ -2248,12 +2200,10 @@
     })();
   </script>
 
-  <script src="js/particles.js" defer></script>
   <script src="js/windowTilt.js" defer></script>
   <script src="js/windowSpray.js" defer></script>
   <script src="js/titleMarquee.js" defer></script>
   <script src="js/sfx.js" defer></script>
-  <script src="js/typewriter.js" defer></script>
   <script src="js/intro.js?v=3" defer></script>
   <script src="js/discordBadge.js" defer></script>
 </body>
