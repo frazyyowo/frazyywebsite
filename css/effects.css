@@ -139,7 +139,6 @@
 
 .welcome-title,
 .sec-hdr,
-.music-title-row,
 .about-body strong,
 .fur-info strong {
   display: inline-block;
@@ -163,7 +162,6 @@
 
   .welcome-title,
   .sec-hdr,
-  .music-title-row,
   .about-body strong,
   .fur-info strong {
     --glowA: color-mix(in srgb, currentColor 60%, white);

@@ -6,7 +6,6 @@
   <title>FRAZYYFRAZYYFRAZYYFRAZYY</title>
 
   <link rel="stylesheet" href="css/effects.css">
-  <link rel="stylesheet" href="css/player.css?v=11">
   <link rel="stylesheet" href="css/intro.css?v=3">
 
   <style>
@@ -1211,8 +1210,7 @@
         touch-action: pan-y;
       }
 
-      #desk,
-      .fa-player { display: none; }
+      #desk { display: none; }
 
       #mobile-root {
         position: relative;
@@ -1543,20 +1541,6 @@
   <div id="tint"></div>
   <canvas id="fx"></canvas>
   <div id="vhs"></div>
-
-  <div id="faPlayer" class="fa-player is-paused" aria-label="music player">
-    <div class="fa-now">
-      <div class="fa-title" id="faTitle">no song loaded</div>
-      <button class="fa-btn fa-play" id="faToggle" type="button" aria-label="play music"></button>
-    </div>
-
-    <button class="fa-vinyl" id="faNextBtn" type="button" aria-label="next track">
-      <span class="fa-vinyl-disc" aria-hidden="true">
-        <img id="faCoverImg" src="img/default.png" alt="" draggable="false">
-      </span>
-    </button>
-    <audio id="faAudio" preload="metadata"></audio>
-  </div>
 
   <div id="desk">
     <div id="stage">
@@ -2270,7 +2254,6 @@
   <script src="js/titleMarquee.js" defer></script>
   <script src="js/sfx.js" defer></script>
   <script src="js/typewriter.js" defer></script>
-  <script src="js/player.js?v=9" defer></script>
   <script src="js/intro.js?v=3" defer></script>
   <script src="js/discordBadge.js" defer></script>
 </body>

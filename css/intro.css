@@ -6,8 +6,7 @@
 #tint,
 #fx,
 #vhs,
-#desk,
-#faPlayer {
+#desk {
   transition: opacity 180ms ease, filter 180ms ease;
   will-change: opacity, filter;
 }
@@ -16,8 +15,7 @@ body.intro-active #bg,
 body.intro-active #tint,
 body.intro-active #fx,
 body.intro-active #vhs,
-body.intro-active #desk,
-body.intro-active #faPlayer {
+body.intro-active #desk {
   opacity: 0.76;
   filter: blur(10px) saturate(1.14) contrast(0.94) brightness(0.82);
   pointer-events: none;
@@ -173,8 +171,7 @@ body.intro-active #faPlayer {
   #tint,
   #fx,
   #vhs,
-  #desk,
-  #faPlayer {
+  #desk {
     transition: none;
   }
 }
