@@ -140,6 +140,7 @@
       position: absolute;
       left: 74px;
       top: 220px;
+      width: 735px;
       display: inline-flex;
       align-items: baseline;
       justify-content: center;
@@ -1555,13 +1556,14 @@
     }
 
     .site-title {
-      left: 74px !important;
+      left: 74px;
       top: 220px !important;
+      width: 735px;
       max-width: none;
       font-size: 96px;
       letter-spacing: 4px;
-      text-align: left;
-      justify-content: flex-start;
+      text-align: center;
+      justify-content: center;
       transform: translateY(-50%) !important;
       filter: none !important;
       text-shadow: 2px 2px 0 rgba(255,255,255,0.45) !important;
@@ -1994,20 +1996,24 @@
       const welcome = document.getElementById("win-welcome");
       const twitch = document.getElementById("win-twitch");
       const donate = document.getElementById("win-donate");
-      if (title) {
-        title.style.left = "74px";
-        title.style.top = "220px";
-        title.style.transform = "translateY(-50%)";
-      }
 
       const gap = STACK_GAP;
-      const welcomeX = 74;
+      const welcomeX = centeredX(welcome);
       const welcomeY = 270;
       placeWindow(welcome, welcomeX, welcomeY);
 
+      if (title) {
+        title.style.left = `${welcomeX}px`;
+        title.style.top = "220px";
+        title.style.width = `${winW(welcome)}px`;
+        title.style.textAlign = "center";
+        title.style.justifyContent = "center";
+        title.style.transform = "translateY(-50%)";
+      }
+
       const rowY = 438;
       const totalW = winW(twitch) + gap + winW(donate);
-      const rowX = 500;
+      const rowX = Math.max(500, Math.min(620, Math.round(DESIGN_W - totalW - 24)));
 
       placeWindow(twitch, rowX, rowY);
       placeWindow(donate, rowX + winW(twitch) + gap, rowY);
@@ -2202,6 +2208,7 @@
 
   <script src="js/windowTilt.js" defer></script>
   <script src="js/windowSpray.js" defer></script>
+  <script src="js/typewriter.js" defer></script>
   <script src="js/titleMarquee.js" defer></script>
   <script src="js/sfx.js" defer></script>
   <script src="js/intro.js?v=3" defer></script>
