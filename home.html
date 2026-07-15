@@ -146,7 +146,7 @@
     .site-title {
       position: absolute;
       left: 74px;
-      top: 44%;
+      top: 38.5%;
       width: 735px;
       display: inline-flex;
       align-items: baseline;
@@ -179,7 +179,7 @@
     .site-handle {
       position: absolute;
       left: 74px;
-      top: 440px;
+      top: 395px;
       width: 735px;
       color: var(--ink);
       font-size: 30px;
@@ -1039,13 +1039,38 @@
       text-shadow: 1px 1px 0 rgba(255,255,255,0.62);
     }
 
-    .about-action.is-active {
-      border-color: rgba(79,135,181,0.52);
-      background: rgba(205,230,249,0.86);
+    .about-action {
+      border-color: rgba(67,78,88,0.54);
+      border-radius: 6px;
+      background:
+        linear-gradient(180deg, rgba(241,245,248,0.94), rgba(183,196,205,0.90));
       box-shadow:
-        0 0 13px rgba(125,198,255,0.52),
-        0 7px 14px rgba(27,58,87,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.88);
+        0 3px 7px rgba(18,35,50,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.88),
+        inset 0 -1px 0 rgba(72,88,101,0.18);
+    }
+
+    .about-action::before {
+      display: none;
+    }
+
+    .about-action:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.025);
+      box-shadow:
+        0 5px 10px rgba(18,35,50,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.94),
+        inset 0 -1px 0 rgba(72,88,101,0.20);
+    }
+
+    .about-action.is-active {
+      border-color: rgba(54,68,79,0.66);
+      background:
+        linear-gradient(180deg, rgba(211,221,228,0.96), rgba(160,176,187,0.92));
+      box-shadow:
+        0 3px 7px rgba(18,35,50,0.20),
+        inset 0 1px 0 rgba(255,255,255,0.82),
+        inset 0 -1px 0 rgba(65,79,90,0.26);
     }
 
     .twitch-action {
@@ -1247,6 +1272,8 @@
     }
 
     .about-photo {
+      inset: 0 0 7px;
+      height: auto;
       object-fit: contain;
     }
 
@@ -1956,7 +1983,7 @@
 
     .site-title {
       left: 74px;
-      top: 44% !important;
+      top: 38.5% !important;
       width: 735px;
       max-width: none;
       font-size: 120px;
@@ -2128,7 +2155,7 @@
       <div class="site-handle" aria-label="@frazyypaws">@frazyypaws</div>
 
       <div class="window wide" id="win-welcome"
-           data-x="74" data-y="478"
+           data-x="74" data-y="433"
            data-w="735" data-h="158"
            data-skin="0.90" data-font="1.06"
            data-stretch-x="1.16" data-stretch-y="1.55">
@@ -2417,7 +2444,7 @@
       const aboutPhoto1 = document.getElementById("win-about-photo-1");
       const aboutPhoto2 = document.getElementById("win-about-photo-2");
       const welcomeX = 74;
-      const welcomeY = 478;
+      const welcomeY = 433;
       placeWindow(welcome, welcomeX, welcomeY);
       placeWindow(aboutBio, 970, 0);
       placeWindow(aboutPhoto1, 1525, 155);
@@ -2426,13 +2453,13 @@
       if (actions && welcome) {
         const actionWidth = Math.min(440, winW(welcome));
         actions.style.left = `${Math.round(welcomeX + (winW(welcome) - actionWidth) / 2)}px`;
-        actions.style.top = `${Math.round(welcomeY + winH(welcome) + 13)}px`;
+        actions.style.top = `${Math.round(welcomeY + winH(welcome) + 3)}px`;
         actions.style.width = `${actionWidth}px`;
       }
 
       if (title) {
         title.style.left = "74px";
-        title.style.top = "44%";
+        title.style.top = "38.5%";
         title.style.width = `${winW(welcome)}px`;
         title.style.textAlign = "left";
         title.style.justifyContent = "flex-start";
@@ -2441,7 +2468,7 @@
 
       if (handle) {
         handle.style.left = "74px";
-        handle.style.top = "440px";
+        handle.style.top = "395px";
         handle.style.width = `${winW(welcome)}px`;
         handle.style.textAlign = "center";
       }
