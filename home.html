@@ -1131,7 +1131,7 @@
       width: 100%;
       height: 100%;
       overflow: visible;
-      padding: 18px 145px 16px 18px;
+      padding: 18px;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -1139,7 +1139,7 @@
     }
 
     .about-bio-title {
-      margin-bottom: 16px;
+      margin-bottom: 8px;
       color: #111;
       font-size: calc(34px * var(--fs));
       line-height: 0.98;
@@ -1148,26 +1148,56 @@
       text-shadow: 2px 2px 0 rgba(255,255,255,0.56);
     }
 
-    .about-bio-lines {
+    .about-bio-meta {
+      max-width: 260px;
       display: flex;
       flex-direction: column;
-      gap: 11px;
+      gap: 5px;
       color: rgba(17,17,17,0.82);
-      font-size: calc(16px * var(--fs));
-      line-height: 1.28;
-      font-weight: 900;
+      font-size: calc(13px * var(--fs));
+      line-height: 1.2;
+      font-weight: 400;
     }
 
-    .about-bio-lines strong {
+    .about-bio-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      white-space: nowrap;
+    }
+
+    .about-bio-role {
+      font-weight: 400;
+    }
+
+    .about-interests {
+      width: 215px;
+      margin-top: 22px;
+    }
+
+    .about-interests-title {
+      margin-bottom: 6px;
       color: #111;
+      font-size: calc(17px * var(--fs));
+      line-height: 1;
+      font-weight: 900;
+      text-transform: lowercase;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.52);
+    }
+
+    .about-interests-copy {
+      color: rgba(17,17,17,0.82);
+      font-size: calc(15px * var(--fs));
+      line-height: 1.3;
+      font-weight: 400;
     }
 
     .about-small-media {
       position: absolute;
-      right: -22px;
-      bottom: -22px;
-      width: 170px;
-      height: 194px;
+      right: -38px;
+      bottom: -32px;
+      width: 235px;
+      height: 235px;
       overflow: visible;
       border: 0;
       border-radius: 0;
@@ -2155,10 +2185,18 @@
         <div class="content">
           <article class="about-bio-panel">
             <h2 class="about-bio-title">hi! im frazyy</h2>
-            <div class="about-bio-lines">
-              <p>im a <strong>content creator</strong> and a <strong>game developer!</strong></p>
-              <p>im from <strong>estonia</strong></p>
-              <p>i play <strong>cs2, roblox and osu!</strong></p>
+
+            <div class="about-bio-meta">
+              <div class="about-bio-meta-row">
+                <span>he/they</span>
+                <span>ENG/EST/RUS</span>
+              </div>
+              <div class="about-bio-role">content creator + game developer</div>
+            </div>
+
+            <div class="about-interests">
+              <h3 class="about-interests-title">interests</h3>
+              <p class="about-interests-copy">coding, cs2, osu!</p>
             </div>
 
             <div class="about-small-media about-media-shell">
