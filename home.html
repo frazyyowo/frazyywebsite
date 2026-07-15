@@ -139,7 +139,7 @@
     .site-title {
       position: absolute;
       left: 74px;
-      top: 50%;
+      top: 44%;
       width: 735px;
       display: inline-flex;
       align-items: baseline;
@@ -167,6 +167,22 @@
       margin-left: 4px;
       transform: translateY(3px);
       animation: tw-blink 0.9s steps(1) infinite;
+    }
+
+    .site-handle {
+      position: absolute;
+      left: 74px;
+      top: 420px;
+      width: 735px;
+      color: var(--ink);
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.48);
     }
 
     @keyframes tw-blink {
@@ -1557,7 +1573,7 @@
 
     .site-title {
       left: 74px;
-      top: 50% !important;
+      top: 44% !important;
       width: 735px;
       max-width: none;
       font-size: 120px;
@@ -1714,9 +1730,10 @@
       <h1 class="site-title" data-type="frazyy.com" aria-label="frazyy.com">
         <span class="tw-text">frazyy.com</span><span class="tw-cursor">_</span>
       </h1>
+      <div class="site-handle" aria-label="@frazyypaws">@frazyypaws</div>
 
       <div class="window wide" id="win-welcome"
-           data-x="74" data-y="478"
+           data-x="74" data-y="455"
            data-w="735" data-h="158"
            data-skin="0.90" data-font="1.06"
            data-stretch-x="1.16" data-stretch-y="1.55">
@@ -1994,22 +2011,29 @@
 
     function layoutStack() {
       const title = document.querySelector("#stage > .site-title");
+      const handle = document.querySelector("#stage > .site-handle");
       const welcome = document.getElementById("win-welcome");
       const twitch = document.getElementById("win-twitch");
       const donate = document.getElementById("win-donate");
 
       const gap = STACK_GAP;
       const welcomeX = 74;
-      const welcomeY = 478;
+      const welcomeY = 455;
       placeWindow(welcome, welcomeX, welcomeY);
 
       if (title) {
         title.style.left = "74px";
-        title.style.top = "50%";
+        title.style.top = "44%";
         title.style.width = `${winW(welcome)}px`;
         title.style.textAlign = "left";
         title.style.justifyContent = "flex-start";
         title.style.transform = "translateY(-50%)";
+      }
+
+      if (handle) {
+        handle.style.left = "74px";
+        handle.style.top = "420px";
+        handle.style.width = `${winW(welcome)}px`;
       }
 
       const totalW = winW(twitch) + gap + winW(donate);
