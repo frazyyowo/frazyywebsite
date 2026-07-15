@@ -22,7 +22,7 @@ body.intro-active #desk {
 }
 
 body.intro-active #bg {
-  filter: blur(6px) saturate(1.08) contrast(0.98) brightness(0.88);
+  filter: blur(3px) saturate(1.08) contrast(0.98) brightness(0.88);
 }
 
 .intro {
