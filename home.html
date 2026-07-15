@@ -179,7 +179,7 @@
     .site-handle {
       position: absolute;
       left: 74px;
-      top: 432px;
+      top: 440px;
       width: 735px;
       color: var(--ink);
       font-size: 30px;
@@ -1789,7 +1789,7 @@
       <div class="site-handle" aria-label="@frazyypaws">@frazyypaws</div>
 
       <div class="window wide" id="win-welcome"
-           data-x="74" data-y="470"
+           data-x="74" data-y="478"
            data-w="735" data-h="158"
            data-skin="0.90" data-font="1.06"
            data-stretch-x="1.16" data-stretch-y="1.55">
@@ -1821,7 +1821,7 @@
                     <div class="link-label">roblox</div>
                   </a>
                   <a class="link-item" href="https://toyhou.se/frazyy" target="_blank" rel="noopener noreferrer" title="toyhouse">
-                    <div class="link-icon"><img src="img/toyhouse.gif" alt="toyhouse"></div>
+                    <div class="link-icon"><img src="img/toyhouse.gif?v=33fb0df" alt="toyhouse"></div>
                     <div class="link-label">toyhouse</div>
                   </a>
                 </div>
@@ -1891,7 +1891,7 @@
         </a>
 
         <a class="m-link-item" href="https://toyhou.se/frazyy" target="_blank" rel="noopener noreferrer">
-          <div class="m-link-icon"><img src="img/toyhouse.gif" alt="toyhouse"></div>
+          <div class="m-link-icon"><img src="img/toyhouse.gif?v=33fb0df" alt="toyhouse"></div>
           <div class="m-link-label">toyhouse</div>
           <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
         </a>
@@ -2005,7 +2005,7 @@
       const handle = document.querySelector("#stage > .site-handle");
       const welcome = document.getElementById("win-welcome");
       const welcomeX = 74;
-      const welcomeY = 470;
+      const welcomeY = 478;
       placeWindow(welcome, welcomeX, welcomeY);
 
       if (title) {
@@ -2019,7 +2019,7 @@
 
       if (handle) {
         handle.style.left = "74px";
-        handle.style.top = "432px";
+        handle.style.top = "440px";
         handle.style.width = `${winW(welcome)}px`;
         handle.style.textAlign = "center";
       }
