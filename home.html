@@ -953,36 +953,32 @@
     .home-actions {
       position: absolute;
       z-index: 7;
-      height: 88px;
+      height: 52px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+      gap: 10px;
     }
 
     .home-action {
       position: relative;
       min-width: 0;
-      height: 88px;
+      height: 52px;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      gap: 14px;
+      justify-content: center;
+      gap: 9px;
       overflow: hidden;
-      padding: 12px 20px;
+      padding: 8px 18px;
       color: #111;
-      border: 1px solid rgba(255,255,255,0.64);
-      border-radius: 18px;
-      background:
-        radial-gradient(130px 90px at 18% 12%, rgba(255,255,255,0.68), transparent 66%),
-        linear-gradient(145deg, rgba(217,238,255,0.80), rgba(171,207,239,0.64));
+      border: 1px solid rgba(50,78,103,0.30);
+      border-radius: 12px;
+      background: rgba(226,239,250,0.76);
       box-shadow:
-        0 0 12px rgba(145,202,255,0.42),
-        0 12px 22px rgba(27,58,87,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.82),
-        inset 0 -1px 0 rgba(80,123,163,0.18);
+        0 5px 12px rgba(27,58,87,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.78);
       font-family: inherit;
       text-decoration: none;
-      text-align: left;
+      text-align: center;
       cursor: pointer;
       isolation: isolate;
       transition:
@@ -1005,12 +1001,12 @@
     }
 
     .home-action:hover {
-      transform: translateY(-4px) scale(1.015);
-      filter: brightness(1.05) saturate(1.06);
+      transform: translateY(-2px);
+      filter: brightness(1.04);
       box-shadow:
-        0 0 20px rgba(145,202,255,0.70),
-        0 16px 27px rgba(27,58,87,0.22),
-        inset 0 1px 0 rgba(255,255,255,0.92);
+        0 0 11px rgba(145,202,255,0.40),
+        0 8px 16px rgba(27,58,87,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.88);
     }
 
     .home-action:hover::before {
@@ -1030,90 +1026,25 @@
     .home-action-copy {
       min-width: 0;
       display: flex;
-      flex: 1 1 auto;
-      flex-direction: column;
-      gap: 5px;
+      align-items: center;
+      justify-content: center;
     }
 
     .home-action-label {
-      font-size: 25px;
+      font-size: 18px;
       line-height: 1;
       font-weight: 900;
-      letter-spacing: -0.7px;
+      letter-spacing: -0.3px;
       text-transform: lowercase;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.62);
     }
 
-    .home-action-note {
-      overflow: hidden;
-      color: rgba(17,17,17,0.64);
-      font-size: 11px;
-      line-height: 1;
-      font-weight: 900;
-      text-overflow: ellipsis;
-      text-transform: lowercase;
-      white-space: nowrap;
-    }
-
-    .home-action-arrow {
-      flex: 0 0 auto;
-      font-size: 28px;
-      line-height: 1;
-      font-weight: 900;
-      opacity: 0.54;
-      transition: transform 220ms ease, opacity 220ms ease;
-    }
-
-    .home-action:hover .home-action-arrow {
-      opacity: 0.9;
-      transform: translateX(4px);
-    }
-
-    .about-action-icon {
-      position: relative;
-      width: 46px;
-      height: 46px;
-      flex: 0 0 46px;
-      border: 2px solid rgba(20,65,104,0.48);
-      border-radius: 50%;
-      background: rgba(255,255,255,0.48);
-      box-shadow:
-        0 0 14px rgba(137,205,255,0.54),
-        inset 0 1px 0 rgba(255,255,255,0.82);
-    }
-
-    .about-action-icon::before {
-      content: "";
-      position: absolute;
-      top: 8px;
-      left: 50%;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: rgba(20,65,104,0.78);
-      transform: translateX(-50%);
-    }
-
-    .about-action-icon::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: 7px;
-      width: 24px;
-      height: 15px;
-      border-radius: 15px 15px 8px 8px;
-      background: rgba(20,65,104,0.78);
-      transform: translateX(-50%);
-    }
-
     .about-action.is-active {
-      border-color: rgba(111,178,233,0.72);
-      background:
-        radial-gradient(150px 100px at 18% 12%, rgba(255,255,255,0.74), transparent 66%),
-        linear-gradient(145deg, rgba(187,226,255,0.90), rgba(140,190,235,0.72));
+      border-color: rgba(79,135,181,0.52);
+      background: rgba(205,230,249,0.86);
       box-shadow:
-        0 0 26px rgba(125,198,255,0.76),
-        0 14px 24px rgba(27,58,87,0.22),
+        0 0 13px rgba(125,198,255,0.52),
+        0 7px 14px rgba(27,58,87,0.18),
         inset 0 1px 0 rgba(255,255,255,0.88);
     }
 
@@ -1121,12 +1052,12 @@
       color: #fff;
       border-color: rgba(255,255,255,0.58);
       background:
-        radial-gradient(150px 100px at 18% 8%, rgba(255,255,255,0.30), transparent 64%),
+        radial-gradient(100px 60px at 18% 8%, rgba(255,255,255,0.28), transparent 64%),
         linear-gradient(135deg, #6e31ce 0%, #9146ff 48%, #b56bff 100%);
       box-shadow:
-        0 0 17px rgba(145,70,255,0.78),
-        0 0 38px rgba(145,70,255,0.36),
-        0 13px 22px rgba(57,25,107,0.28),
+        0 0 13px rgba(145,70,255,0.76),
+        0 0 27px rgba(145,70,255,0.32),
+        0 7px 14px rgba(57,25,107,0.25),
         inset 0 1px 0 rgba(255,255,255,0.38);
       animation: twitchButtonGlow 2.2s ease-in-out infinite;
     }
@@ -1135,67 +1066,40 @@
       text-shadow: 0 2px 0 rgba(55,20,104,0.34), 0 0 12px rgba(255,255,255,0.26);
     }
 
-    .twitch-action .home-action-note {
-      color: rgba(255,255,255,0.74);
-    }
-
-    .twitch-action .home-action-arrow {
-      color: #fff;
-    }
-
     .twitch-action:hover {
       box-shadow:
-        0 0 27px rgba(168,102,255,0.94),
-        0 0 56px rgba(145,70,255,0.52),
-        0 17px 28px rgba(57,25,107,0.32),
+        0 0 20px rgba(168,102,255,0.92),
+        0 0 39px rgba(145,70,255,0.46),
+        0 9px 17px rgba(57,25,107,0.29),
         inset 0 1px 0 rgba(255,255,255,0.48);
     }
 
-    .twitch-logo {
-      position: relative;
-      width: 46px;
-      height: 43px;
-      flex: 0 0 46px;
-      overflow: hidden;
-      background: #fff;
-      clip-path: polygon(0 0, 100% 0, 100% 72%, 75% 72%, 57% 100%, 57% 72%, 0 72%);
-      filter: drop-shadow(0 0 9px rgba(255,255,255,0.54));
+    .twitch-gif {
+      width: 28px;
+      height: 28px;
+      display: none;
+      flex: 0 0 28px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 7px rgba(255,255,255,0.54));
     }
 
-    .twitch-logo::before {
-      content: "";
-      position: absolute;
-      inset: 6px 7px 13px;
-      background: #9146ff;
-    }
-
-    .twitch-logo::after {
-      content: "Ⅱ";
-      position: absolute;
-      top: 3px;
-      left: 50%;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      font-size: 21px;
-      line-height: 1;
-      font-weight: 900;
-      letter-spacing: -4px;
-      transform: translateX(-55%);
+    .twitch-gif.is-ready {
+      display: block;
     }
 
     @keyframes twitchButtonGlow {
       0%, 100% {
         box-shadow:
           0 0 17px rgba(145,70,255,0.78),
-          0 0 38px rgba(145,70,255,0.36),
-          0 13px 22px rgba(57,25,107,0.28),
+          0 0 27px rgba(145,70,255,0.32),
+          0 7px 14px rgba(57,25,107,0.25),
           inset 0 1px 0 rgba(255,255,255,0.38);
       }
       50% {
         box-shadow:
-          0 0 25px rgba(170,104,255,0.92),
-          0 0 50px rgba(145,70,255,0.48),
-          0 13px 22px rgba(57,25,107,0.28),
+          0 0 19px rgba(170,104,255,0.90),
+          0 0 36px rgba(145,70,255,0.43),
+          0 7px 14px rgba(57,25,107,0.25),
           inset 0 1px 0 rgba(255,255,255,0.46);
       }
     }
@@ -1217,18 +1121,21 @@
       --label-y: 18;
     }
 
+    .about-bio-window .content {
+      overflow: visible;
+      clip-path: none;
+    }
+
     .about-bio-panel {
       position: relative;
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      padding: 18px 126px 16px 18px;
-      border: 1px solid rgba(255,255,255,0.50);
-      border-radius: 10px;
-      background:
-        radial-gradient(220px 170px at 16% 12%, rgba(255,255,255,0.62), transparent 66%),
-        linear-gradient(155deg, rgba(201,229,250,0.58), rgba(168,197,224,0.30));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.62);
+      overflow: visible;
+      padding: 18px 145px 16px 18px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .about-bio-title {
@@ -1257,17 +1164,16 @@
 
     .about-small-media {
       position: absolute;
-      right: 13px;
-      bottom: 13px;
-      width: 105px;
-      height: 126px;
-      overflow: hidden;
-      border: 1px solid rgba(34,74,112,0.30);
-      border-radius: 13px;
-      background: rgba(255,255,255,0.28);
-      box-shadow:
-        0 0 16px rgba(144,205,255,0.40),
-        inset 0 1px 0 rgba(255,255,255,0.62);
+      right: -22px;
+      bottom: -22px;
+      width: 170px;
+      height: 194px;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      pointer-events: none;
     }
 
     .about-photo-frame {
@@ -1275,12 +1181,10 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      border: 1px solid rgba(43,72,102,0.28);
-      border-radius: calc(8px * var(--s));
-      background:
-        radial-gradient(circle at 50% 34%, rgba(255,255,255,0.58), transparent 38%),
-        linear-gradient(155deg, rgba(192,224,249,0.64), rgba(177,174,229,0.38));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.62);
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .about-photo,
@@ -1295,6 +1199,10 @@
       object-fit: cover;
       object-position: center;
       transition: opacity 220ms ease;
+    }
+
+    .about-small-image {
+      object-fit: contain;
     }
 
     .about-media-shell.has-image .about-photo,
@@ -2223,27 +2131,22 @@
       <div class="home-actions" id="homeActions" aria-label="main actions">
         <button class="home-action about-action" id="aboutToggle" type="button"
                 aria-expanded="false" aria-controls="win-about-bio win-about-photo-1 win-about-photo-2">
-          <span class="about-action-icon" aria-hidden="true"></span>
           <span class="home-action-copy">
-            <span class="home-action-label" id="aboutToggleLabel">about me</span>
-            <span class="home-action-note">open my profile windows</span>
+            <span class="home-action-label">about me</span>
           </span>
-          <span class="home-action-arrow" aria-hidden="true">›</span>
         </button>
 
         <a class="home-action twitch-action" href="https://www.twitch.tv/frazyypaws"
            target="_blank" rel="noopener noreferrer" aria-label="watch frazyypaws on Twitch">
-          <span class="twitch-logo" aria-hidden="true"></span>
+          <img class="twitch-gif" id="twitchGif" src="img/twtich.gif" alt="">
           <span class="home-action-copy">
             <span class="home-action-label">twitch</span>
-            <span class="home-action-note">watch frazyypaws live</span>
           </span>
-          <span class="home-action-arrow" aria-hidden="true">↗</span>
         </a>
       </div>
 
       <div class="window std about-window about-bio-window closed" id="win-about-bio" aria-hidden="true" inert
-           data-label="about me" data-x="900" data-y="170"
+           data-label="about me" data-x="820" data-y="55"
            data-w="546" data-h="404"
            data-skin="0.82" data-font="1" data-stretch-x="1.05" data-stretch-y="1.08">
         <img class="skin" src="img/window2.png" alt="">
@@ -2259,15 +2162,15 @@
             </div>
 
             <div class="about-small-media about-media-shell">
-              <span class="about-image-placeholder">add<br>frazyysmallimage.png</span>
-              <img class="about-small-image" src="img/frazyysmallimage.png" alt="small frazyy character image">
+              <span class="about-image-placeholder">add<br>frazyysmall1.png</span>
+              <img class="about-small-image" src="img/frazyysmall1.png" alt="small frazyy character image">
             </div>
           </article>
         </div>
       </div>
 
       <div class="window std about-window about-photo-window closed" id="win-about-photo-1" aria-hidden="true" inert
-           data-label="frazyy img 1" data-x="1395" data-y="130"
+           data-label="frazyy img 1" data-x="1510" data-y="205"
            data-w="546" data-h="877"
            data-skin="0.49" data-font="1" data-stretch-x="1" data-stretch-y="0.93">
         <img class="skin" src="img/window3.png" alt="">
@@ -2282,7 +2185,7 @@
       </div>
 
       <div class="window std about-window about-photo-window closed" id="win-about-photo-2" aria-hidden="true" inert
-           data-label="frazyy img 2" data-x="1680" data-y="130"
+           data-label="frazyy img 2" data-x="1040" data-y="415"
            data-w="546" data-h="877"
            data-skin="0.49" data-font="1" data-stretch-x="1" data-stretch-y="0.93">
         <img class="skin" src="img/window3.png" alt="">
@@ -2454,14 +2357,15 @@
       const welcomeX = 74;
       const welcomeY = 478;
       placeWindow(welcome, welcomeX, welcomeY);
-      placeWindow(aboutBio, 900, 170);
-      placeWindow(aboutPhoto1, 1395, 130);
-      placeWindow(aboutPhoto2, 1680, 130);
+      placeWindow(aboutBio, 820, 55);
+      placeWindow(aboutPhoto1, 1510, 205);
+      placeWindow(aboutPhoto2, 1040, 415);
 
       if (actions && welcome) {
-        actions.style.left = `${welcomeX}px`;
-        actions.style.top = `${Math.round(welcomeY + winH(welcome) + 16)}px`;
-        actions.style.width = `${winW(welcome)}px`;
+        const actionWidth = Math.min(440, winW(welcome));
+        actions.style.left = `${Math.round(welcomeX + (winW(welcome) - actionWidth) / 2)}px`;
+        actions.style.top = `${Math.round(welcomeY + winH(welcome) + 13)}px`;
+        actions.style.width = `${actionWidth}px`;
       }
 
       if (title) {
@@ -2580,10 +2484,13 @@
 
         const dx = (e.clientX - drag.startClientX) / stageScale;
         const dy = (e.clientY - drag.startClientY) / stageScale;
-        const maxX = Math.max(0, DESIGN_W - winW(drag.win) - 24);
-        const maxY = Math.max(0, currentDesignHeight - winH(drag.win) - 24);
-        const x = clamp(drag.startX + dx, -20, maxX);
-        const y = clamp(drag.startY + dy, -20, maxY);
+        const visibleGrabX = Math.min(110, Math.max(76, winW(drag.win) * 0.20));
+        const minX = -winW(drag.win) + visibleGrabX;
+        const maxX = DESIGN_W - visibleGrabX;
+        const minY = -8;
+        const maxY = currentDesignHeight - 44;
+        const x = clamp(drag.startX + dx, minX, maxX);
+        const y = clamp(drag.startY + dy, minY, maxY);
 
         setWindowPosition(drag.win, x, y);
       }
@@ -2630,7 +2537,6 @@
 
     (function setupAboutWindows() {
       const toggle = document.getElementById("aboutToggle");
-      const label = document.getElementById("aboutToggleLabel");
       const aboutWindows = Array.from(document.querySelectorAll(".about-window"));
       if (!toggle || !aboutWindows.length) return;
 
@@ -2643,7 +2549,6 @@
         });
         toggle.classList.toggle("is-active", open);
         toggle.setAttribute("aria-expanded", String(open));
-        if (label) label.textContent = open ? "hide about me" : "about me";
       }
 
       toggle.addEventListener("click", () => {
@@ -2671,6 +2576,18 @@
           else showPlaceholder();
         }
       });
+
+      const twitchGif = document.getElementById("twitchGif");
+      if (twitchGif) {
+        const showTwitchGif = () => twitchGif.classList.add("is-ready");
+        const hideTwitchGif = () => twitchGif.classList.remove("is-ready");
+        twitchGif.addEventListener("load", showTwitchGif);
+        twitchGif.addEventListener("error", hideTwitchGif);
+        if (twitchGif.complete) {
+          if (twitchGif.naturalWidth) showTwitchGif();
+          else hideTwitchGif();
+        }
+      }
     })();
 
     (function introFailsafe() {
