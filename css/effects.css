@@ -205,6 +205,16 @@ button.close-hit {
   filter: none;
 }
 
+.link-item,
+.m-link-item,
+.discord-badge,
+.discord-copy-btn {
+  filter:
+    brightness(1.015)
+    drop-shadow(0 0 3px rgba(190, 226, 255, 0.30))
+    drop-shadow(0 0 8px rgba(205, 160, 255, 0.16));
+}
+
 .about-btn:hover,
 .about-open-btn:hover,
 .big-link:hover,
