@@ -21,6 +21,10 @@ body.intro-active #desk {
   pointer-events: none;
 }
 
+body.intro-active #bg {
+  filter: blur(6px) saturate(1.08) contrast(0.98) brightness(0.88);
+}
+
 .intro {
   position: fixed;
   inset: 0;

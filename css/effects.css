@@ -1,14 +1,14 @@
 /* Background: softly blurred looping video */
 #bg {
   position: fixed;
-  inset: -8px;
+  inset: -40px;
   z-index: -3;
-  width: calc(100% + 16px);
-  height: calc(100% + 16px);
+  width: calc(100% + 80px);
+  height: calc(100% + 80px);
   object-fit: cover;
   object-position: center;
   background: #a8c8e8;
-  filter: blur(2px) saturate(1.02) contrast(1.02);
+  filter: blur(6px) saturate(1.02) contrast(1.02);
   transform: scale(1.02);
 }
 
@@ -241,7 +241,7 @@ button.close-hit {
 
 @media (prefers-reduced-motion: reduce) {
   #bg {
-    filter: blur(2px) saturate(1.02) contrast(1.02);
+    filter: blur(6px) saturate(1.02) contrast(1.02);
   }
 
   #vhs::before,
