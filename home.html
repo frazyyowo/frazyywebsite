@@ -1246,6 +1246,10 @@
       transition: opacity 220ms ease;
     }
 
+    .about-photo {
+      object-fit: contain;
+    }
+
     .about-small-image {
       object-fit: contain;
     }
@@ -2191,9 +2195,9 @@
       </div>
 
       <div class="window std about-window about-bio-window closed" id="win-about-bio" aria-hidden="true" inert
-           data-label="about me" data-x="970" data-y="10"
+           data-label="about me" data-x="970" data-y="0"
            data-w="546" data-h="404"
-           data-skin="0.82" data-font="1" data-stretch-x="1.05" data-stretch-y="1.08">
+           data-skin="0.82" data-font="1" data-stretch-x="1.05" data-stretch-y="0.96">
         <img class="skin" src="img/window2.png" alt="">
         <div class="handle"></div>
         <button class="close-hit about-close" type="button" aria-label="close about me"></button>
@@ -2228,30 +2232,30 @@
       </div>
 
       <div class="window std about-window about-photo-window closed" id="win-about-photo-1" aria-hidden="true" inert
-           data-label="frazyy img 1" data-x="1470" data-y="180"
+           data-label="" data-x="1465" data-y="165"
            data-w="546" data-h="877"
-           data-skin="0.68" data-font="1" data-stretch-x="1" data-stretch-y="0.75">
+           data-skin="0.70" data-font="1" data-stretch-x="1" data-stretch-y="0.80">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
         <button class="close-hit about-close" type="button" aria-label="close about me"></button>
         <div class="content">
           <div class="about-photo-frame about-media-shell">
-            <span class="about-image-placeholder">add frazyyimg1.png<br>to the img folder</span>
+            <span class="about-image-placeholder" aria-hidden="true"></span>
             <img class="about-photo" src="img/frazyyimg1.png" alt="frazyy photo one">
           </div>
         </div>
       </div>
 
       <div class="window std about-window about-photo-window closed" id="win-about-photo-2" aria-hidden="true" inert
-           data-label="frazyy img 2" data-x="1080" data-y="370"
+           data-label="" data-x="1070" data-y="325"
            data-w="546" data-h="877"
-           data-skin="0.68" data-font="1" data-stretch-x="1" data-stretch-y="0.75">
+           data-skin="0.70" data-font="1" data-stretch-x="1" data-stretch-y="0.80">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
         <button class="close-hit about-close" type="button" aria-label="close about me"></button>
         <div class="content">
           <div class="about-photo-frame about-media-shell">
-            <span class="about-image-placeholder">add frazyyimg2.png<br>to the img folder</span>
+            <span class="about-image-placeholder" aria-hidden="true"></span>
             <img class="about-photo" src="img/frazyyimg2.png" alt="frazyy photo two">
           </div>
         </div>
@@ -2415,9 +2419,9 @@
       const welcomeX = 74;
       const welcomeY = 478;
       placeWindow(welcome, welcomeX, welcomeY);
-      placeWindow(aboutBio, 970, 10);
-      placeWindow(aboutPhoto1, 1470, 180);
-      placeWindow(aboutPhoto2, 1080, 370);
+      placeWindow(aboutBio, 970, 0);
+      placeWindow(aboutPhoto1, 1465, 165);
+      placeWindow(aboutPhoto2, 1070, 325);
 
       if (actions && welcome) {
         const actionWidth = Math.min(440, winW(welcome));
