@@ -2,7 +2,8 @@
   const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
   if (reduceMotion?.matches) return;
 
-  const MAX_TILT = 5.75;
+  const MAX_TILT_X = 2.35;
+  const MAX_TILT_Y = 5.25;
   const LERP = 0.18;
   const STOP_AT = 0.015;
 
@@ -95,8 +96,8 @@
       const px = clamp((e.clientX - rect.left) / rect.width, 0, 1);
       const py = clamp((e.clientY - rect.top) / rect.height, 0, 1);
 
-      targetY = (px - 0.5) * MAX_TILT * 2;
-      targetX = (0.5 - py) * MAX_TILT * 2;
+      targetY = (px - 0.5) * MAX_TILT_Y * 2;
+      targetX = (0.5 - py) * MAX_TILT_X * 2;
       queue();
     }
 
