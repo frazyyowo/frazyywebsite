@@ -950,6 +950,388 @@
       background: rgba(157,133,255,0.22);
     }
 
+    .home-actions {
+      position: absolute;
+      z-index: 7;
+      height: 88px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .home-action {
+      position: relative;
+      min-width: 0;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 14px;
+      overflow: hidden;
+      padding: 12px 20px;
+      color: #111;
+      border: 1px solid rgba(255,255,255,0.64);
+      border-radius: 18px;
+      background:
+        radial-gradient(130px 90px at 18% 12%, rgba(255,255,255,0.68), transparent 66%),
+        linear-gradient(145deg, rgba(217,238,255,0.80), rgba(171,207,239,0.64));
+      box-shadow:
+        0 0 12px rgba(145,202,255,0.42),
+        0 12px 22px rgba(27,58,87,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.82),
+        inset 0 -1px 0 rgba(80,123,163,0.18);
+      font-family: inherit;
+      text-decoration: none;
+      text-align: left;
+      cursor: pointer;
+      isolation: isolate;
+      transition:
+        transform 220ms cubic-bezier(.16,.84,.3,1),
+        filter 220ms ease,
+        box-shadow 220ms ease;
+    }
+
+    .home-action::before {
+      content: "";
+      position: absolute;
+      inset: -70% auto -70% -42%;
+      z-index: -1;
+      width: 34%;
+      pointer-events: none;
+      opacity: 0;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.74), transparent);
+      transition: left 540ms ease, opacity 180ms ease;
+    }
+
+    .home-action:hover {
+      transform: translateY(-4px) scale(1.015);
+      filter: brightness(1.05) saturate(1.06);
+      box-shadow:
+        0 0 20px rgba(145,202,255,0.70),
+        0 16px 27px rgba(27,58,87,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.92);
+    }
+
+    .home-action:hover::before {
+      left: 118%;
+      opacity: 1;
+    }
+
+    .home-action:active {
+      transform: translateY(-1px) scale(0.99);
+    }
+
+    .home-action:focus-visible {
+      outline: 3px solid rgba(255,255,255,0.88);
+      outline-offset: 4px;
+    }
+
+    .home-action-copy {
+      min-width: 0;
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .home-action-label {
+      font-size: 25px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.7px;
+      text-transform: lowercase;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.62);
+    }
+
+    .home-action-note {
+      overflow: hidden;
+      color: rgba(17,17,17,0.64);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      text-transform: lowercase;
+      white-space: nowrap;
+    }
+
+    .home-action-arrow {
+      flex: 0 0 auto;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 900;
+      opacity: 0.54;
+      transition: transform 220ms ease, opacity 220ms ease;
+    }
+
+    .home-action:hover .home-action-arrow {
+      opacity: 0.9;
+      transform: translateX(4px);
+    }
+
+    .about-action-icon {
+      position: relative;
+      width: 46px;
+      height: 46px;
+      flex: 0 0 46px;
+      border: 2px solid rgba(20,65,104,0.48);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.48);
+      box-shadow:
+        0 0 14px rgba(137,205,255,0.54),
+        inset 0 1px 0 rgba(255,255,255,0.82);
+    }
+
+    .about-action-icon::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(20,65,104,0.78);
+      transform: translateX(-50%);
+    }
+
+    .about-action-icon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 7px;
+      width: 24px;
+      height: 15px;
+      border-radius: 15px 15px 8px 8px;
+      background: rgba(20,65,104,0.78);
+      transform: translateX(-50%);
+    }
+
+    .about-action.is-active {
+      border-color: rgba(111,178,233,0.72);
+      background:
+        radial-gradient(150px 100px at 18% 12%, rgba(255,255,255,0.74), transparent 66%),
+        linear-gradient(145deg, rgba(187,226,255,0.90), rgba(140,190,235,0.72));
+      box-shadow:
+        0 0 26px rgba(125,198,255,0.76),
+        0 14px 24px rgba(27,58,87,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.88);
+    }
+
+    .twitch-action {
+      color: #fff;
+      border-color: rgba(255,255,255,0.58);
+      background:
+        radial-gradient(150px 100px at 18% 8%, rgba(255,255,255,0.30), transparent 64%),
+        linear-gradient(135deg, #6e31ce 0%, #9146ff 48%, #b56bff 100%);
+      box-shadow:
+        0 0 17px rgba(145,70,255,0.78),
+        0 0 38px rgba(145,70,255,0.36),
+        0 13px 22px rgba(57,25,107,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.38);
+      animation: twitchButtonGlow 2.2s ease-in-out infinite;
+    }
+
+    .twitch-action .home-action-label {
+      text-shadow: 0 2px 0 rgba(55,20,104,0.34), 0 0 12px rgba(255,255,255,0.26);
+    }
+
+    .twitch-action .home-action-note {
+      color: rgba(255,255,255,0.74);
+    }
+
+    .twitch-action .home-action-arrow {
+      color: #fff;
+    }
+
+    .twitch-action:hover {
+      box-shadow:
+        0 0 27px rgba(168,102,255,0.94),
+        0 0 56px rgba(145,70,255,0.52),
+        0 17px 28px rgba(57,25,107,0.32),
+        inset 0 1px 0 rgba(255,255,255,0.48);
+    }
+
+    .twitch-logo {
+      position: relative;
+      width: 46px;
+      height: 43px;
+      flex: 0 0 46px;
+      overflow: hidden;
+      background: #fff;
+      clip-path: polygon(0 0, 100% 0, 100% 72%, 75% 72%, 57% 100%, 57% 72%, 0 72%);
+      filter: drop-shadow(0 0 9px rgba(255,255,255,0.54));
+    }
+
+    .twitch-logo::before {
+      content: "";
+      position: absolute;
+      inset: 6px 7px 13px;
+      background: #9146ff;
+    }
+
+    .twitch-logo::after {
+      content: "Ⅱ";
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 21px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -4px;
+      transform: translateX(-55%);
+    }
+
+    @keyframes twitchButtonGlow {
+      0%, 100% {
+        box-shadow:
+          0 0 17px rgba(145,70,255,0.78),
+          0 0 38px rgba(145,70,255,0.36),
+          0 13px 22px rgba(57,25,107,0.28),
+          inset 0 1px 0 rgba(255,255,255,0.38);
+      }
+      50% {
+        box-shadow:
+          0 0 25px rgba(170,104,255,0.92),
+          0 0 50px rgba(145,70,255,0.48),
+          0 13px 22px rgba(57,25,107,0.28),
+          inset 0 1px 0 rgba(255,255,255,0.46);
+      }
+    }
+
+    .about-window {
+      z-index: 6;
+    }
+
+    .about-window.ready:not(.closed) {
+      animation: aboutWindowIn 340ms cubic-bezier(.16,.84,.3,1) both;
+    }
+
+    .about-bio-window {
+      --label-fs: 16;
+    }
+
+    .about-photo-window {
+      --label-fs: 23;
+      --label-y: 18;
+    }
+
+    .about-bio-panel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      padding: 18px 126px 16px 18px;
+      border: 1px solid rgba(255,255,255,0.50);
+      border-radius: 10px;
+      background:
+        radial-gradient(220px 170px at 16% 12%, rgba(255,255,255,0.62), transparent 66%),
+        linear-gradient(155deg, rgba(201,229,250,0.58), rgba(168,197,224,0.30));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.62);
+    }
+
+    .about-bio-title {
+      margin-bottom: 16px;
+      color: #111;
+      font-size: calc(34px * var(--fs));
+      line-height: 0.98;
+      font-weight: 900;
+      letter-spacing: -1.4px;
+      text-shadow: 2px 2px 0 rgba(255,255,255,0.56);
+    }
+
+    .about-bio-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      color: rgba(17,17,17,0.82);
+      font-size: calc(16px * var(--fs));
+      line-height: 1.28;
+      font-weight: 900;
+    }
+
+    .about-bio-lines strong {
+      color: #111;
+    }
+
+    .about-small-media {
+      position: absolute;
+      right: 13px;
+      bottom: 13px;
+      width: 105px;
+      height: 126px;
+      overflow: hidden;
+      border: 1px solid rgba(34,74,112,0.30);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.28);
+      box-shadow:
+        0 0 16px rgba(144,205,255,0.40),
+        inset 0 1px 0 rgba(255,255,255,0.62);
+    }
+
+    .about-photo-frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border: 1px solid rgba(43,72,102,0.28);
+      border-radius: calc(8px * var(--s));
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255,255,255,0.58), transparent 38%),
+        linear-gradient(155deg, rgba(192,224,249,0.64), rgba(177,174,229,0.38));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.62);
+    }
+
+    .about-photo,
+    .about-small-image {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: block;
+      opacity: 0;
+      object-fit: cover;
+      object-position: center;
+      transition: opacity 220ms ease;
+    }
+
+    .about-media-shell.has-image .about-photo,
+    .about-media-shell.has-image .about-small-image {
+      opacity: 1;
+    }
+
+    .about-image-placeholder {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: grid;
+      place-content: center;
+      gap: 6px;
+      padding: 12px;
+      color: rgba(28,53,76,0.60);
+      font-size: calc(14px * var(--fs));
+      line-height: 1.18;
+      font-weight: 900;
+      text-align: center;
+      text-transform: lowercase;
+      transition: opacity 180ms ease;
+    }
+
+    .about-small-media .about-image-placeholder {
+      font-size: 9px;
+    }
+
+    .about-media-shell.has-image .about-image-placeholder {
+      opacity: 0;
+    }
+
+    @keyframes aboutWindowIn {
+      from { opacity: 0; filter: drop-shadow(0 5px 8px rgba(12,28,44,0.08)); }
+      to { opacity: 1; filter: drop-shadow(0 16px 20px rgba(12,28,44,0.24)); }
+    }
+
     .small-link {
       min-height: 42px;
       flex: 0 0 auto;
@@ -1838,6 +2220,82 @@
         </div>
       </div>
 
+      <div class="home-actions" id="homeActions" aria-label="main actions">
+        <button class="home-action about-action" id="aboutToggle" type="button"
+                aria-expanded="false" aria-controls="win-about-bio win-about-photo-1 win-about-photo-2">
+          <span class="about-action-icon" aria-hidden="true"></span>
+          <span class="home-action-copy">
+            <span class="home-action-label" id="aboutToggleLabel">about me</span>
+            <span class="home-action-note">open my profile windows</span>
+          </span>
+          <span class="home-action-arrow" aria-hidden="true">›</span>
+        </button>
+
+        <a class="home-action twitch-action" href="https://www.twitch.tv/frazyypaws"
+           target="_blank" rel="noopener noreferrer" aria-label="watch frazyypaws on Twitch">
+          <span class="twitch-logo" aria-hidden="true"></span>
+          <span class="home-action-copy">
+            <span class="home-action-label">twitch</span>
+            <span class="home-action-note">watch frazyypaws live</span>
+          </span>
+          <span class="home-action-arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <div class="window std about-window about-bio-window closed" id="win-about-bio" aria-hidden="true" inert
+           data-label="about me" data-x="900" data-y="170"
+           data-w="546" data-h="404"
+           data-skin="0.82" data-font="1" data-stretch-x="1.05" data-stretch-y="1.08">
+        <img class="skin" src="img/window2.png" alt="">
+        <div class="handle"></div>
+        <button class="close-hit about-close" type="button" aria-label="close about me"></button>
+        <div class="content">
+          <article class="about-bio-panel">
+            <h2 class="about-bio-title">hi! im frazyy</h2>
+            <div class="about-bio-lines">
+              <p>im a <strong>content creator</strong> and a <strong>game developer!</strong></p>
+              <p>im from <strong>estonia</strong></p>
+              <p>i play <strong>cs2, roblox and osu!</strong></p>
+            </div>
+
+            <div class="about-small-media about-media-shell">
+              <span class="about-image-placeholder">add<br>frazyysmallimage.png</span>
+              <img class="about-small-image" src="img/frazyysmallimage.png" alt="small frazyy character image">
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="window std about-window about-photo-window closed" id="win-about-photo-1" aria-hidden="true" inert
+           data-label="frazyy img 1" data-x="1395" data-y="130"
+           data-w="546" data-h="877"
+           data-skin="0.49" data-font="1" data-stretch-x="1" data-stretch-y="0.93">
+        <img class="skin" src="img/window3.png" alt="">
+        <div class="handle"></div>
+        <button class="close-hit about-close" type="button" aria-label="close about me"></button>
+        <div class="content">
+          <div class="about-photo-frame about-media-shell">
+            <span class="about-image-placeholder">add frazyyimg1.png<br>to the img folder</span>
+            <img class="about-photo" src="img/frazyyimg1.png" alt="frazyy photo one">
+          </div>
+        </div>
+      </div>
+
+      <div class="window std about-window about-photo-window closed" id="win-about-photo-2" aria-hidden="true" inert
+           data-label="frazyy img 2" data-x="1680" data-y="130"
+           data-w="546" data-h="877"
+           data-skin="0.49" data-font="1" data-stretch-x="1" data-stretch-y="0.93">
+        <img class="skin" src="img/window3.png" alt="">
+        <div class="handle"></div>
+        <button class="close-hit about-close" type="button" aria-label="close about me"></button>
+        <div class="content">
+          <div class="about-photo-frame about-media-shell">
+            <span class="about-image-placeholder">add frazyyimg2.png<br>to the img folder</span>
+            <img class="about-photo" src="img/frazyyimg2.png" alt="frazyy photo two">
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1989,9 +2447,22 @@
       const title = document.querySelector("#stage > .site-title");
       const handle = document.querySelector("#stage > .site-handle");
       const welcome = document.getElementById("win-welcome");
+      const actions = document.getElementById("homeActions");
+      const aboutBio = document.getElementById("win-about-bio");
+      const aboutPhoto1 = document.getElementById("win-about-photo-1");
+      const aboutPhoto2 = document.getElementById("win-about-photo-2");
       const welcomeX = 74;
       const welcomeY = 478;
       placeWindow(welcome, welcomeX, welcomeY);
+      placeWindow(aboutBio, 900, 170);
+      placeWindow(aboutPhoto1, 1395, 130);
+      placeWindow(aboutPhoto2, 1680, 130);
+
+      if (actions && welcome) {
+        actions.style.left = `${welcomeX}px`;
+        actions.style.top = `${Math.round(welcomeY + winH(welcome) + 16)}px`;
+        actions.style.width = `${winW(welcome)}px`;
+      }
 
       if (title) {
         title.style.left = "74px";
@@ -2156,6 +2627,51 @@
 
     wireDiscordCopy("discordCopyBtn", "frazyypaws");
     wireDiscordCopy("discordCopyBtnMobile", "frazyypaws");
+
+    (function setupAboutWindows() {
+      const toggle = document.getElementById("aboutToggle");
+      const label = document.getElementById("aboutToggleLabel");
+      const aboutWindows = Array.from(document.querySelectorAll(".about-window"));
+      if (!toggle || !aboutWindows.length) return;
+
+      function setAboutOpen(open) {
+        aboutWindows.forEach(win => {
+          win.classList.toggle("closed", !open);
+          win.toggleAttribute("inert", !open);
+          win.setAttribute("aria-hidden", String(!open));
+          if (open) bringToFront(win);
+        });
+        toggle.classList.toggle("is-active", open);
+        toggle.setAttribute("aria-expanded", String(open));
+        if (label) label.textContent = open ? "hide about me" : "about me";
+      }
+
+      toggle.addEventListener("click", () => {
+        setAboutOpen(toggle.getAttribute("aria-expanded") !== "true");
+      });
+
+      document.querySelectorAll(".about-close").forEach(button => {
+        button.addEventListener("click", event => {
+          event.stopPropagation();
+          setAboutOpen(false);
+        });
+      });
+
+      document.querySelectorAll(".about-media-shell img").forEach(image => {
+        const shell = image.closest(".about-media-shell");
+        if (!shell) return;
+
+        const showImage = () => shell.classList.add("has-image");
+        const showPlaceholder = () => shell.classList.remove("has-image");
+        image.addEventListener("load", showImage);
+        image.addEventListener("error", showPlaceholder);
+
+        if (image.complete) {
+          if (image.naturalWidth) showImage();
+          else showPlaceholder();
+        }
+      });
+    })();
 
     (function introFailsafe() {
       const intro = document.getElementById("intro");
