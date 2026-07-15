@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FRAZYYFRAZYYFRAZYYFRAZYY</title>
 
-  <link rel="stylesheet" href="css/effects.css?v=video-bg-3">
+  <link rel="stylesheet" href="css/effects.css?v=smooth-ui-1">
   <link rel="stylesheet" href="css/intro.css?v=video-bg-3">
 
   <style>
@@ -225,9 +225,9 @@
     .window.ready {
       visibility: visible;
       transition:
-        opacity 180ms ease,
-        filter 160ms ease,
-        transform 180ms cubic-bezier(.18,.8,.24,1);
+        opacity 220ms ease,
+        filter 220ms ease,
+        transform 240ms cubic-bezier(.16,.84,.3,1);
     }
 
     .window.ready.is-tilting {
@@ -266,7 +266,7 @@
       transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
       transform-origin: center center;
       transform-style: preserve-3d;
-      transition: transform 180ms cubic-bezier(.16,.84,.3,1);
+      transition: transform 220ms cubic-bezier(.16,.84,.3,1);
       will-change: transform;
     }
 
@@ -633,12 +633,14 @@
       border-radius: 0;
       background: transparent;
       box-shadow: none;
-      transition: transform 140ms ease, filter 140ms ease;
+      transition:
+        transform 220ms cubic-bezier(.16,.84,.3,1),
+        filter 220ms ease;
+      will-change: transform, filter;
     }
 
     .link-item:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.04);
+      transform: translateY(-3px) scale(1.035);
     }
 
     .link-icon {
@@ -647,6 +649,11 @@
       display: grid;
       place-items: center;
       overflow: visible;
+      transition: transform 220ms cubic-bezier(.16,.84,.3,1);
+    }
+
+    .link-item:hover .link-icon {
+      transform: scale(1.06);
     }
 
     .link-icon img,
@@ -708,12 +715,14 @@
       -webkit-appearance: none;
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
-      transition: transform 120ms ease, filter 120ms ease;
+      transition:
+        transform 220ms cubic-bezier(.16,.84,.3,1),
+        filter 220ms ease;
+      will-change: transform, filter;
     }
 
     .discord-badge:hover {
-      transform: none;
-      filter: none;
+      transform: translateY(-2px) scale(1.012);
     }
 
     .discord-pfp-ring {
@@ -791,6 +800,14 @@
       font-weight: 900;
       text-transform: lowercase;
       cursor: pointer;
+      transition:
+        transform 220ms cubic-bezier(.16,.84,.3,1),
+        filter 220ms ease,
+        box-shadow 220ms ease;
+    }
+
+    .discord-copy-btn:hover {
+      transform: translateY(-2px);
     }
 
     .discord-activity {
@@ -1386,6 +1403,11 @@
         box-shadow:
           0 7px 14px rgba(30, 55, 78, 0.10),
           inset 0 1px 0 rgba(255,255,255,0.52);
+        transition:
+          transform 220ms cubic-bezier(.16,.84,.3,1),
+          filter 220ms ease,
+          box-shadow 220ms ease;
+        will-change: transform, filter;
       }
 
       .m-link-icon,
@@ -1398,6 +1420,7 @@
         flex: 0 0 auto;
         display: grid;
         place-items: center;
+        transition: transform 220ms cubic-bezier(.16,.84,.3,1);
       }
 
       .m-link-icon img {
@@ -1535,6 +1558,19 @@
       }
 
       #mobile-root .site-title { letter-spacing: 2px; }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .m-link-item:hover {
+        transform: translateY(-3px) scale(1.015);
+        box-shadow:
+          0 10px 22px rgba(80, 135, 190, 0.20),
+          inset 0 1px 0 rgba(255,255,255,0.66);
+      }
+
+      .m-link-item:hover .m-link-icon {
+        transform: scale(1.07);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1807,55 +1843,6 @@
         </div>
       </div>
 
-      <div class="window win1" id="win-twitch"
-           data-label=""
-           data-x="560" data-y="438"
-           data-w="500" data-h="430"
-           data-skin="0.90" data-font="0.96">
-        <img class="skin" src="img/window1.png" alt="">
-        <div class="handle"></div>
-        <div class="content">
-          <div class="panel-wrap">
-            <div class="twitch-head">
-              <div>
-                <div class="panel-kicker">frazyypaws</div>
-                <div class="panel-title">latest stream</div>
-              </div>
-            </div>
-
-            <div class="twitch-frame">
-              <iframe id="twitchEmbed" title="frazyypaws twitch stream" allowfullscreen></iframe>
-            </div>
-
-            <div class="panel-actions">
-              <a class="big-link twitch" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">go to twitch</a>
-              <a class="small-link" href="https://www.twitch.tv/frazyypaws/videos?filter=archives&amp;sort=time" target="_blank" rel="noopener noreferrer">vods</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="window win1" id="win-donate"
-           data-label=""
-           data-x="1060" data-y="438"
-           data-w="500" data-h="430"
-           data-skin="0.90" data-font="0.96">
-        <img class="skin" src="img/window1.png" alt="">
-        <div class="handle"></div>
-        <div class="content">
-          <div class="panel-wrap donate-panel">
-            <div class="donate-icon" aria-hidden="true">
-              <img src="img/frazyyheart.png" alt="">
-            </div>
-            <div class="donate-thanks">here u can donate to me :3</div>
-            <div class="donate-small">thank you so much for donating! &lt;333</div>
-            <div class="panel-actions">
-              <a class="big-link donate" href="https://streamelements.com/frazyypaws/tip" target="_blank" rel="noopener noreferrer">donate</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -1935,7 +1922,6 @@
     const MARGIN_Y = 18;
     const MAX_UPSCALE = 1.15;
     const MIN_SCALE = 0.42;
-    const STACK_GAP = 28;
 
     const stage = document.getElementById("stage");
     const desk = document.getElementById("desk");
@@ -1978,21 +1964,12 @@
       setWindowPosition(el, x, y);
     }
 
-    function centeredX(el) {
-      const w = el?.offsetWidth || parseFloat(el?.dataset.w || "0") || 0;
-      return Math.round((DESIGN_W - w) / 2);
-    }
-
     function winW(el) {
       return el?.offsetWidth || parseFloat(el?.dataset.w || "0") || 0;
     }
 
     function winH(el) {
       return el?.offsetHeight || parseFloat(el?.dataset.h || "0") || 0;
-    }
-
-    function isWindowOpen(el) {
-      return !!el && !el.classList.contains("closed");
     }
 
     function layoutStage(designHeight = DESIGN_H) {
@@ -2024,10 +2001,6 @@
       const title = document.querySelector("#stage > .site-title");
       const handle = document.querySelector("#stage > .site-handle");
       const welcome = document.getElementById("win-welcome");
-      const twitch = document.getElementById("win-twitch");
-      const donate = document.getElementById("win-donate");
-
-      const gap = STACK_GAP;
       const welcomeX = 74;
       const welcomeY = 470;
       placeWindow(welcome, welcomeX, welcomeY);
@@ -2047,13 +2020,6 @@
         handle.style.width = `${winW(welcome)}px`;
         handle.style.textAlign = "center";
       }
-
-      const totalW = winW(twitch) + gap + winW(donate);
-      const rowX = Math.round(DESIGN_W - totalW - 40);
-      const rowY = Math.round((DESIGN_H - Math.max(winH(twitch), winH(donate))) / 2);
-
-      placeWindow(twitch, rowX, rowY);
-      placeWindow(donate, rowX + winW(twitch) + gap, rowY);
 
       layoutStage(DESIGN_H);
     }
@@ -2203,25 +2169,6 @@
     wireDiscordCopy("discordCopyBtn", "frazyypaws");
     wireDiscordCopy("discordCopyBtnMobile", "frazyypaws");
 
-    function setupTwitchFrame(frameId) {
-      const frame = document.getElementById(frameId);
-      if (!frame) return;
-
-      const host = window.location.hostname || "frazyy.com";
-      const params = new URLSearchParams();
-      params.set("channel", "frazyypaws");
-      params.set("muted", "true");
-      params.set("autoplay", "false");
-      params.append("parent", host);
-      if (host !== "frazyy.com") params.append("parent", "frazyy.com");
-      if (host !== "www.frazyy.com") params.append("parent", "www.frazyy.com");
-      if (host !== "localhost") params.append("parent", "localhost");
-      if (host !== "127.0.0.1") params.append("parent", "127.0.0.1");
-      frame.src = `https://player.twitch.tv/?${params.toString()}`;
-    }
-
-    setupTwitchFrame("twitchEmbed");
-
     (function introFailsafe() {
       const intro = document.getElementById("intro");
       const center = document.getElementById("introCenter");
@@ -2248,7 +2195,7 @@
   <script src="js/typewriter.js" defer></script>
   <script src="js/titleMarquee.js" defer></script>
   <script src="js/sfx.js" defer></script>
-  <script src="js/siteParticles.js" defer></script>
+  <script src="js/siteParticles.js?v=smooth-ui-1" defer></script>
   <script src="js/backgroundMusic.js" defer></script>
   <script src="js/intro.js?v=3" defer></script>
   <script src="js/discordBadge.js" defer></script>

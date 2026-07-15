@@ -20,7 +20,7 @@
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 
   function rebuild() {
-    dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    dpr = Math.max(1, Math.min(1.5, window.devicePixelRatio || 1));
     width = window.innerWidth;
     height = window.innerHeight;
 
@@ -34,8 +34,8 @@
     glow.length = 0;
 
     const area = width * height;
-    const baseDust = clamp(Math.floor(area / 1400), 900, 2600);
-    const baseGlow = clamp(Math.floor(area / 22000), 70, 220);
+    const baseDust = clamp(Math.floor(area / 3200), 280, 950);
+    const baseGlow = clamp(Math.floor(area / 48000), 24, 80);
     const dustCount = prefersReduced ? Math.floor(baseDust * 0.35) : baseDust;
     const glowCount = prefersReduced ? Math.floor(baseGlow * 0.45) : baseGlow;
 
@@ -75,9 +75,21 @@
   }
 
   let last = performance.now();
+  const frameInterval = prefersReduced ? 1000 / 24 : 1000 / 50;
+
   function tick(now) {
-    const dt = Math.min(0.033, (now - last) / 1000);
-    last = now;
+    requestAnimationFrame(tick);
+
+    if (document.hidden) {
+      last = now;
+      return;
+    }
+
+    const elapsed = now - last;
+    if (elapsed < frameInterval) return;
+
+    const dt = Math.min(0.04, elapsed / 1000);
+    last = now - (elapsed % frameInterval);
     ctx.clearRect(0, 0, width, height);
 
     ctx.save();
@@ -115,11 +127,21 @@
       ctx.fill();
     }
     ctx.restore();
-
-    requestAnimationFrame(tick);
   }
 
-  window.addEventListener("resize", rebuild);
+  let resizeFrame = 0;
+  window.addEventListener("resize", () => {
+    if (resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      rebuild();
+    });
+  }, { passive: true });
+
+  document.addEventListener("visibilitychange", () => {
+    last = performance.now();
+  });
+
   rebuild();
   requestAnimationFrame(tick);
 })();
