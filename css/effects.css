@@ -1,13 +1,15 @@
-/* Background: crisp GIF with a light color wash */
+/* Background: softly blurred looping video */
 #bg {
   position: fixed;
   inset: -8px;
   z-index: -3;
-  background:
-    url("../img/backround.gif") center / cover no-repeat fixed,
-    url("../img/background.gif") center / cover no-repeat fixed;
-  filter: saturate(1.02) contrast(1.02);
-  transform: scale(1.01);
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  object-fit: cover;
+  object-position: center;
+  background: #a8c8e8;
+  filter: blur(2px) saturate(1.02) contrast(1.02);
+  transform: scale(1.02);
 }
 
 #tint {
@@ -239,7 +241,7 @@ button.close-hit {
 
 @media (prefers-reduced-motion: reduce) {
   #bg {
-    filter: blur(10px) saturate(1.02);
+    filter: blur(2px) saturate(1.02) contrast(1.02);
   }
 
   #vhs::before,
