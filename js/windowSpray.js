@@ -37,15 +37,15 @@
     const count = 3 + Math.floor(Math.random() * 3);
     for (let i = 0; i < count; i += 1) {
       particles.push({
-        x: x + (Math.random() - 0.5) * 12,
-        y: y + (Math.random() - 0.5) * 10,
-        vx: (Math.random() - 0.5) * 1.7,
-        vy: 1.2 + Math.random() * 1.8,
-        gravity: 0.045 + Math.random() * 0.035,
-        drag: 0.988,
-        size: 1.5 + Math.random() * 2.8,
-        life: 34 + Math.random() * 24,
-        maxLife: 58,
+        x: x + (Math.random() - 0.5) * 16,
+        y: y + (Math.random() - 0.5) * 14,
+        vx: (Math.random() - 0.5) * 2.5,
+        vy: 0.8 + Math.random() * 2.1,
+        gravity: 0.035 + Math.random() * 0.025,
+        drag: 0.992,
+        size: 2.1 + Math.random() * 3.5,
+        life: 46 + Math.random() * 28,
+        maxLife: 74,
         color: colors[Math.floor(Math.random() * colors.length)]
       });
     }

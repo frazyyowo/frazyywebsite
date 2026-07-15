@@ -1,4 +1,4 @@
-/* Blurry glass intro overlay */
+/* Calm light-blue intro overlay */
 
 @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@200;300;400;500;600;700;800&display=swap');
 
@@ -7,8 +7,8 @@
 #fx,
 #vhs,
 #desk {
-  transition: opacity 180ms ease, filter 180ms ease;
-  will-change: opacity, filter;
+  transition: opacity 420ms ease;
+  will-change: opacity;
 }
 
 body.intro-active #bg,
@@ -16,13 +16,9 @@ body.intro-active #tint,
 body.intro-active #fx,
 body.intro-active #vhs,
 body.intro-active #desk {
-  opacity: 0.30;
-  filter: blur(18px) saturate(0.78) contrast(0.88) brightness(0.54);
+  opacity: 1;
+  filter: none;
   pointer-events: none;
-}
-
-body.intro-active #bg {
-  filter: blur(24px) saturate(0.74) contrast(0.84) brightness(0.48);
 }
 
 .intro {
@@ -35,21 +31,14 @@ body.intro-active #bg {
   overflow: hidden;
   isolation: isolate;
   cursor: pointer;
-  background:
-    radial-gradient(circle at 50% 42%, rgba(220, 235, 255, 0.16), rgba(74, 105, 138, 0.42) 34%, rgba(0, 0, 0, 0.68) 100%) !important;
-  backdrop-filter: blur(32px) saturate(0.88) brightness(0.72);
-  -webkit-backdrop-filter: blur(32px) saturate(0.88) brightness(0.72);
-  animation: introBreath 4.6s ease-in-out infinite;
-  will-change: opacity, clip-path, filter;
+  background: #b9dcf5 !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  will-change: opacity;
 }
 
 .intro.is-hidden {
   display: none !important;
-}
-
-@keyframes introBreath {
-  0%, 100% { background-color: rgba(255, 255, 255, 0.02); }
-  50% { background-color: rgba(255, 255, 255, 0.08); }
 }
 
 #introFx {
@@ -60,7 +49,7 @@ body.intro-active #bg {
   height: 100%;
   pointer-events: none;
   opacity: 0.55;
-  filter: blur(0.8px);
+  filter: none;
   will-change: opacity;
 }
 
@@ -118,43 +107,23 @@ body.intro-active #bg {
 }
 
 .intro.exit {
-  animation: exitBlur 560ms cubic-bezier(.15, 1.05, .25, 1) forwards;
+  pointer-events: none;
+  animation: introFadeOut 520ms cubic-bezier(.22,.61,.36,1) forwards;
 }
 
-.intro.exit #introFx {
-  animation: fxOut 260ms ease forwards;
-}
-
+.intro.exit #introFx,
 .intro.exit .intro-text {
-  animation: textOut 500ms cubic-bezier(.2, 1.2, .2, 1) forwards;
+  animation: introContentFade 380ms ease forwards;
 }
 
-@keyframes fxOut {
+@keyframes introContentFade {
+  from { opacity: 1; }
   to { opacity: 0; }
 }
 
-@keyframes textOut {
-  0% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
-  45% { opacity: 0.82; filter: blur(1.2px); transform: translateY(-1px) scale(1.04); }
-  100% { opacity: 0; filter: blur(10px); transform: translateY(0) scale(0.92); }
-}
-
-@keyframes exitBlur {
-  0% {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-    filter: blur(0);
-  }
-  72% {
-    opacity: 0.96;
-    clip-path: inset(47% 0 47% 0);
-    filter: blur(3px) brightness(1.14);
-  }
-  100% {
-    opacity: 0;
-    clip-path: inset(50% 0 50% 0);
-    filter: blur(8px) brightness(1.26);
-  }
+@keyframes introFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

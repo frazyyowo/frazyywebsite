@@ -2,8 +2,8 @@
   const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
   if (reduceMotion?.matches) return;
 
-  const MAX_TILT = 4.25;
-  const LERP = 0.22;
+  const MAX_TILT = 5.75;
+  const LERP = 0.18;
   const STOP_AT = 0.015;
 
   function clamp(value, min, max) {

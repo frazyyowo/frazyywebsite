@@ -6,7 +6,7 @@
   <title>FRAZYYFRAZYYFRAZYYFRAZYY</title>
 
   <link rel="stylesheet" href="css/effects.css?v=smooth-ui-1">
-  <link rel="stylesheet" href="css/intro.css?v=heavy-blur-1">
+  <link rel="stylesheet" href="css/intro.css?v=calm-blue-1">
 
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap");
@@ -211,6 +211,8 @@
       --close-y: 16;
       --close-w: 42;
       --close-h: 22;
+      --tilt-lift: 0px;
+      --tilt-scale: 1;
       transform: translate3d(0,0,0);
       transform-origin: center center;
       transform-style: flat;
@@ -256,6 +258,11 @@
       filter: drop-shadow(0 19px 21px rgba(12, 28, 44, 0.25));
     }
 
+    .window.is-tilting {
+      --tilt-lift: -6px;
+      --tilt-scale: 1.014;
+    }
+
     .window.dragging {
       transition: none !important;
     }
@@ -263,7 +270,11 @@
     .window-tilt-surface {
       position: absolute;
       inset: 0;
-      transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+      transform:
+        translate3d(0, var(--tilt-lift), 0)
+        rotateX(var(--tilt-x, 0deg))
+        rotateY(var(--tilt-y, 0deg))
+        scale(var(--tilt-scale));
       transform-origin: center center;
       transform-style: preserve-3d;
       transition: transform 220ms cubic-bezier(.16,.84,.3,1);
@@ -271,7 +282,7 @@
     }
 
     .window.is-tilting .window-tilt-surface {
-      transition-duration: 110ms;
+      transition-duration: 130ms;
     }
 
     .window.dragging .window-tilt-surface {
@@ -1636,7 +1647,7 @@
     .window:hover,
     .window.is-front,
     .window.is-tilting {
-      filter: drop-shadow(0 11px 14px rgba(12, 28, 44, 0.20));
+      filter: drop-shadow(0 16px 20px rgba(12, 28, 44, 0.26));
     }
 
     .welcome-panel {
@@ -2193,8 +2204,8 @@
     })();
   </script>
 
-  <script src="js/windowTilt.js" defer></script>
-  <script src="js/windowSpray.js" defer></script>
+  <script src="js/windowTilt.js?v=motion-2" defer></script>
+  <script src="js/windowSpray.js?v=motion-2" defer></script>
   <script src="js/typewriter.js" defer></script>
   <script src="js/titleMarquee.js" defer></script>
   <script src="js/siteParticles.js?v=smooth-ui-1" defer></script>
