@@ -149,7 +149,7 @@
       user-select: none;
       pointer-events: none;
       color: var(--ink);
-      font-size: 96px;
+      font-size: 120px;
       line-height: 0.9;
       font-weight: 800;
       letter-spacing: 4px;
@@ -1560,7 +1560,7 @@
       top: 50% !important;
       width: 735px;
       max-width: none;
-      font-size: 96px;
+      font-size: 120px;
       letter-spacing: 4px;
       text-align: left;
       justify-content: flex-start;
@@ -1706,6 +1706,7 @@
 
   <div id="bg"></div>
   <div id="tint"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
   <div id="vhs"></div>
 
   <div id="desk">
@@ -1715,10 +1716,10 @@
       </h1>
 
       <div class="window wide" id="win-welcome"
-           data-x="74" data-y="270"
+           data-x="74" data-y="478"
            data-w="735" data-h="158"
-           data-skin="0.90" data-font="0.98"
-           data-stretch-x="1.03" data-stretch-y="1.35">
+           data-skin="0.90" data-font="1.06"
+           data-stretch-x="1.16" data-stretch-y="1.55">
         <img class="skin" src="img/window6.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -1999,7 +2000,7 @@
 
       const gap = STACK_GAP;
       const welcomeX = 74;
-      const welcomeY = 470;
+      const welcomeY = 478;
       placeWindow(welcome, welcomeX, welcomeY);
 
       if (title) {
@@ -2012,7 +2013,7 @@
       }
 
       const totalW = winW(twitch) + gap + winW(donate);
-      const rowX = Math.round(DESIGN_W - totalW - 74);
+      const rowX = Math.round(DESIGN_W - totalW - 40);
       const rowY = Math.round((DESIGN_H - Math.max(winH(twitch), winH(donate))) / 2);
 
       placeWindow(twitch, rowX, rowY);
@@ -2211,6 +2212,7 @@
   <script src="js/typewriter.js" defer></script>
   <script src="js/titleMarquee.js" defer></script>
   <script src="js/sfx.js" defer></script>
+  <script src="js/siteParticles.js" defer></script>
   <script src="js/intro.js?v=3" defer></script>
   <script src="js/discordBadge.js" defer></script>
 </body>

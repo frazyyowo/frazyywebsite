@@ -82,7 +82,10 @@
   rebuild();
 
   let last = performance.now();
+  let particlesRunning = true;
   function tick(now) {
+    if (!particlesRunning) return;
+
     const dt = Math.min(0.033, (now - last) / 1000);
     last = now;
 
@@ -156,6 +159,7 @@
 
     // remove intro after animation completes
     setTimeout(() => {
+      particlesRunning = false;
       intro.remove();
     }, 700);
   }
