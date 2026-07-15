@@ -2,29 +2,30 @@
 (() => {
   "use strict";
 
-  const el = document.querySelector(".site-title");
-  if (!el) return;
+  const titles = document.querySelectorAll(".site-title");
+  if (!titles.length) return;
 
   const prefersReduced =
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
-  const BASE = el.getAttribute("data-type") || "frazyy.com";
   const ALTS = ["frazyy.exe", "frazyyyyy", "frazyy <3", "frazyyfur", "frazzy.com", "meow"];
-
-  // Build structure once
-  el.textContent = "";
-  const spanText = document.createElement("span");
-  spanText.className = "tw-text";
-  const spanCursor = document.createElement("span");
-  spanCursor.className = "tw-cursor";
-  spanCursor.textContent = "_";
-  el.appendChild(spanText);
-  el.appendChild(spanCursor);
-
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const rand = (a, b) => Math.floor(a + Math.random() * (b - a + 1));
   const pick = (arr) => arr[rand(0, arr.length - 1)];
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789._<>";
+
+  titles.forEach((el) => {
+    const BASE = el.getAttribute("data-type") || "frazyy.com";
+
+    // Build the animated title structure for every desktop/mobile title.
+    el.textContent = "";
+    const spanText = document.createElement("span");
+    spanText.className = "tw-text";
+    const spanCursor = document.createElement("span");
+    spanCursor.className = "tw-cursor";
+    spanCursor.textContent = "_";
+    el.appendChild(spanText);
+    el.appendChild(spanCursor);
 
   async function typeTo(target, min = 40, max = 85) {
     // delete down if too long
@@ -110,5 +111,6 @@
     }
   }
 
-  loop();
+    loop();
+  });
 })();
