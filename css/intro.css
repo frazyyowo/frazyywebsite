@@ -16,13 +16,13 @@ body.intro-active #tint,
 body.intro-active #fx,
 body.intro-active #vhs,
 body.intro-active #desk {
-  opacity: 0.76;
-  filter: blur(4px) saturate(1.08) contrast(0.98) brightness(0.88);
+  opacity: 0.30;
+  filter: blur(18px) saturate(0.78) contrast(0.88) brightness(0.54);
   pointer-events: none;
 }
 
 body.intro-active #bg {
-  filter: blur(3px) saturate(1.08) contrast(0.98) brightness(0.88);
+  filter: blur(24px) saturate(0.74) contrast(0.84) brightness(0.48);
 }
 
 .intro {
@@ -36,9 +36,9 @@ body.intro-active #bg {
   isolation: isolate;
   cursor: pointer;
   background:
-    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.14), rgba(122, 168, 210, 0.22) 34%, rgba(0, 0, 0, 0.34) 100%) !important;
-  backdrop-filter: blur(18px) saturate(1.22);
-  -webkit-backdrop-filter: blur(18px) saturate(1.22);
+    radial-gradient(circle at 50% 42%, rgba(220, 235, 255, 0.16), rgba(74, 105, 138, 0.42) 34%, rgba(0, 0, 0, 0.68) 100%) !important;
+  backdrop-filter: blur(32px) saturate(0.88) brightness(0.72);
+  -webkit-backdrop-filter: blur(32px) saturate(0.88) brightness(0.72);
   animation: introBreath 4.6s ease-in-out infinite;
   will-change: opacity, clip-path, filter;
 }
