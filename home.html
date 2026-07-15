@@ -182,6 +182,7 @@
       white-space: nowrap;
       user-select: none;
       pointer-events: none;
+      text-align: center;
       text-shadow: 1px 1px 0 rgba(255,255,255,0.48);
     }
 
@@ -1616,11 +1617,16 @@
     }
 
     .w-links {
-      gap: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
     }
 
     .w-links-row {
+      width: 100%;
       gap: 4px;
+      align-items: center;
     }
 
     .link-icon,
@@ -1650,21 +1656,22 @@
     }
 
     .discord-col {
-      grid-template-rows: auto auto;
-      gap: 4px;
-    }
-
-    .discord-label {
-      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
     }
 
     .discord-badge {
+      width: 180px;
       min-height: 0;
-      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-columns: 60px 100px;
       grid-template-areas: "avatar meta" "avatar copy";
       align-items: center;
+      justify-content: center;
       gap: 4px 10px;
       padding: 2px 0;
+      margin: 0 auto;
     }
 
     .discord-pfp-ring {
@@ -1674,13 +1681,14 @@
 
     .discord-meta {
       width: auto;
-      align-items: flex-start;
+      align-items: center;
+      text-align: center;
     }
 
     .discord-copy-btn {
       min-width: 90px;
       min-height: 28px;
-      justify-self: start;
+      justify-self: center;
     }
 
     .panel-title {
@@ -1743,7 +1751,6 @@
           <div class="welcome-panel">
             <div class="welcome-bottom">
               <div class="w-links">
-                <div class="w-links-label">my links:</div>
                 <div class="w-links-row">
                   <a class="link-item" href="https://www.tiktok.com/@frazyypaws" target="_blank" rel="noopener noreferrer" title="tiktok">
                     <div class="link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
@@ -1773,7 +1780,6 @@
               </div>
 
               <div class="discord-col">
-                <div class="discord-label">my discord:</div>
                 <div class="discord-badge" id="discordCard" aria-label="Discord profile">
                   <div class="discord-pfp-ring">
                     <img class="discord-pfp" id="discordPfp" src="img/frazyypfp.jpg" alt="">
@@ -1854,8 +1860,6 @@
 
       <div class="m-sep"></div>
 
-      <div class="m-links-label">my links:</div>
-
       <div class="m-links-list">
         <a class="m-link-item" href="https://www.tiktok.com/@frazypaws" target="_blank" rel="noopener noreferrer">
           <div class="m-link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
@@ -1896,8 +1900,6 @@
       </div>
 
       <div class="m-discord-wrap">
-        <div class="m-discord-label">my discord:</div>
-
         <div class="discord-badge" id="discordCardMobile" aria-label="Discord profile">
           <div class="discord-pfp-ring">
             <img class="discord-pfp" id="discordPfpMobile" src="img/frazyypfp.jpg" alt="">
@@ -2034,6 +2036,7 @@
         handle.style.left = "74px";
         handle.style.top = "420px";
         handle.style.width = `${winW(welcome)}px`;
+        handle.style.textAlign = "center";
       }
 
       const totalW = winW(twitch) + gap + winW(donate);
