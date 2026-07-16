@@ -1355,9 +1355,7 @@
     .about-small-image {
       object-fit: contain;
       object-position: center bottom;
-      filter:
-        drop-shadow(0 0 5px rgba(255, 255, 255, 0.72))
-        drop-shadow(0 0 11px rgba(191, 220, 255, 0.30));
+      filter: none;
     }
 
     .about-media-shell.has-image .about-photo,
@@ -2228,7 +2226,7 @@
 
   <div id="desk">
     <div class="main-character-shell" id="mainCharacterShell" aria-hidden="true">
-      <img class="main-character" id="mainCharacter" src="img/frazyymain1.png?v=random-main-3"
+      <img class="main-character" id="mainCharacter" src="img/frazyymain1.png?v=random-main-4"
            alt="" draggable="false">
     </div>
 
@@ -2714,7 +2712,8 @@
       if (!desk || !shell || !image) return;
 
       const characterImages = [
-        "img/frazyymain1.png?v=random-main-3"
+        "img/frazyymain1.png?v=random-main-4",
+        "img/frazyymain2.png?v=random-main-4"
       ];
       let characterIndex = Math.floor(Math.random() * characterImages.length);
       if (window.crypto?.getRandomValues) {
