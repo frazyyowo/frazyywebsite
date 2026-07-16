@@ -149,7 +149,7 @@
       left: 68%;
       bottom: 0;
       z-index: 0;
-      height: clamp(720px, 108vh, 1080px);
+      height: clamp(800px, 122vh, 1200px);
       aspect-ratio: 9 / 16;
       pointer-events: none;
       transform: translate3d(-50%, 0, 0);
@@ -173,10 +173,10 @@
         scale(var(--main-hover-scale, 1));
       transform-origin: 50% 100%;
       filter:
-        drop-shadow(0 0 13px rgba(150, 201, 255, 0.52))
-        drop-shadow(0 0 30px rgba(126, 92, 218, 0.28));
+        drop-shadow(0 0 13px rgba(255, 255, 255, 0.58))
+        drop-shadow(0 0 30px rgba(255, 255, 255, 0.26));
       transition:
-        transform 180ms cubic-bezier(.16, .84, .3, 1),
+        transform 220ms cubic-bezier(.16, .84, .3, 1),
         filter 260ms ease;
       will-change: transform, filter;
     }
@@ -187,14 +187,14 @@
 
     #desk.about-open .main-character {
       filter:
-        drop-shadow(0 0 16px rgba(160, 211, 255, 0.60))
-        drop-shadow(0 0 36px rgba(136, 94, 231, 0.34));
+        drop-shadow(0 0 16px rgba(255, 255, 255, 0.66))
+        drop-shadow(0 0 36px rgba(255, 255, 255, 0.32));
     }
 
     .main-character-shell.is-hovered .main-character {
       filter:
-        drop-shadow(0 0 20px rgba(175, 221, 255, 0.72))
-        drop-shadow(0 0 44px rgba(150, 105, 238, 0.44));
+        drop-shadow(0 0 19px rgba(255, 255, 255, 0.78))
+        drop-shadow(0 0 42px rgba(255, 255, 255, 0.40));
     }
 
     .site-title {
@@ -2329,7 +2329,7 @@
         <div class="content">
           <div class="about-photo-frame about-media-shell">
             <span class="about-image-placeholder" aria-hidden="true"></span>
-            <img class="about-photo" src="img/frazyyimg1.png" alt="frazyy photo one">
+            <img class="about-photo" src="img/frazyyimg1.png?v=about-photo-2" alt="frazyy photo one">
           </div>
         </div>
       </div>
@@ -2722,10 +2722,10 @@
 
         if (frame) cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
-          image.style.setProperty("--main-hover-x", `${(x * 10).toFixed(2)}px`);
-          image.style.setProperty("--main-hover-y", `${(-5 + y * 3).toFixed(2)}px`);
-          image.style.setProperty("--main-hover-rotate", `${(x * 1.8).toFixed(2)}deg`);
-          image.style.setProperty("--main-hover-scale", "1.018");
+          image.style.setProperty("--main-hover-x", `${(x * 4).toFixed(2)}px`);
+          image.style.setProperty("--main-hover-y", `${(-2 + y).toFixed(2)}px`);
+          image.style.setProperty("--main-hover-rotate", `${(x * 0.55).toFixed(2)}deg`);
+          image.style.setProperty("--main-hover-scale", "1.008");
           frame = 0;
         });
       }
