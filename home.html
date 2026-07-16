@@ -1328,7 +1328,8 @@
     }
 
     .about-photo {
-      inset: 0 0 7px;
+      inset: 6px 7px 14px;
+      width: auto;
       height: auto;
       object-fit: contain;
     }
@@ -2205,7 +2206,7 @@
 
   <div id="desk">
     <div class="main-character-shell" id="mainCharacterShell" aria-hidden="true">
-      <img class="main-character" id="mainCharacter" src="img/frazyymain1.png?v=main-1"
+      <img class="main-character" id="mainCharacter" src="img/frazyymain1.png?v=random-main-2"
            alt="" draggable="false">
     </div>
 
@@ -2288,7 +2289,6 @@
            data-skin="0.82" data-font="1" data-stretch-x="1.05" data-stretch-y="0.90">
         <img class="skin" src="img/window2.png" alt="">
         <div class="handle"></div>
-        <button class="close-hit about-close" type="button" aria-label="close about me"></button>
         <div class="content">
           <article class="about-bio-panel">
             <h2 class="about-bio-title">hi! im frazyy</h2>
@@ -2325,7 +2325,6 @@
            data-skin="0.52" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
-        <button class="close-hit about-close" type="button" aria-label="close about me"></button>
         <div class="content">
           <div class="about-photo-frame about-media-shell">
             <span class="about-image-placeholder" aria-hidden="true"></span>
@@ -2340,7 +2339,6 @@
            data-skin="0.52" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
-        <button class="close-hit about-close" type="button" aria-label="close about me"></button>
         <div class="content">
           <div class="about-photo-frame about-media-shell">
             <span class="about-image-placeholder" aria-hidden="true"></span>
@@ -2690,6 +2688,18 @@
       const image = document.getElementById("mainCharacter");
       if (!desk || !shell || !image) return;
 
+      const characterImages = [
+        "img/frazyymain1.png?v=random-main-2",
+        "img/frazyymain2.png?v=random-main-2"
+      ];
+      let characterIndex = Math.floor(Math.random() * characterImages.length);
+      if (window.crypto?.getRandomValues) {
+        const randomValue = new Uint32Array(1);
+        window.crypto.getRandomValues(randomValue);
+        characterIndex = randomValue[0] % characterImages.length;
+      }
+      image.src = characterImages[characterIndex];
+
       let frame = 0;
 
       function resetCharacterHover() {
@@ -2754,13 +2764,6 @@
 
       toggle.addEventListener("click", () => {
         setAboutOpen(toggle.getAttribute("aria-expanded") !== "true");
-      });
-
-      document.querySelectorAll(".about-close").forEach(button => {
-        button.addEventListener("click", event => {
-          event.stopPropagation();
-          setAboutOpen(false);
-        });
       });
 
       document.querySelectorAll(".about-media-shell img").forEach(image => {
