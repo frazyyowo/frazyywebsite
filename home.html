@@ -1302,6 +1302,20 @@
       pointer-events: none;
     }
 
+    .about-photo-small-media {
+      position: absolute;
+      right: -58px;
+      bottom: 18px;
+      z-index: 6;
+      width: 235px;
+      height: 215px;
+      overflow: visible;
+      border: 0;
+      background: transparent;
+      pointer-events: none;
+      transform: translateZ(38px);
+    }
+
     .about-photo-frame {
       position: relative;
       width: 100%;
@@ -1340,6 +1354,7 @@
 
     .about-small-image {
       object-fit: contain;
+      object-position: center bottom;
       filter:
         drop-shadow(0 0 5px rgba(255, 255, 255, 0.72))
         drop-shadow(0 0 11px rgba(191, 220, 255, 0.30));
@@ -2213,7 +2228,7 @@
 
   <div id="desk">
     <div class="main-character-shell" id="mainCharacterShell" aria-hidden="true">
-      <img class="main-character" id="mainCharacter" src="img/frazyymain1.png?v=random-main-2"
+      <img class="main-character" id="mainCharacter" src="img/frazyymain1.png?v=random-main-3"
            alt="" draggable="false">
     </div>
 
@@ -2351,6 +2366,9 @@
             <span class="about-image-placeholder" aria-hidden="true"></span>
             <img class="about-photo" src="img/frazyyimg2.png" alt="frazyy photo two">
           </div>
+        </div>
+        <div class="about-photo-small-media about-media-shell" aria-hidden="true">
+          <img class="about-small-image" src="img/frazyysmall2.png?v=small-2-1" alt="">
         </div>
       </div>
 
@@ -2696,8 +2714,7 @@
       if (!desk || !shell || !image) return;
 
       const characterImages = [
-        "img/frazyymain1.png?v=random-main-2",
-        "img/frazyymain2.png?v=random-main-2"
+        "img/frazyymain1.png?v=random-main-3"
       ];
       let characterIndex = Math.floor(Math.random() * characterImages.length);
       if (window.crypto?.getRandomValues) {
