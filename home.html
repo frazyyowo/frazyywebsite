@@ -1308,7 +1308,7 @@
       height: 100%;
       overflow: hidden;
       border: 0;
-      border-radius: 0;
+      border-radius: 7px;
       background: transparent;
       box-shadow: none;
     }
@@ -1328,10 +1328,14 @@
     }
 
     .about-photo {
-      inset: 6px 7px 14px;
-      width: auto;
-      height: auto;
+      inset: auto;
+      top: 6px;
+      left: 6px;
+      width: calc(100% - 12px);
+      height: calc(100% - 12px);
       object-fit: contain;
+      border-radius: 7px;
+      clip-path: inset(0 round 7px);
     }
 
     .about-small-image {
