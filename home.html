@@ -1340,6 +1340,9 @@
 
     .about-small-image {
       object-fit: contain;
+      filter:
+        drop-shadow(0 0 5px rgba(255, 255, 255, 0.72))
+        drop-shadow(0 0 11px rgba(191, 220, 255, 0.30));
     }
 
     .about-media-shell.has-image .about-photo,
@@ -2288,9 +2291,9 @@
       </div>
 
       <div class="window std about-window about-bio-window closed" id="win-about-bio" aria-hidden="true" inert
-           data-label="about me" data-x="970" data-y="0"
+           data-label="about me" data-x="970" data-y="-15"
            data-w="546" data-h="404"
-           data-skin="0.82" data-font="1" data-stretch-x="1.05" data-stretch-y="0.90">
+           data-skin="0.86" data-font="1" data-stretch-x="1.05" data-stretch-y="0.90">
         <img class="skin" src="img/window2.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -2326,7 +2329,7 @@
       <div class="window std about-window about-photo-window closed" id="win-about-photo-1" aria-hidden="true" inert
            data-label="" data-x="1525" data-y="155"
            data-w="546" data-h="877"
-           data-skin="0.52" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
+           data-skin="0.54" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -2338,9 +2341,9 @@
       </div>
 
       <div class="window std about-window about-photo-window closed" id="win-about-photo-2" aria-hidden="true" inert
-           data-label="" data-x="1200" data-y="323"
+           data-label="" data-x="1200" data-y="308"
            data-w="546" data-h="877"
-           data-skin="0.52" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
+           data-skin="0.54" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
         <img class="skin" src="img/window3.png" alt="">
         <div class="handle"></div>
         <div class="content">
@@ -2509,9 +2512,9 @@
       const welcomeX = 74;
       const welcomeY = 433;
       placeWindow(welcome, welcomeX, welcomeY);
-      placeWindow(aboutBio, 970, 0);
+      placeWindow(aboutBio, 970, -15);
       placeWindow(aboutPhoto1, 1525, 155);
-      placeWindow(aboutPhoto2, 1200, 323);
+      placeWindow(aboutPhoto2, 1200, 308);
 
       if (actions && welcome) {
         const actionWidth = Math.min(440, winW(welcome));
