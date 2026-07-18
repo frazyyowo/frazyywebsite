@@ -7,20 +7,31 @@
   const ctx = fx.getContext("2d", { alpha: true });
   if (!ctx) return;
 
-  const prefersReduced =
+  const fallbackReduced =
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+  const perf = window.frazyyPerformance || {
+    canvasDpr: Math.min(1.25, window.devicePixelRatio || 1),
+    particleFps: fallbackReduced ? 20 : 45,
+    particleDensity: fallbackReduced ? 0.32 : 0.78,
+  };
 
   let width = 0;
   let height = 0;
   let dpr = 1;
+  let animationFrame = 0;
+  let resizeFrame = 0;
+  let lastFrame = performance.now();
+  let siteVisible = !document.getElementById("intro");
+  let built = false;
+
   const dust = [];
   const glow = [];
-
   const rand = (a, b) => a + Math.random() * (b - a);
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  const frameInterval = 1000 / perf.particleFps;
 
   function rebuild() {
-    dpr = Math.max(1, Math.min(1.5, window.devicePixelRatio || 1));
+    dpr = Math.max(1, perf.canvasDpr);
     width = window.innerWidth;
     height = window.innerHeight;
 
@@ -29,6 +40,7 @@
     fx.style.width = `${width}px`;
     fx.style.height = `${height}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    built = true;
 
     dust.length = 0;
     glow.length = 0;
@@ -36,10 +48,10 @@
     const area = width * height;
     const baseDust = clamp(Math.floor(area / 3200), 280, 950);
     const baseGlow = clamp(Math.floor(area / 48000), 24, 80);
-    const dustCount = prefersReduced ? Math.floor(baseDust * 0.35) : baseDust;
-    const glowCount = prefersReduced ? Math.floor(baseGlow * 0.45) : baseGlow;
+    const dustCount = Math.floor(baseDust * perf.particleDensity);
+    const glowCount = Math.floor(baseGlow * Math.min(0.86, perf.particleDensity + 0.08));
 
-    for (let i = 0; i < dustCount; i++) {
+    for (let i = 0; i < dustCount; i += 1) {
       const big = Math.random() < 0.24;
       dust.push({
         x: Math.random() * width,
@@ -53,7 +65,7 @@
       });
     }
 
-    for (let i = 0; i < glowCount; i++) {
+    for (let i = 0; i < glowCount; i += 1) {
       glow.push({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -67,29 +79,31 @@
     }
   }
 
-  function wrapParticle(p, margin) {
-    if (p.x < -margin) p.x = width + margin;
-    if (p.x > width + margin) p.x = -margin;
-    if (p.y < -margin) p.y = height + margin;
-    if (p.y > height + margin) p.y = -margin;
+  function wrapParticle(particle, margin) {
+    if (particle.x < -margin) particle.x = width + margin;
+    if (particle.x > width + margin) particle.x = -margin;
+    if (particle.y < -margin) particle.y = height + margin;
+    if (particle.y > height + margin) particle.y = -margin;
   }
 
-  let last = performance.now();
-  const frameInterval = prefersReduced ? 1000 / 24 : 1000 / 50;
+  function queueFrame() {
+    if (!animationFrame && siteVisible && !document.hidden) {
+      animationFrame = requestAnimationFrame(tick);
+    }
+  }
 
   function tick(now) {
-    requestAnimationFrame(tick);
+    animationFrame = 0;
+    if (!siteVisible || document.hidden) return;
 
-    if (document.hidden) {
-      last = now;
+    const elapsed = now - lastFrame;
+    if (elapsed < frameInterval) {
+      queueFrame();
       return;
     }
 
-    const elapsed = now - last;
-    if (elapsed < frameInterval) return;
-
     const dt = Math.min(0.04, elapsed / 1000);
-    last = now - (elapsed % frameInterval);
+    lastFrame = now - (elapsed % frameInterval);
     ctx.clearRect(0, 0, width, height);
 
     ctx.save();
@@ -98,7 +112,8 @@
     ctx.shadowColor = "rgba(255,255,255,0.42)";
     ctx.shadowBlur = 16;
 
-    for (const p of glow) {
+    for (let i = 0; i < glow.length; i += 1) {
+      const p = glow[i];
       p.x += p.vx * (60 * dt);
       p.y += p.vy * (60 * dt);
       wrapParticle(p, 40);
@@ -115,7 +130,8 @@
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "#fff";
 
-    for (const p of dust) {
+    for (let i = 0; i < dust.length; i += 1) {
+      const p = dust[i];
       p.x += p.vx * (60 * dt);
       p.y += p.vy * (60 * dt);
       wrapParticle(p, 30);
@@ -127,21 +143,33 @@
       ctx.fill();
     }
     ctx.restore();
+    queueFrame();
   }
 
-  let resizeFrame = 0;
-  window.addEventListener("resize", () => {
+  function onResize() {
+    if (!siteVisible) return;
     if (resizeFrame) return;
     resizeFrame = requestAnimationFrame(() => {
       resizeFrame = 0;
       rebuild();
     });
-  }, { passive: true });
+  }
 
-  document.addEventListener("visibilitychange", () => {
-    last = performance.now();
-  });
+  function onVisibilityChange() {
+    lastFrame = performance.now();
+    queueFrame();
+  }
 
-  rebuild();
-  requestAnimationFrame(tick);
+  function startParticles() {
+    siteVisible = true;
+    if (!built) rebuild();
+    lastFrame = performance.now();
+    queueFrame();
+  }
+
+  window.addEventListener("resize", onResize, { passive: true });
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  window.addEventListener("frazyy:site-visible", startParticles, { once: true });
+
+  if (siteVisible) startParticles();
 })();

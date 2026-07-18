@@ -10,10 +10,11 @@
   let started = false;
   let retryTimer = 0;
   let failedTracks = 0;
+  let resumeWhenVisible = false;
 
   const audio = document.createElement("audio");
   audio.id = "backgroundMusic";
-  audio.preload = "auto";
+  audio.preload = "none";
   audio.volume = 0.42;
   audio.setAttribute("aria-hidden", "true");
   audio.style.display = "none";
@@ -45,7 +46,7 @@
   }
 
   function playCurrentTrack() {
-    if (!started || !playlist.length) return;
+    if (!started || !playlist.length || document.hidden) return;
     window.clearTimeout(retryTimer);
     prepareCurrentTrack();
     audio.play().then(() => {
@@ -67,6 +68,7 @@
 
   function startPlaylist() {
     if (!started) started = true;
+    audio.preload = "auto";
     playCurrentTrack();
   }
 
@@ -92,7 +94,6 @@
       const matchingIndex = names.findIndex((name) => name === currentName);
       currentIndex = matchingIndex >= 0 ? matchingIndex : 0;
 
-      if (!started) prepareCurrentTrack();
       audio.loop = playlist.length === 1;
     } catch {
       // The checked-in fallback playlist still works if GitHub is unavailable.
@@ -123,21 +124,30 @@
   }, { capture: true });
 
   document.addEventListener("pointerdown", () => {
-    if (started && audio.paused) playCurrentTrack();
+    if (started && !document.hidden && audio.paused) playCurrentTrack();
   }, { passive: true });
 
   document.addEventListener("click", () => {
-    if (started && audio.paused) playCurrentTrack();
+    if (started && !document.hidden && audio.paused) playCurrentTrack();
   }, { capture: true });
 
   window.addEventListener("focus", () => {
-    if (started && audio.paused) playCurrentTrack();
-  });
-
-  document.addEventListener("visibilitychange", () => {
     if (started && !document.hidden && audio.paused) playCurrentTrack();
   });
 
-  prepareCurrentTrack();
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      resumeWhenVisible = started && !audio.paused;
+      window.clearTimeout(retryTimer);
+      audio.pause();
+      return;
+    }
+
+    if (resumeWhenVisible && audio.paused) {
+      resumeWhenVisible = false;
+      playCurrentTrack();
+    }
+  });
+
   discoverPlaylist();
 })();

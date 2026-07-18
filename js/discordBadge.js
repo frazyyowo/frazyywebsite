@@ -20,6 +20,8 @@
 
   // keep what we should restore after "copied!"
   let lastActivityText = FALLBACK_ACTIVITY;
+  let presenceTimer = 0;
+  let presenceRun = 0;
 
   // set fallbacks immediately
   nameEl.textContent = FALLBACK_DISPLAY_NAME;
@@ -123,7 +125,25 @@
   }
 
   if (DISCORD_USER_ID) {
-    updateFromPresence();
-    setInterval(updateFromPresence, 20000);
+    async function refreshPresence() {
+      window.clearTimeout(presenceTimer);
+      if (document.hidden) return;
+      const run = ++presenceRun;
+      await updateFromPresence();
+      if (!document.hidden && run === presenceRun) {
+        presenceTimer = window.setTimeout(refreshPresence, 20000);
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      window.clearTimeout(presenceTimer);
+      if (document.hidden) {
+        presenceRun += 1;
+      } else {
+        refreshPresence();
+      }
+    });
+
+    refreshPresence();
   }
 })();

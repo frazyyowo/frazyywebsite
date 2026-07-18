@@ -7,56 +7,62 @@
 
   if (!intro || !typedEl || !fx) return;
 
-  // show instantly (NO typing)
   typedEl.textContent = "<3";
-
-  // start intro mode
   document.body.classList.add("intro-active");
 
-  const prefersReduced =
+  const fallbackReduced =
     window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+  const perf = window.frazyyPerformance || {
+    reducedMotion: fallbackReduced,
+    canvasDpr: Math.min(1.25, window.devicePixelRatio || 1),
+    particleFps: fallbackReduced ? 20 : 45,
+    particleDensity: fallbackReduced ? 0.32 : 0.78,
+  };
 
-  // ===== PARTICLES (MUCH MORE + MUCH BRIGHTER) =====
   const ctx = fx.getContext("2d", { alpha: true });
-  let W = 0, H = 0, DPR = 1;
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let resizeFrame = 0;
+  let animationFrame = 0;
+  let lastFrame = performance.now();
+  let particlesRunning = true;
 
   const dust = [];
   const glow = [];
-
   const rand = (a, b) => a + Math.random() * (b - a);
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  const frameInterval = 1000 / perf.particleFps;
 
   function rebuild() {
-    DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-    W = window.innerWidth;
-    H = window.innerHeight;
+    dpr = Math.max(1, perf.canvasDpr);
+    width = window.innerWidth;
+    height = window.innerHeight;
 
-    fx.width = Math.floor(W * DPR);
-    fx.height = Math.floor(H * DPR);
-    fx.style.width = W + "px";
-    fx.style.height = H + "px";
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    fx.width = Math.floor(width * dpr);
+    fx.height = Math.floor(height * dpr);
+    fx.style.width = `${width}px`;
+    fx.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     dust.length = 0;
     glow.length = 0;
 
-    // scale by screen size (big screens = more)
-    const area = W * H;
-
-    // 1080p ≈ ~1400 dust, 4K ≈ clamps
+    const area = width * height;
     const baseDust = clamp(Math.floor(area / 1400), 900, 2600);
     const baseGlow = clamp(Math.floor(area / 22000), 70, 220);
+    const dustCount = Math.floor(baseDust * perf.particleDensity);
+    const glowCount = Math.floor(baseGlow * Math.min(0.82, perf.particleDensity + 0.08));
 
-    const nDust = prefersReduced ? Math.floor(baseDust * 0.35) : baseDust;
-    const nGlow = prefersReduced ? Math.floor(baseGlow * 0.45) : baseGlow;
-
-    for (let i = 0; i < nDust; i++) {
+    for (let i = 0; i < dustCount; i += 1) {
       const big = Math.random() < 0.24;
       dust.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
+        x: Math.random() * width,
+        y: Math.random() * height,
         r: big ? rand(1.2, 2.9) : rand(0.7, 1.8),
-        a: big ? rand(0.18, 0.44) : rand(0.12, 0.30), // BRIGHT
+        a: big ? rand(0.18, 0.44) : rand(0.12, 0.30),
         vx: rand(-0.28, 0.28),
         vy: rand(0.10, 0.48),
         tw: rand(0.9, 2.3),
@@ -64,10 +70,10 @@
       });
     }
 
-    for (let i = 0; i < nGlow; i++) {
+    for (let i = 0; i < glowCount; i += 1) {
       glow.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
+        x: Math.random() * width,
+        y: Math.random() * height,
         r: rand(2.4, 6.6),
         a: rand(0.06, 0.14),
         vx: rand(-0.12, 0.12),
@@ -78,102 +84,125 @@
     }
   }
 
-  window.addEventListener("resize", rebuild);
-  rebuild();
+  function wrapParticle(particle, margin) {
+    if (particle.x < -margin) particle.x = width + margin;
+    if (particle.x > width + margin) particle.x = -margin;
+    if (particle.y < -margin) particle.y = height + margin;
+    if (particle.y > height + margin) particle.y = -margin;
+  }
 
-  let last = performance.now();
-  let particlesRunning = true;
+  function queueFrame() {
+    if (!animationFrame && particlesRunning && !document.hidden) {
+      animationFrame = requestAnimationFrame(tick);
+    }
+  }
+
   function tick(now) {
-    if (!particlesRunning) return;
+    animationFrame = 0;
+    if (!particlesRunning || document.hidden) return;
 
-    const dt = Math.min(0.033, (now - last) / 1000);
-    last = now;
+    const elapsed = now - lastFrame;
+    if (elapsed < frameInterval) {
+      queueFrame();
+      return;
+    }
 
-    ctx.clearRect(0, 0, W, H);
+    const dt = Math.min(0.04, elapsed / 1000);
+    lastFrame = now - (elapsed % frameInterval);
+    ctx.clearRect(0, 0, width, height);
 
-    // glowy layer
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     ctx.fillStyle = "#fff";
     ctx.shadowColor = "rgba(255,255,255,0.42)";
     ctx.shadowBlur = 16;
 
-    for (const p of glow) {
+    for (let i = 0; i < glow.length; i += 1) {
+      const p = glow[i];
       p.x += p.vx * (60 * dt);
       p.y += p.vy * (60 * dt);
+      wrapParticle(p, 40);
 
-      if (p.x < -40) p.x = W + 40;
-      if (p.x > W + 40) p.x = -40;
-      if (p.y < -40) p.y = H + 40;
-      if (p.y > H + 40) p.y = -40;
-
-      const tw = 0.82 + 0.18 * Math.sin(now * 0.0016 * p.tw + p.ph);
-      ctx.globalAlpha = p.a * tw;
-
+      const twinkle = 0.82 + 0.18 * Math.sin(now * 0.0016 * p.tw + p.ph);
+      ctx.globalAlpha = p.a * twinkle;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();
 
-    // crisp dust specks
     ctx.save();
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "#fff";
 
-    for (const p of dust) {
+    for (let i = 0; i < dust.length; i += 1) {
+      const p = dust[i];
       p.x += p.vx * (60 * dt);
       p.y += p.vy * (60 * dt);
+      wrapParticle(p, 30);
 
-      if (p.x < -30) p.x = W + 30;
-      if (p.x > W + 30) p.x = -30;
-      if (p.y < -30) p.y = H + 30;
-      if (p.y > H + 30) p.y = -30;
-
-      const tw = 0.70 + 0.30 * Math.sin(now * 0.0022 * p.tw + p.ph);
-      ctx.globalAlpha = p.a * tw;
-
+      const twinkle = 0.70 + 0.30 * Math.sin(now * 0.0022 * p.tw + p.ph);
+      ctx.globalAlpha = p.a * twinkle;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();
-
-    requestAnimationFrame(tick);
+    queueFrame();
   }
 
-  requestAnimationFrame(tick);
+  function onResize() {
+    if (resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      rebuild();
+    });
+  }
 
-  // ===== ENTER: CLICK ANYWHERE + INSTANT RESPONSE =====
+  function onVisibilityChange() {
+    lastFrame = performance.now();
+    queueFrame();
+  }
+
+  function stopParticles() {
+    particlesRunning = false;
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    if (resizeFrame) cancelAnimationFrame(resizeFrame);
+    animationFrame = 0;
+    resizeFrame = 0;
+    window.removeEventListener("resize", onResize);
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+  }
+
+  window.addEventListener("resize", onResize, { passive: true });
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  rebuild();
+  queueFrame();
+
   let entered = false;
 
   function enterSite() {
     if (entered) return;
     entered = true;
 
-    // start animation immediately
     intro.classList.add("exit");
-
-    // reveal site immediately (no delay)
     document.body.classList.remove("intro-active");
+    window.dispatchEvent(new Event("frazyy:site-visible"));
 
-    // remove intro after animation completes
-    setTimeout(() => {
-      particlesRunning = false;
+    window.setTimeout(() => {
+      stopParticles();
       intro.remove();
     }, 700);
   }
 
-  // CLICK ANYWHERE (this fixes your issue)
-  intro.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
+  intro.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
     enterSite();
   });
 
-  // Enter key
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
       enterSite();
     }
   });

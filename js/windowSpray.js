@@ -2,6 +2,11 @@
   const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)");
   if (reduceMotion?.matches) return;
 
+  const perf = window.frazyyPerformance || {
+    sprayDpr: Math.min(1.25, window.devicePixelRatio || 1),
+    sprayCap: 150
+  };
+
   const colors = [
     "rgba(255,255,255,0.95)",
     "rgba(191,226,255,0.92)",
@@ -20,10 +25,11 @@
   let height = 0;
   let dpr = 1;
   let raf = 0;
+  let resizeFrame = 0;
   let lastSpawn = 0;
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.max(1, perf.sprayDpr);
     width = window.innerWidth;
     height = window.innerHeight;
     canvas.width = Math.round(width * dpr);
@@ -34,7 +40,11 @@
   }
 
   function spawn(x, y) {
-    const count = 3 + Math.floor(Math.random() * 3);
+    if (document.hidden) return;
+
+    const count = perf.sprayCap <= 90
+      ? 2 + Math.floor(Math.random() * 3)
+      : 3 + Math.floor(Math.random() * 3);
     for (let i = 0; i < count; i += 1) {
       particles.push({
         x: x + (Math.random() - 0.5) * 16,
@@ -50,8 +60,8 @@
       });
     }
 
-    if (particles.length > 220) {
-      particles.splice(0, particles.length - 220);
+    if (particles.length > perf.sprayCap) {
+      particles.splice(0, particles.length - perf.sprayCap);
     }
 
     if (!raf) raf = requestAnimationFrame(tick);
@@ -59,6 +69,12 @@
 
   function tick() {
     raf = 0;
+    if (document.hidden) {
+      particles.length = 0;
+      ctx.clearRect(0, 0, width, height);
+      return;
+    }
+
     ctx.clearRect(0, 0, width, height);
 
     for (let i = particles.length - 1; i >= 0; i -= 1) {
@@ -108,5 +124,19 @@
 
   resize();
   wireWindows();
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", () => {
+    if (resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      resize();
+    });
+  }, { passive: true });
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) return;
+    particles.length = 0;
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
+    ctx.clearRect(0, 0, width, height);
+  });
 })();

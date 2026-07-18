@@ -1,14 +1,11 @@
 /* Calm light-blue intro overlay */
 
-@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@200;300;400;500;600;700;800&display=swap');
-
 #bg,
 #tint,
 #fx,
 #vhs,
 #desk {
   transition: opacity 420ms ease;
-  will-change: opacity;
 }
 
 body.intro-active #bg,
@@ -37,7 +34,11 @@ body.intro-active #desk {
     #83aeca !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  will-change: opacity;
+}
+
+body.intro-active #vhs::before,
+body.intro-active #vhs::after {
+  animation-play-state: paused;
 }
 
 .intro.is-hidden {
@@ -53,7 +54,6 @@ body.intro-active #desk {
   pointer-events: none;
   opacity: 0.55;
   filter: none;
-  will-change: opacity;
 }
 
 .intro-center {
@@ -111,6 +111,7 @@ body.intro-active #desk {
 
 .intro.exit {
   pointer-events: none;
+  will-change: opacity;
   animation: introFadeOut 520ms cubic-bezier(.22,.61,.36,1) forwards;
 }
 

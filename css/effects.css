@@ -8,7 +8,7 @@
   object-fit: cover;
   object-position: center;
   background: #a8c8e8;
-  filter: blur(3px) saturate(1.02) contrast(1.02);
+  filter: blur(2px) saturate(1.02);
   transform: scale(1.02);
 }
 
@@ -54,7 +54,7 @@
   mix-blend-mode: overlay;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  filter: contrast(1.01) saturate(1.01);
+  filter: none;
 }
 
 #vhs::before {
@@ -77,7 +77,7 @@
       rgba(255,255,255,0.00) 0%,
       rgba(0,0,0,var(--vignetteOpacity)) 100%);
   opacity: 0.70;
-  animation: vhs-scan 5.2s linear infinite;
+  animation: vhs-scan 8s linear infinite;
 }
 
 #vhs::after {
@@ -99,7 +99,7 @@
       rgba(0,255,170,0.09)
     );
   opacity: 0.28;
-  animation: vhs-noise 0.16s steps(2) infinite, vhs-flicker 3.8s infinite, vhs-jitter 1.6s infinite;
+  animation: vhs-noise 0.42s steps(2) infinite, vhs-flicker 5.4s infinite, vhs-jitter 3.2s infinite;
 }
 
 @keyframes vhs-scan {
@@ -258,9 +258,24 @@ button.close-hit {
   pointer-events: none;
 }
 
+html.perf-lite #bg {
+  filter: saturate(1.02);
+}
+
+html.perf-lite #vhs::before,
+html.perf-lite #vhs::after {
+  animation: none;
+}
+
+@media (max-width: 760px) {
+  #bg {
+    filter: blur(1px) saturate(1.02);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   #bg {
-    filter: blur(3px) saturate(1.02) contrast(1.02);
+    filter: saturate(1.02);
   }
 
   #vhs::before,

@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>frazyy.com</title>
 
-  <link rel="stylesheet" href="css/effects.css?v=smooth-ui-2">
+  <script src="js/performanceProfile.js?v=perf-1" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;700;800;900&display=swap">
+  <link rel="stylesheet" href="css/effects.css?v=perf-1">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100%;
@@ -143,7 +145,6 @@
         filter 220ms ease,
         background 220ms ease,
         box-shadow 220ms ease;
-      will-change: transform, filter;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -241,7 +242,6 @@
         transform 220ms cubic-bezier(.16,.84,.3,1),
         filter 220ms ease,
         box-shadow 220ms ease;
-      will-change: transform, filter;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -356,8 +356,10 @@
 </head>
 
 <body>
-  <video id="bg" autoplay muted loop playsinline preload="auto" aria-hidden="true">
-    <source src="img/backround1.mp4?v=video-bg-3" type="video/mp4">
+  <video id="bg" autoplay muted loop playsinline preload="metadata"
+         disablepictureinpicture disableremoteplayback aria-hidden="true">
+    <source src="img/backround1-mobile.mp4?v=perf-1" type="video/mp4" media="(max-width: 760px)">
+    <source src="img/backround1.mp4?v=perf-1" type="video/mp4">
   </video>
   <div id="tint"></div>
   <div id="vhs"></div>
@@ -435,6 +437,6 @@
   </script>
 
   <script src="js/typewriter.js?v=mobile-1" defer></script>
-  <script src="js/discordBadge.js" defer></script>
+  <script src="js/discordBadge.js?v=perf-1" defer></script>
 </body>
 </html>

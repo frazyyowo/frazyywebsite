@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FRAZYYFRAZYYFRAZYYFRAZYY</title>
 
-  <link rel="stylesheet" href="css/effects.css?v=smooth-ui-2">
-  <link rel="stylesheet" href="css/intro.css?v=dark-blue-1">
+  <script src="js/performanceProfile.js?v=perf-1" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;700;800;900&display=swap">
+  <link rel="stylesheet" href="css/effects.css?v=perf-1">
+  <link rel="stylesheet" href="css/intro.css?v=perf-1">
 
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap");
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -68,7 +70,6 @@
       width: 100%;
       height: 100%;
       display: block;
-      will-change: transform;
     }
 
     #bg {
@@ -140,7 +141,6 @@
       min-height: 820px;
       transform-origin: top left;
       perspective: 1500px;
-      will-change: transform;
     }
 
     .site-title {
@@ -214,7 +214,6 @@
       transform: translate3d(0,0,0);
       transform-origin: center center;
       transform-style: flat;
-      will-change: transform;
       user-select: none;
       visibility: hidden;
       filter: drop-shadow(0 10px 14px rgba(12, 28, 44, 0.18));
@@ -258,6 +257,7 @@
 
     .window.dragging {
       transition: none !important;
+      will-change: transform;
     }
 
     .window-tilt-surface {
@@ -267,11 +267,11 @@
       transform-origin: center center;
       transform-style: preserve-3d;
       transition: transform 220ms cubic-bezier(.16,.84,.3,1);
-      will-change: transform;
     }
 
     .window.is-tilting .window-tilt-surface {
       transition-duration: 130ms;
+      will-change: transform;
     }
 
     .window.dragging .window-tilt-surface {
@@ -636,7 +636,6 @@
       transition:
         transform 220ms cubic-bezier(.16,.84,.3,1),
         filter 220ms ease;
-      will-change: transform, filter;
     }
 
     .link-item:hover {
@@ -718,7 +717,6 @@
       transition:
         transform 220ms cubic-bezier(.16,.84,.3,1),
         filter 220ms ease;
-      will-change: transform, filter;
     }
 
     .discord-badge:hover {
@@ -1687,8 +1685,14 @@
         box-shadow:
           0 10px 22px rgba(30, 55, 78, 0.14),
           inset 0 1px 0 rgba(255,255,255,0.62);
-        backdrop-filter: blur(16px) saturate(1.12);
-        -webkit-backdrop-filter: blur(16px) saturate(1.12);
+        backdrop-filter: blur(8px) saturate(1.08);
+        -webkit-backdrop-filter: blur(8px) saturate(1.08);
+      }
+
+      html.perf-lite .m-card {
+        background: rgba(226, 239, 250, 0.78);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
       }
 
       .m-card::before {
@@ -1796,7 +1800,6 @@
           transform 220ms cubic-bezier(.16,.84,.3,1),
           filter 220ms ease,
           box-shadow 220ms ease;
-        will-change: transform, filter;
       }
 
       .m-link-icon,
@@ -2163,8 +2166,10 @@
     </div>
   </div>
 
-  <video id="bg" autoplay muted loop playsinline preload="auto" aria-hidden="true">
-    <source src="img/backround1.mp4?v=video-bg-3" type="video/mp4">
+  <video id="bg" autoplay muted loop playsinline preload="metadata"
+         disablepictureinpicture disableremoteplayback aria-hidden="true">
+    <source src="img/backround1-mobile.mp4?v=perf-1" type="video/mp4" media="(max-width: 760px)">
+    <source src="img/backround1.mp4?v=perf-1" type="video/mp4">
   </video>
   <div id="tint"></div>
   <canvas id="fx" aria-hidden="true"></canvas>
@@ -2274,7 +2279,11 @@
 
             <div class="about-small-media about-media-shell">
               <span class="about-image-placeholder">add<br>frazyysmall1.png</span>
-              <img class="about-small-image" src="img/frazyysmall1.png" alt="small frazyy character image">
+              <picture>
+                <source srcset="img/frazyysmall1.webp?v=perf-1" type="image/webp">
+                <img class="about-small-image" src="img/frazyysmall1.png" alt="small frazyy character image"
+                     loading="lazy" decoding="async" fetchpriority="low">
+              </picture>
             </div>
           </article>
         </div>
@@ -2289,7 +2298,11 @@
         <div class="content">
           <div class="about-photo-frame about-media-shell">
             <span class="about-image-placeholder" aria-hidden="true"></span>
-            <img class="about-photo" src="img/frazyyimg1.png?v=about-photo-2" alt="frazyy photo one">
+            <picture>
+              <source srcset="img/frazyyimg1.webp?v=perf-1" type="image/webp">
+              <img class="about-photo" src="img/frazyyimg1.png?v=about-photo-2" alt="frazyy photo one"
+                   loading="lazy" decoding="async" fetchpriority="low">
+            </picture>
           </div>
         </div>
       </div>
@@ -2303,11 +2316,19 @@
         <div class="content">
           <div class="about-photo-frame about-media-shell">
             <span class="about-image-placeholder" aria-hidden="true"></span>
-            <img class="about-photo" src="img/frazyyimg2.png" alt="frazyy photo two">
+            <picture>
+              <source srcset="img/frazyyimg2.webp?v=perf-1" type="image/webp">
+              <img class="about-photo" src="img/frazyyimg2.png" alt="frazyy photo two"
+                   loading="lazy" decoding="async" fetchpriority="low">
+            </picture>
           </div>
         </div>
         <div class="about-photo-small-media about-media-shell" aria-hidden="true">
-          <img class="about-small-image" src="img/frazyysmall2.png?v=small-2-1" alt="">
+          <picture>
+            <source srcset="img/frazyysmall2.webp?v=perf-1" type="image/webp">
+            <img class="about-small-image" src="img/frazyysmall2.png?v=small-2-1" alt=""
+                 loading="lazy" decoding="async" fetchpriority="low">
+          </picture>
         </div>
       </div>
 
@@ -2499,7 +2520,14 @@
       layoutStage(DESIGN_H);
     }
 
-    window.addEventListener("resize", layoutStack);
+    let layoutFrame = 0;
+    window.addEventListener("resize", () => {
+      if (layoutFrame) return;
+      layoutFrame = requestAnimationFrame(() => {
+        layoutFrame = 0;
+        layoutStack();
+      });
+    }, { passive: true });
     layoutStack();
 
     function applyWindowSizes() {
@@ -2614,19 +2642,23 @@
         drag = null;
       }
 
-      document.querySelectorAll(".window .handle").forEach(handle => {
-        handle.addEventListener("pointerdown", e => startDrag(e, handle));
-        handle.addEventListener("mousedown", e => {
-          if (e.button !== 0) return;
-          startDrag(e, handle);
+      if ("PointerEvent" in window) {
+        document.querySelectorAll(".window .handle").forEach(handle => {
+          handle.addEventListener("pointerdown", e => startDrag(e, handle));
         });
-      });
-
-      window.addEventListener("pointermove", moveDrag);
-      window.addEventListener("mousemove", moveDrag);
-      window.addEventListener("pointerup", endDrag);
-      window.addEventListener("mouseup", endDrag);
-      window.addEventListener("pointercancel", endDrag);
+        window.addEventListener("pointermove", moveDrag);
+        window.addEventListener("pointerup", endDrag);
+        window.addEventListener("pointercancel", endDrag);
+      } else {
+        document.querySelectorAll(".window .handle").forEach(handle => {
+          handle.addEventListener("mousedown", e => {
+            if (e.button !== 0) return;
+            startDrag(e, handle);
+          });
+        });
+        window.addEventListener("mousemove", moveDrag);
+        window.addEventListener("mouseup", endDrag);
+      }
     }
 
     setupWindowDragging();
@@ -2704,6 +2736,7 @@
         intro.classList.add("is-hidden");
         intro.setAttribute("aria-hidden", "true");
         intro.style.display = "none";
+        window.dispatchEvent(new Event("frazyy:site-visible"));
       }
 
       center?.addEventListener("click", hideIntro);
@@ -2717,12 +2750,12 @@
   </script>
 
   <script src="js/windowTilt.js?v=motion-3" defer></script>
-  <script src="js/windowSpray.js?v=motion-2" defer></script>
+  <script src="js/windowSpray.js?v=perf-1" defer></script>
   <script src="js/typewriter.js?v=mobile-1" defer></script>
-  <script src="js/titleMarquee.js" defer></script>
-  <script src="js/siteParticles.js?v=smooth-ui-1" defer></script>
-  <script src="js/backgroundMusic.js" defer></script>
-  <script src="js/intro.js?v=3" defer></script>
-  <script src="js/discordBadge.js" defer></script>
+  <script src="js/titleMarquee.js?v=perf-1" defer></script>
+  <script src="js/siteParticles.js?v=perf-1" defer></script>
+  <script src="js/backgroundMusic.js?v=perf-1" defer></script>
+  <script src="js/intro.js?v=perf-1" defer></script>
+  <script src="js/discordBadge.js?v=perf-1" defer></script>
 </body>
 </html>
