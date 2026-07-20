@@ -138,7 +138,6 @@
 
 .welcome-title,
 .sec-hdr,
-.about-body strong,
 .fur-info strong {
   display: inline-block;
   --glowA: currentColor;
@@ -147,8 +146,7 @@
     drop-shadow(0 0 8px var(--glowA));
 }
 
-.things-body,
-.about-body {
+.things-body {
   filter: none;
   text-shadow: none;
 }
@@ -161,7 +159,6 @@
 
   .welcome-title,
   .sec-hdr,
-  .about-body strong,
   .fur-info strong {
     --glowA: color-mix(in srgb, currentColor 60%, white);
   }
@@ -190,8 +187,6 @@
 }
 
 /* Soft glowing buttons */
-.about-btn,
-.about-open-btn,
 .big-link,
 .small-link,
 .link-item,
@@ -215,8 +210,6 @@ button.close-hit {
     drop-shadow(0 0 8px rgba(205, 160, 255, 0.16));
 }
 
-.about-btn:hover,
-.about-open-btn:hover,
 .big-link:hover,
 .small-link:hover,
 .link-item:hover,
@@ -232,8 +225,6 @@ button.close-hit {
     drop-shadow(0 0 16px rgba(205, 160, 255, 0.38)) !important;
 }
 
-.about-btn:active,
-.about-open-btn:active,
 .big-link:active,
 .small-link:active,
 .link-item:active,

@@ -183,6 +183,46 @@
       display: block;
     }
 
+    .youtube-icon {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #ff1744, #d9002c);
+      box-shadow:
+        0 0 7px rgba(255,23,68,0.34),
+        inset 0 1px 0 rgba(255,255,255,0.24);
+    }
+
+    .youtube-fallback {
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      line-height: 1;
+      transform: translateX(2px);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.24);
+    }
+
+    .youtube-gif {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    .youtube-icon.has-youtube-gif {
+      overflow: visible;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .youtube-icon.has-youtube-gif .youtube-fallback {
+      display: none;
+    }
+
+    .youtube-icon.has-youtube-gif .youtube-gif {
+      opacity: 1;
+    }
+
     .m-link-icon-text {
       display: grid;
       place-items: center;
@@ -375,9 +415,12 @@
       <div class="m-links-label">my links:</div>
 
       <div class="m-links-list">
-        <a class="m-link-item" href="https://www.tiktok.com/@frazyypaws" target="_blank" rel="noopener noreferrer">
-          <div class="m-link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
-          <div class="m-link-label">tiktok</div>
+        <a class="m-link-item" href="https://www.youtube.com/@frazyypaws" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon youtube-icon">
+            <span class="youtube-fallback" aria-hidden="true">▶</span>
+            <img class="youtube-gif" src="img/youtube.gif" alt="youtube">
+          </div>
+          <div class="m-link-label">youtube</div>
           <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
         </a>
 
@@ -433,6 +476,19 @@
       const card = document.getElementById('discordCard');
       card?.classList.add('copied');
       setTimeout(() => card?.classList.remove('copied'), 1600);
+    });
+
+    document.querySelectorAll('.youtube-gif').forEach(image => {
+      const icon = image.closest('.youtube-icon');
+      if (!icon) return;
+      const showImage = () => icon.classList.add('has-youtube-gif');
+      const hideImage = () => icon.classList.remove('has-youtube-gif');
+      image.addEventListener('load', showImage);
+      image.addEventListener('error', hideImage);
+      if (image.complete) {
+        if (image.naturalWidth) showImage();
+        else hideImage();
+      }
     });
   </script>
 

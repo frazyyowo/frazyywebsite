@@ -663,6 +663,46 @@
       object-fit: contain;
     }
 
+    .youtube-icon {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #ff1744, #d9002c);
+      box-shadow:
+        0 0 7px rgba(255,23,68,0.34),
+        inset 0 1px 0 rgba(255,255,255,0.24);
+    }
+
+    .youtube-fallback {
+      color: #fff;
+      font-family: Arial, sans-serif;
+      font-size: 27px;
+      line-height: 1;
+      transform: translateX(2px);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.24);
+    }
+
+    .youtube-gif {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    .youtube-icon.has-youtube-gif {
+      overflow: visible;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .youtube-icon.has-youtube-gif .youtube-fallback {
+      display: none;
+    }
+
+    .youtube-icon.has-youtube-gif .youtube-gif {
+      opacity: 1;
+    }
+
     .link-label {
       width: 100%;
       color: rgba(17,17,17,0.88);
@@ -1037,40 +1077,33 @@
       text-shadow: 1px 1px 0 rgba(255,255,255,0.62);
     }
 
-    .about-action {
-      border-color: rgba(76,91,103,0.46);
-      border-radius: 12px;
+    .tiktok-action {
+      color: #fff;
+      border-color: rgba(255,255,255,0.38);
       background:
-        linear-gradient(180deg, rgba(234,241,246,0.46), rgba(153,171,183,0.30));
+        radial-gradient(95px 62px at 12% 0%, rgba(37,244,238,0.18), transparent 68%),
+        radial-gradient(110px 68px at 90% 100%, rgba(254,44,85,0.20), transparent 70%),
+        linear-gradient(145deg, #050505 0%, #111 52%, #020202 100%);
       box-shadow:
-        0 2px 5px rgba(18,35,50,0.12),
-        inset 0 1px 0 rgba(255,255,255,0.48),
-        inset 0 -1px 0 rgba(72,88,101,0.12);
+        -3px 0 11px rgba(37,244,238,0.24),
+        3px 0 11px rgba(254,44,85,0.22),
+        0 7px 14px rgba(0,0,0,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.20);
+      animation: tiktokButtonGlow 2.4s ease-in-out infinite;
     }
 
-    .about-action::before {
-      display: none;
+    .tiktok-action .home-action-label {
+      text-shadow:
+        -1px 0 5px rgba(37,244,238,0.44),
+        1px 0 5px rgba(254,44,85,0.40);
     }
 
-    .about-action:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.04);
-      background:
-        linear-gradient(180deg, rgba(242,247,250,0.58), rgba(170,187,198,0.40));
+    .tiktok-action:hover {
       box-shadow:
-        0 4px 8px rgba(18,35,50,0.16),
-        inset 0 1px 0 rgba(255,255,255,0.58),
-        inset 0 -1px 0 rgba(72,88,101,0.14);
-    }
-
-    .about-action.is-active {
-      border-color: rgba(54,68,79,0.56);
-      background:
-        linear-gradient(180deg, rgba(198,211,220,0.48), rgba(119,140,154,0.36));
-      box-shadow:
-        0 2px 5px rgba(18,35,50,0.14),
-        inset 0 1px 0 rgba(255,255,255,0.42),
-        inset 0 -1px 0 rgba(65,79,90,0.18);
+        -5px 0 18px rgba(37,244,238,0.42),
+        5px 0 18px rgba(254,44,85,0.38),
+        0 9px 17px rgba(0,0,0,0.32),
+        inset 0 1px 0 rgba(255,255,255,0.26);
     }
 
     .twitch-action {
@@ -1099,17 +1132,43 @@
         inset 0 1px 0 rgba(255,255,255,0.48);
     }
 
-    .twitch-gif {
+    .action-gif {
       width: 28px;
       height: 28px;
       display: none;
       flex: 0 0 28px;
       object-fit: contain;
+    }
+
+    .tiktok-gif {
+      filter:
+        drop-shadow(-2px 0 5px rgba(37,244,238,0.58))
+        drop-shadow(2px 0 5px rgba(254,44,85,0.52));
+    }
+
+    .twitch-gif {
       filter: drop-shadow(0 0 7px rgba(255,255,255,0.54));
     }
 
-    .twitch-gif.is-ready {
+    .action-gif.is-ready {
       display: block;
+    }
+
+    @keyframes tiktokButtonGlow {
+      0%, 100% {
+        box-shadow:
+          -3px 0 11px rgba(37,244,238,0.24),
+          3px 0 11px rgba(254,44,85,0.22),
+          0 7px 14px rgba(0,0,0,0.28),
+          inset 0 1px 0 rgba(255,255,255,0.20);
+      }
+      50% {
+        box-shadow:
+          -4px 0 15px rgba(37,244,238,0.34),
+          4px 0 15px rgba(254,44,85,0.31),
+          0 8px 16px rgba(0,0,0,0.31),
+          inset 0 1px 0 rgba(255,255,255,0.24);
+      }
     }
 
     @keyframes twitchButtonGlow {
@@ -1127,214 +1186,6 @@
           0 7px 14px rgba(57,25,107,0.25),
           inset 0 1px 0 rgba(255,255,255,0.46);
       }
-    }
-
-    .about-window {
-      z-index: 6;
-    }
-
-    .about-window.ready:not(.closed) {
-      animation: aboutWindowIn 340ms cubic-bezier(.16,.84,.3,1) both;
-    }
-
-    .about-bio-window {
-      --label-fs: 16;
-    }
-
-    .about-photo-window {
-      --label-fs: 23;
-      --label-y: 18;
-    }
-
-    .about-bio-window .content {
-      overflow: visible;
-      clip-path: none;
-    }
-
-    .about-bio-panel {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-      padding: 18px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-    }
-
-    .about-bio-title {
-      margin-bottom: 6px;
-      color: #111;
-      font-size: calc(32px * var(--fs));
-      line-height: 0.98;
-      font-weight: 900;
-      letter-spacing: -1.4px;
-      text-shadow: 2px 2px 0 rgba(255,255,255,0.56);
-    }
-
-    .about-bio-meta {
-      max-width: 340px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      color: rgba(17,17,17,0.82);
-      font-size: calc(12px * var(--fs));
-      line-height: 1.16;
-      font-weight: 400;
-    }
-
-    .about-bio-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      white-space: nowrap;
-    }
-
-    .about-bio-role {
-      color: #674aa0;
-      font-size: calc(12px * var(--fs));
-      font-weight: 400;
-      letter-spacing: -0.25px;
-      white-space: nowrap;
-      text-shadow: 1px 1px 0 rgba(255,255,255,0.48);
-    }
-
-    .about-interests {
-      width: 215px;
-      margin-top: 16px;
-    }
-
-    .about-interests-title,
-    .about-dni-title {
-      margin-bottom: 5px;
-      color: #111;
-      font-size: calc(16px * var(--fs));
-      line-height: 1;
-      font-weight: 900;
-      text-shadow: 1px 1px 0 rgba(255,255,255,0.52);
-    }
-
-    .about-interests-title {
-      text-transform: lowercase;
-    }
-
-    .about-interests-copy,
-    .about-dni-copy {
-      color: rgba(17,17,17,0.82);
-      font-size: calc(14px * var(--fs));
-      line-height: 1.22;
-      font-weight: 400;
-    }
-
-    .about-dni {
-      width: 215px;
-      margin-top: 10px;
-    }
-
-    .about-small-media {
-      position: absolute;
-      right: -65px;
-      bottom: -24px;
-      width: 235px;
-      height: 235px;
-      overflow: visible;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-      pointer-events: none;
-    }
-
-    .about-photo-small-media {
-      position: absolute;
-      right: -58px;
-      bottom: 18px;
-      z-index: 6;
-      width: 235px;
-      height: 215px;
-      overflow: visible;
-      border: 0;
-      background: transparent;
-      pointer-events: none;
-      transform: translateZ(38px);
-    }
-
-    .about-photo-frame {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      border: 0;
-      border-radius: 7px;
-      background: transparent;
-      box-shadow: none;
-    }
-
-    .about-photo,
-    .about-small-image {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      display: block;
-      opacity: 0;
-      object-fit: cover;
-      object-position: center;
-      transition: opacity 220ms ease;
-    }
-
-    .about-photo {
-      inset: auto;
-      top: 6px;
-      left: 6px;
-      width: calc(100% - 12px);
-      height: calc(100% - 12px);
-      object-fit: contain;
-      border-radius: 7px;
-      clip-path: inset(0 round 7px);
-    }
-
-    .about-small-image {
-      object-fit: contain;
-      object-position: center bottom;
-      filter: none;
-    }
-
-    .about-media-shell.has-image .about-photo,
-    .about-media-shell.has-image .about-small-image {
-      opacity: 1;
-    }
-
-    .about-image-placeholder {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: grid;
-      place-content: center;
-      gap: 6px;
-      padding: 12px;
-      color: rgba(28,53,76,0.60);
-      font-size: calc(14px * var(--fs));
-      line-height: 1.18;
-      font-weight: 900;
-      text-align: center;
-      text-transform: lowercase;
-      transition: opacity 180ms ease;
-    }
-
-    .about-small-media .about-image-placeholder {
-      font-size: 9px;
-    }
-
-    .about-media-shell.has-image .about-image-placeholder {
-      opacity: 0;
-    }
-
-    @keyframes aboutWindowIn {
-      from { opacity: 0; filter: drop-shadow(0 5px 8px rgba(12,28,44,0.08)); }
-      to { opacity: 1; filter: drop-shadow(0 16px 20px rgba(12,28,44,0.24)); }
     }
 
     .small-link {
@@ -1820,6 +1671,15 @@
         object-fit: contain;
       }
 
+      .m-link-icon.youtube-icon {
+        overflow: hidden;
+        border-radius: 14px;
+      }
+
+      .m-link-icon .youtube-fallback {
+        font-size: 22px;
+      }
+
       .m-link-label {
         min-width: 0;
         flex: 1 1 auto;
@@ -2194,9 +2054,12 @@
             <div class="welcome-bottom">
               <div class="w-links">
                 <div class="w-links-row">
-                  <a class="link-item" href="https://www.tiktok.com/@frazyypaws" target="_blank" rel="noopener noreferrer" title="tiktok">
-                    <div class="link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
-                    <div class="link-label">tiktok</div>
+                  <a class="link-item" href="https://www.youtube.com/@frazyypaws" target="_blank" rel="noopener noreferrer" title="youtube">
+                    <div class="link-icon youtube-icon">
+                      <span class="youtube-fallback" aria-hidden="true">▶</span>
+                      <img class="youtube-gif" src="img/youtube.gif" alt="youtube">
+                    </div>
+                    <div class="link-label">youtube</div>
                   </a>
                   <a class="link-item" href="https://www.instagram.com/frazyypaws/" target="_blank" rel="noopener noreferrer" title="instagram">
                     <div class="link-icon"><img src="img/instagram.gif" alt="instagram"></div>
@@ -2233,103 +2096,21 @@
       </div>
 
       <div class="home-actions" id="homeActions" aria-label="main actions">
-        <button class="home-action about-action" id="aboutToggle" type="button"
-                aria-expanded="false" aria-controls="win-about-bio win-about-photo-1 win-about-photo-2">
+        <a class="home-action tiktok-action" href="https://www.tiktok.com/@frazyypaws"
+           target="_blank" rel="noopener noreferrer" aria-label="follow frazyypaws on TikTok">
+          <img class="action-gif tiktok-gif" src="img/tiktok.gif" alt="">
           <span class="home-action-copy">
-            <span class="home-action-label">about me</span>
+            <span class="home-action-label">tiktok</span>
           </span>
-        </button>
+        </a>
 
         <a class="home-action twitch-action" href="https://www.twitch.tv/frazyypaws"
            target="_blank" rel="noopener noreferrer" aria-label="watch frazyypaws on Twitch">
-          <img class="twitch-gif" id="twitchGif" src="img/twitch.gif" alt="">
+          <img class="action-gif twitch-gif" src="img/twitch.gif" alt="">
           <span class="home-action-copy">
             <span class="home-action-label">twitch</span>
           </span>
         </a>
-      </div>
-
-      <div class="window std about-window about-bio-window closed" id="win-about-bio" aria-hidden="true" inert
-           data-label="about me" data-x="970" data-y="-58"
-           data-w="546" data-h="404"
-           data-skin="0.98" data-font="1" data-stretch-x="1.05" data-stretch-y="0.90">
-        <img class="skin" src="img/window2.png" alt="">
-        <div class="handle"></div>
-        <div class="content">
-          <article class="about-bio-panel">
-            <h2 class="about-bio-title">hi! im frazyy</h2>
-
-            <div class="about-bio-meta">
-              <div class="about-bio-meta-row">
-                <span>he/they</span>
-                <span>ENG/EST/RUS</span>
-              </div>
-              <div class="about-bio-role">content creator + game developer</div>
-            </div>
-
-            <div class="about-interests">
-              <h3 class="about-interests-title">interests</h3>
-              <p class="about-interests-copy">coding, cs2, osu!, fursuiting, 3d modeling</p>
-            </div>
-
-            <div class="about-dni">
-              <h3 class="about-dni-title">DNI</h3>
-              <p class="about-dni-copy">basic dni</p>
-            </div>
-
-            <div class="about-small-media about-media-shell">
-              <span class="about-image-placeholder">add<br>frazyysmall1.png</span>
-              <picture>
-                <source srcset="img/frazyysmall1.webp?v=perf-1" type="image/webp">
-                <img class="about-small-image" src="img/frazyysmall1.png" alt="small frazyy character image"
-                     loading="lazy" decoding="async" fetchpriority="low">
-              </picture>
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <div class="window std about-window about-photo-window closed" id="win-about-photo-1" aria-hidden="true" inert
-           data-label="" data-x="1555" data-y="145"
-           data-w="546" data-h="877"
-           data-skin="0.605" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
-        <img class="skin" src="img/window3.png" alt="">
-        <div class="handle"></div>
-        <div class="content">
-          <div class="about-photo-frame about-media-shell">
-            <span class="about-image-placeholder" aria-hidden="true"></span>
-            <picture>
-              <source srcset="img/frazyyimg1.webp?v=perf-1" type="image/webp">
-              <img class="about-photo" src="img/frazyyimg1.png?v=about-photo-2" alt="frazyy photo one"
-                   loading="lazy" decoding="async" fetchpriority="low">
-            </picture>
-          </div>
-        </div>
-      </div>
-
-      <div class="window std about-window about-photo-window closed" id="win-about-photo-2" aria-hidden="true" inert
-           data-label="" data-x="1190" data-y="305"
-           data-w="546" data-h="877"
-           data-skin="0.605" data-font="1" data-stretch-x="1" data-stretch-y="1.08">
-        <img class="skin" src="img/window3.png" alt="">
-        <div class="handle"></div>
-        <div class="content">
-          <div class="about-photo-frame about-media-shell">
-            <span class="about-image-placeholder" aria-hidden="true"></span>
-            <picture>
-              <source srcset="img/frazyyimg2.webp?v=perf-1" type="image/webp">
-              <img class="about-photo" src="img/frazyyimg2.png" alt="frazyy photo two"
-                   loading="lazy" decoding="async" fetchpriority="low">
-            </picture>
-          </div>
-        </div>
-        <div class="about-photo-small-media about-media-shell" aria-hidden="true">
-          <picture>
-            <source srcset="img/frazyysmall2.webp?v=perf-1" type="image/webp">
-            <img class="about-small-image" src="img/frazyysmall2.png?v=small-2-1" alt=""
-                 loading="lazy" decoding="async" fetchpriority="low">
-          </picture>
-        </div>
       </div>
 
     </div>
@@ -2346,9 +2127,12 @@
       <div class="m-sep"></div>
 
       <div class="m-links-list">
-        <a class="m-link-item" href="https://www.tiktok.com/@frazypaws" target="_blank" rel="noopener noreferrer">
-          <div class="m-link-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
-          <div class="m-link-label">tiktok</div>
+        <a class="m-link-item" href="https://www.youtube.com/@frazyypaws" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon youtube-icon">
+            <span class="youtube-fallback" aria-hidden="true">▶</span>
+            <img class="youtube-gif" src="img/youtube.gif" alt="youtube">
+          </div>
+          <div class="m-link-label">youtube</div>
           <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
         </a>
 
@@ -2484,15 +2268,9 @@
       const handle = document.querySelector("#stage > .site-handle");
       const welcome = document.getElementById("win-welcome");
       const actions = document.getElementById("homeActions");
-      const aboutBio = document.getElementById("win-about-bio");
-      const aboutPhoto1 = document.getElementById("win-about-photo-1");
-      const aboutPhoto2 = document.getElementById("win-about-photo-2");
       const welcomeX = 74;
       const welcomeY = 433;
       placeWindow(welcome, welcomeX, welcomeY);
-      placeWindow(aboutBio, 970, -58);
-      placeWindow(aboutPhoto1, 1555, 145);
-      placeWindow(aboutPhoto2, 1190, 305);
 
       if (actions && welcome) {
         const actionWidth = Math.min(440, winW(welcome));
@@ -2679,52 +2457,30 @@
     wireDiscordCopy("discordCopyBtn", "frazyypaws");
     wireDiscordCopy("discordCopyBtnMobile", "frazyypaws");
 
-    (function setupAboutWindows() {
-      const toggle = document.getElementById("aboutToggle");
-      const aboutWindows = Array.from(document.querySelectorAll(".about-window"));
-      if (!toggle || !aboutWindows.length) return;
-
-      function setAboutOpen(open) {
-        aboutWindows.forEach(win => {
-          win.classList.toggle("closed", !open);
-          win.toggleAttribute("inert", !open);
-          win.setAttribute("aria-hidden", String(!open));
-          if (open) bringToFront(win);
-        });
-        toggle.classList.toggle("is-active", open);
-        toggle.setAttribute("aria-expanded", String(open));
-      }
-
-      toggle.addEventListener("click", () => {
-        setAboutOpen(toggle.getAttribute("aria-expanded") !== "true");
-      });
-
-      document.querySelectorAll(".about-media-shell img").forEach(image => {
-        const shell = image.closest(".about-media-shell");
-        if (!shell) return;
-
-        const showImage = () => shell.classList.add("has-image");
-        const showPlaceholder = () => shell.classList.remove("has-image");
+    (function setupOptionalGifs() {
+      document.querySelectorAll(".action-gif").forEach(image => {
+        const showImage = () => image.classList.add("is-ready");
+        const hideImage = () => image.classList.remove("is-ready");
         image.addEventListener("load", showImage);
-        image.addEventListener("error", showPlaceholder);
-
+        image.addEventListener("error", hideImage);
         if (image.complete) {
           if (image.naturalWidth) showImage();
-          else showPlaceholder();
+          else hideImage();
         }
       });
 
-      const twitchGif = document.getElementById("twitchGif");
-      if (twitchGif) {
-        const showTwitchGif = () => twitchGif.classList.add("is-ready");
-        const hideTwitchGif = () => twitchGif.classList.remove("is-ready");
-        twitchGif.addEventListener("load", showTwitchGif);
-        twitchGif.addEventListener("error", hideTwitchGif);
-        if (twitchGif.complete) {
-          if (twitchGif.naturalWidth) showTwitchGif();
-          else hideTwitchGif();
+      document.querySelectorAll(".youtube-gif").forEach(image => {
+        const icon = image.closest(".youtube-icon");
+        if (!icon) return;
+        const showImage = () => icon.classList.add("has-youtube-gif");
+        const hideImage = () => icon.classList.remove("has-youtube-gif");
+        image.addEventListener("load", showImage);
+        image.addEventListener("error", hideImage);
+        if (image.complete) {
+          if (image.naturalWidth) showImage();
+          else hideImage();
         }
-      }
+      });
     })();
 
     (function introFailsafe() {
