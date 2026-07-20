@@ -167,7 +167,6 @@
       opacity: 0;
       transform:
         translate3d(var(--main-hover-x, 0px), var(--main-hover-y, 0px), 0)
-        rotate(var(--main-hover-rotate, 0deg))
         scale(var(--main-hover-scale, 1));
       transform-origin: 50% 100%;
       filter:
@@ -2564,7 +2563,6 @@
         shell.classList.remove("is-hovered");
         image.style.setProperty("--main-hover-x", "0px");
         image.style.setProperty("--main-hover-y", "0px");
-        image.style.setProperty("--main-hover-rotate", "0deg");
         image.style.setProperty("--main-hover-scale", "1");
       }
 
@@ -2585,7 +2583,6 @@
         frame = requestAnimationFrame(() => {
           image.style.setProperty("--main-hover-x", `${(x * 4).toFixed(2)}px`);
           image.style.setProperty("--main-hover-y", `${(-2 + y * 1.5).toFixed(2)}px`);
-          image.style.setProperty("--main-hover-rotate", `${(x * 0.16).toFixed(2)}deg`);
           image.style.setProperty("--main-hover-scale", "1.006");
           frame = 0;
         });
