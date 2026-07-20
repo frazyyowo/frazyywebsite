@@ -1574,7 +1574,11 @@
       .m-card {
         position: relative;
         overflow: hidden;
-        padding: 18px 14px;
+        min-height: 0;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        padding: clamp(9px, 1.8dvh, 14px) 10px;
         border: 1px solid rgba(255,255,255,0.50);
         border-radius: 18px;
         background:
@@ -1614,7 +1618,7 @@
       }
 
       .m-welcome-title {
-        margin-bottom: 14px;
+        margin-bottom: 0;
         color: #111;
         font-size: 17px;
         line-height: 1.25;
@@ -1658,7 +1662,7 @@
       .m-sep {
         width: 100%;
         height: 1px;
-        margin: 14px 0;
+        margin: clamp(6px, 1.2dvh, 10px) 0;
         background: rgba(0,0,0,0.32);
       }
 
@@ -1674,16 +1678,16 @@
       .m-links-list {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: clamp(5px, 0.9dvh, 8px);
       }
 
       .m-link-item {
         width: 100%;
-        min-height: 76px;
+        min-height: clamp(42px, 7.2dvh, 58px);
         display: flex;
         align-items: center;
-        gap: 14px;
-        padding: 10px 14px 10px 10px;
+        gap: 10px;
+        padding: 4px 10px;
         color: inherit;
         text-decoration: none;
         border: 1px solid rgba(0,0,0,0.13);
@@ -1701,8 +1705,8 @@
 
       .m-link-icon,
       .m-link-icon img {
-        width: 54px;
-        height: 54px;
+        width: clamp(34px, 6dvh, 46px);
+        height: clamp(34px, 6dvh, 46px);
       }
 
       .m-link-icon {
@@ -1717,6 +1721,16 @@
         object-fit: contain;
       }
 
+      .m-link-icon.tiktok-list-icon img {
+        filter:
+          drop-shadow(-1px 0 4px rgba(37,244,238,0.44))
+          drop-shadow(1px 0 4px rgba(254,44,85,0.40));
+      }
+
+      .m-link-icon.twitch-list-icon img {
+        filter: drop-shadow(0 0 5px rgba(145,70,255,0.46));
+      }
+
       .m-link-icon.youtube-icon {
         overflow: hidden;
         border-radius: 14px;
@@ -1729,7 +1743,7 @@
       .m-link-label {
         min-width: 0;
         flex: 1 1 auto;
-        font-size: 16px;
+        font-size: 14px;
         line-height: 1.1;
         font-weight: 900;
         opacity: 0.92;
@@ -1747,24 +1761,24 @@
         opacity: 0.45;
       }
 
-      .m-discord-wrap { margin-top: 14px; }
+      .m-discord-wrap { margin-top: clamp(6px, 1.1dvh, 10px); }
 
       .m-discord-label {
         text-align: center;
       }
 
       .m-discord-wrap .discord-badge {
-        min-height: 132px;
+        min-height: clamp(62px, 10dvh, 78px);
         gap: 5px 14px;
       }
 
       .m-discord-wrap .discord-pfp-ring {
-        width: 92px;
-        height: 92px;
+        width: clamp(48px, 8dvh, 60px);
+        height: clamp(48px, 8dvh, 60px);
       }
 
       .m-discord-wrap .discord-meta {
-        width: 92px;
+        width: clamp(48px, 8dvh, 60px);
       }
 
       .m-actions {
@@ -1828,8 +1842,9 @@
       }
 
       .contact-mail {
-        margin-top: auto;
-        padding-top: 8px;
+        margin-top: clamp(6px, 1dvh, 9px);
+        padding-top: clamp(6px, 1dvh, 9px);
+        border-top: 1px solid rgba(0,0,0,0.20);
         text-align: center;
         font-size: 12px;
         line-height: 1.25;
@@ -2108,7 +2123,7 @@
                   <a class="link-item" href="https://www.youtube.com/@frazyypaws" target="_blank" rel="noopener noreferrer" title="youtube">
                     <div class="link-icon youtube-icon">
                       <span class="youtube-fallback" aria-hidden="true">▶</span>
-                      <img class="youtube-gif" src="img/youtube.gif" alt="youtube">
+                      <img class="youtube-gif" src="img/youtube.gif?v=youtube-1" alt="youtube">
                     </div>
                     <div class="link-label">youtube</div>
                   </a>
@@ -2181,7 +2196,7 @@
         <a class="m-link-item" href="https://www.youtube.com/@frazyypaws" target="_blank" rel="noopener noreferrer">
           <div class="m-link-icon youtube-icon">
             <span class="youtube-fallback" aria-hidden="true">▶</span>
-            <img class="youtube-gif" src="img/youtube.gif" alt="youtube">
+            <img class="youtube-gif" src="img/youtube.gif?v=youtube-1" alt="youtube">
           </div>
           <div class="m-link-label">youtube</div>
           <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
@@ -2205,6 +2220,18 @@
           <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
         </a>
 
+        <a class="m-link-item" href="https://www.tiktok.com/@frazyypaws" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon tiktok-list-icon"><img src="img/tiktok.gif" alt="tiktok"></div>
+          <div class="m-link-label">tiktok</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+
+        <a class="m-link-item" href="https://www.twitch.tv/frazyypaws" target="_blank" rel="noopener noreferrer">
+          <div class="m-link-icon twitch-list-icon"><img src="img/twitch.gif" alt="twitch"></div>
+          <div class="m-link-label">twitch</div>
+          <div class="m-link-arrow" aria-hidden="true">&rsaquo;</div>
+        </a>
+
       </div>
 
       <div class="m-discord-wrap">
@@ -2223,12 +2250,12 @@
           <div class="discord-copied" id="discordCopiedMobile" aria-hidden="true">copied!</div>
         </div>
       </div>
-    </section>
 
-    <footer class="contact-mail">
-      my contact mail:
-      <a href="mailto:contact@frazyy.com">contact@frazyy.com</a>
-    </footer>
+      <footer class="contact-mail">
+        my contact mail:
+        <a href="mailto:contact@frazyy.com">contact@frazyy.com</a>
+      </footer>
+    </section>
 
   </main>
 
