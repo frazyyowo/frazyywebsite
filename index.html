@@ -4,9 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fcfbfe">
-  <meta name="description" content="Frazyy's links, socials, and contact information.">
+  <meta name="description" content="Frazyy — cat content creator. Videos, socials, and contact.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://frazyy.com/">
+  <meta property="og:site_name" content="FRAZYY">
+  <meta property="og:title" content="FRAZYY">
+  <meta property="og:description" content="cat content creator :3">
+  <meta property="og:image" content="https://frazyy.com/img/frazyypfp.png">
+  <meta property="og:image:alt" content="Frazyy's illustrated character portrait">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="FRAZYY">
+  <meta name="twitter:description" content="cat content creator :3">
+  <meta name="twitter:image" content="https://frazyy.com/img/frazyypfp.png">
   <link rel="icon" href="img/frazyypfp.png">
-  <title>frazyy.com</title>
+  <title>FRAZYY</title>
 
   <style>
     @font-face {
@@ -54,6 +65,7 @@
     body {
       min-height: 100%;
       margin: 0;
+      overflow-x: hidden;
     }
 
     body {
@@ -63,7 +75,6 @@
       place-items: center;
       padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right))
         max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-      overflow-x: hidden;
       color: var(--ink);
       background: var(--top);
       font-family: "Scientifica", monospace;
@@ -76,6 +87,18 @@
       position: relative;
       z-index: 1;
       width: min(100%, 650px);
+      isolation: isolate;
+    }
+
+    main::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: -70px -90px;
+      border-radius: 50%;
+      background: rgba(177, 151, 225, 0.14);
+      filter: blur(46px);
+      pointer-events: none;
     }
 
     #fx {
@@ -85,7 +108,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      filter: blur(0.35px);
+      filter: blur(0.6px);
     }
 
     .profile {
@@ -103,6 +126,18 @@
       border-radius: 50%;
       object-fit: cover;
       box-shadow: 0 9px 26px rgba(116, 82, 180, 0.12);
+      transition: box-shadow 220ms ease, transform 220ms ease;
+      will-change: transform;
+    }
+
+    .portrait:hover {
+      animation: portrait-hover 1.2s ease-in-out infinite;
+      box-shadow: 0 12px 32px rgba(116, 82, 180, 0.24);
+    }
+
+    @keyframes portrait-hover {
+      0%, 100% { transform: rotate(-2deg) scale(1.025); }
+      50% { transform: rotate(2deg) scale(1.045); }
     }
 
     .content {
@@ -116,6 +151,7 @@
       font-weight: 700;
       line-height: 0.95;
       letter-spacing: 0.08em;
+      text-shadow: 0 0 7px rgba(177, 151, 225, 0.32), 0 0 18px rgba(177, 151, 225, 0.18);
     }
 
     .intro {
@@ -147,6 +183,7 @@
       line-height: 1;
       text-align: center;
       text-decoration: none;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.34);
       box-shadow: 0 2px 10px var(--button-glow);
       transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
         transform 140ms ease;
@@ -185,6 +222,23 @@
       text-decoration-thickness: 1px;
       text-underline-offset: 3px;
       cursor: pointer;
+    }
+
+    .email {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .email-icon {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
     }
 
     .discord-status {
@@ -247,6 +301,11 @@
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
       }
+
+      .portrait:hover {
+        animation: none;
+        transform: none;
+      }
     }
   </style>
 </head>
@@ -260,7 +319,7 @@
 
       <div class="content">
         <h1 id="site-title">frazyy</h1>
-        <p class="intro">hi, i'm <span class="handle">@frazyypaws</span> :3</p>
+        <p class="intro">cat content creator :3</p>
 
         <nav class="links" aria-label="Social links">
           <a class="link" href="https://www.youtube.com/@frazyypaws" target="_blank" rel="noopener noreferrer">youtube</a>
@@ -273,7 +332,13 @@
           <button class="discord" id="discord-copy" type="button" title="Copy Discord username">
             discord: @frazyypaws<span class="discord-status" id="discord-status" aria-live="polite"></span>
           </button>
-          <a class="email" href="mailto:contact@frazyy.com">email me</a>
+          <a class="email" href="mailto:contact@frazyy.com">
+            <svg class="email-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m4 7 8 6 8-6"></path>
+            </svg>
+            <span>contact@frazyy.com</span>
+          </a>
         </div>
       </div>
     </section>
@@ -281,6 +346,7 @@
 
   <script src="js/performanceProfile.js"></script>
   <script src="js/siteParticles.js"></script>
+  <script src="js/titleMarquee.js"></script>
   <script>
     const copyButton = document.querySelector("#discord-copy");
     const copyStatus = document.querySelector("#discord-status");
