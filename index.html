@@ -41,6 +41,8 @@
       --ink-dark: #9677ce;
       --button-fill: #b197e1;
       --button-hover: #a486d8;
+      --button-glow: rgba(150, 119, 206, 0.14);
+      --button-glow-hover: rgba(150, 119, 206, 0.2);
       --focus: #7552b4;
     }
 
@@ -83,6 +85,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      filter: blur(0.35px);
     }
 
     .profile {
@@ -144,12 +147,15 @@
       line-height: 1;
       text-align: center;
       text-decoration: none;
-      transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+      box-shadow: 0 2px 10px var(--button-glow);
+      transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease,
+        transform 140ms ease;
     }
 
     .link:hover {
       border-color: var(--ink);
       background: var(--button-hover);
+      box-shadow: 0 3px 12px var(--button-glow-hover);
       transform: translateY(-1px);
     }
 
