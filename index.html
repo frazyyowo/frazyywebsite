@@ -9,12 +9,12 @@
   <meta property="og:url" content="https://frazyy.com/">
   <meta property="og:site_name" content="FRAZYY">
   <meta property="og:title" content="FRAZYY">
-  <meta property="og:description" content="cat content creator :3">
+  <meta property="og:description" content="cat content creator">
   <meta property="og:image" content="https://frazyy.com/img/frazyypfp.png">
   <meta property="og:image:alt" content="Frazyy's illustrated character portrait">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="FRAZYY">
-  <meta name="twitter:description" content="cat content creator :3">
+  <meta name="twitter:description" content="cat content creator">
   <meta name="twitter:image" content="https://frazyy.com/img/frazyypfp.png">
   <link rel="icon" href="img/frazyypfp.png">
   <title>FRAZYY</title>
@@ -131,13 +131,25 @@
     }
 
     .portrait:hover {
-      animation: portrait-hover 1.2s ease-in-out infinite;
       box-shadow: 0 12px 32px rgba(116, 82, 180, 0.24);
     }
 
-    @keyframes portrait-hover {
-      0%, 100% { transform: rotate(-2deg) scale(1.025); }
-      50% { transform: rotate(2deg) scale(1.045); }
+    .portrait-turn-left {
+      animation: portrait-turn-left 850ms cubic-bezier(0.22, 0.61, 0.36, 1) 1;
+    }
+
+    .portrait-turn-right {
+      animation: portrait-turn-right 850ms cubic-bezier(0.22, 0.61, 0.36, 1) 1;
+    }
+
+    @keyframes portrait-turn-left {
+      0%, 100% { transform: rotate(0) scale(1); }
+      46% { transform: rotate(-3deg) scale(1.055); }
+    }
+
+    @keyframes portrait-turn-right {
+      0%, 100% { transform: rotate(0) scale(1); }
+      46% { transform: rotate(3deg) scale(1.055); }
     }
 
     .content {
@@ -302,7 +314,8 @@
         transition-duration: 0.01ms !important;
       }
 
-      .portrait:hover {
+      .portrait-turn-left,
+      .portrait-turn-right {
         animation: none;
         transform: none;
       }
@@ -319,7 +332,7 @@
 
       <div class="content">
         <h1 id="site-title">frazyy</h1>
-        <p class="intro">cat content creator :3</p>
+        <p class="intro">cat content creator</p>
 
         <nav class="links" aria-label="Social links">
           <a class="link" href="https://www.youtube.com/@frazyypaws" target="_blank" rel="noopener noreferrer">youtube</a>
@@ -348,9 +361,25 @@
   <script src="js/siteParticles.js"></script>
   <script src="js/titleMarquee.js"></script>
   <script>
+    const portrait = document.querySelector(".portrait");
+    const portraitTurns = ["portrait-turn-left", "portrait-turn-right"];
     const copyButton = document.querySelector("#discord-copy");
     const copyStatus = document.querySelector("#discord-status");
     let statusTimer;
+
+    portrait.addEventListener("pointerenter", () => {
+      portrait.classList.remove(...portraitTurns);
+      void portrait.offsetWidth;
+      portrait.classList.add(portraitTurns[Math.random() < 0.5 ? 0 : 1]);
+    });
+
+    portrait.addEventListener("pointerleave", () => {
+      portrait.classList.remove(...portraitTurns);
+    });
+
+    portrait.addEventListener("animationend", () => {
+      portrait.classList.remove(...portraitTurns);
+    });
 
     copyButton.addEventListener("click", async () => {
       clearTimeout(statusTimer);
