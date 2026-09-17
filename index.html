@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-loading">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -94,6 +94,27 @@
       height: 100%;
       pointer-events: none;
       filter: blur(0.6px);
+    }
+
+    .is-loading main,
+    .is-loading #fx {
+      opacity: 0;
+    }
+
+    .is-loading main {
+      transform: translateY(10px);
+    }
+
+    .is-ready main {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 760ms ease-out,
+        transform 760ms cubic-bezier(0.22, 0.75, 0.3, 1);
+    }
+
+    .is-ready #fx {
+      opacity: 1;
+      transition: opacity 1s ease-out;
     }
 
     .profile {
@@ -284,6 +305,7 @@
 </head>
 
 <body>
+  <noscript><style>main, #fx { opacity: 1 !important; transform: none !important; }</style></noscript>
   <canvas id="fx" aria-hidden="true"></canvas>
 
   <main>
@@ -321,6 +343,31 @@
   <script src="js/siteParticles.js"></script>
   <script src="js/titleMarquee.js"></script>
   <script>
+    let siteRevealed = false;
+
+    function revealSite() {
+      if (siteRevealed) return;
+      siteRevealed = true;
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.documentElement.classList.replace("is-loading", "is-ready");
+        });
+      });
+    }
+
+    const portraitImage = document.querySelector(".portrait");
+    const fontsReady = document.fonts?.ready || Promise.resolve();
+    const portraitReady = portraitImage?.decode
+      ? portraitImage.decode().catch(() => undefined)
+      : Promise.resolve();
+    const revealFallback = setTimeout(revealSite, 1400);
+
+    Promise.all([fontsReady, portraitReady]).then(() => {
+      clearTimeout(revealFallback);
+      revealSite();
+    });
+
     const copyButton = document.querySelector("#discord-copy");
     const copyStatus = document.querySelector("#discord-status");
     let statusTimer;
