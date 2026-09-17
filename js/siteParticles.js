@@ -56,8 +56,8 @@
       dust.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        r: big ? rand(1.2, 2.9) : rand(0.7, 1.8),
-        a: big ? rand(0.18, 0.44) : rand(0.12, 0.30),
+        r: big ? rand(1.8, 4.0) : rand(1.0, 2.4),
+        a: big ? rand(0.34, 0.62) : rand(0.22, 0.44),
         vx: rand(-0.28, 0.28),
         vy: rand(0.10, 0.48),
         tw: rand(0.9, 2.3),
@@ -69,8 +69,8 @@
       glow.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        r: rand(2.4, 6.6),
-        a: rand(0.06, 0.14),
+        r: rand(3.5, 8.0),
+        a: rand(0.12, 0.24),
         vx: rand(-0.12, 0.12),
         vy: rand(0.06, 0.26),
         ph: rand(0, Math.PI * 2),
@@ -108,9 +108,9 @@
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
-    ctx.fillStyle = "#fff";
-    ctx.shadowColor = "rgba(255,255,255,0.42)";
-    ctx.shadowBlur = 16;
+    ctx.fillStyle = "#b197e1";
+    ctx.shadowColor = "rgba(177,151,225,0.58)";
+    ctx.shadowBlur = 18;
 
     for (let i = 0; i < glow.length; i += 1) {
       const p = glow[i];
@@ -128,7 +128,7 @@
 
     ctx.save();
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#b197e1";
 
     for (let i = 0; i < dust.length; i += 1) {
       const p = dust[i];
